@@ -4,6 +4,7 @@ import {
   createCustomer,
   updateCustomer,
   deleteCustomer,
+  getAnalytics,
 } from "../controllers/customerController.js";
 import {
   getCustomerTransactions,
@@ -23,6 +24,7 @@ import {
 const router = express.Router();
 
 router.get("/", getAllCustomers);
+router.get("/analytics", getAnalytics);
 router.post("/", validateCustomerCreation, createCustomer);
 router.get("/:id/transactions", getCustomerTransactions);
 router.post("/:id/transactions", validateTransactionCreation, addTransaction);

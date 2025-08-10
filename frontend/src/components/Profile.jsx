@@ -158,6 +158,16 @@ function Profile() {
               </button>
               
               <button 
+                className="sidebar-nav-item"
+                onClick={() => {
+                  navigate('/analytics');
+                  setSidebarOpen(false);
+                }}
+              >
+                📊 Analytics
+              </button>
+              
+              <button 
                 className="sidebar-nav-item active"
                 onClick={() => setSidebarOpen(false)}
               >

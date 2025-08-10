@@ -33,6 +33,42 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
+export const getAnalytics = async (req, res) => {
+  try {
+    // Get all customers for this user
+    const customers = await Customer.find({ userId: req.user.userId });
+    const totalCustomers = customers.length;
+
+    // Get all transactions for this user
+    const transactions = await Transaction.find({ userId: req.user.userId });
+
+    // Calculate total debit and credit amounts
+    let totalDebitAmount = 0;
+    let totalCreditAmount = 0;
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "debit") {
+        totalDebitAmount += transaction.amount;
+      } else if (transaction.type === "credit") {
+        totalCreditAmount += transaction.amount;
+      }
+    });
+
+    // Calculate net balance (credit - debit)
+    const netBalance = totalCreditAmount - totalDebitAmount;
+
+    res.json({
+      totalCustomers,
+      totalDebitAmount,
+      totalCreditAmount,
+      netBalance,
+      transactions: transactions.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const createCustomer = async (req, res) => {
   try {
     const { name, phone } = req.body;

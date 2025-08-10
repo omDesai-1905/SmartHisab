@@ -5,6 +5,13 @@ import axios from 'axios';
 
 function Analytics() {
   const [customers, setCustomers] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState({
+    totalCustomers: 0,
+    totalDebitAmount: 0,
+    totalCreditAmount: 0,
+    netBalance: 0,
+    transactions: 0
+  });
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -12,6 +19,7 @@ function Analytics() {
 
   useEffect(() => {
     fetchCustomers();
+    fetchAnalyticsData();
   }, []);
 
   const fetchCustomers = async () => {
@@ -20,6 +28,15 @@ function Analytics() {
       setCustomers(response.data);
     } catch (error) {
       console.error('Error fetching customers:', error);
+    }
+  };
+
+  const fetchAnalyticsData = async () => {
+    try {
+      const response = await axios.get('/api/customers/analytics');
+      setAnalyticsData(response.data);
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
     } finally {
       setLoading(false);
     }
@@ -33,23 +50,6 @@ function Analytics() {
   const handleProfile = () => {
     navigate('/profile');
     setSidebarOpen(false);
-  };
-
-  // Calculate summary statistics
-  const calculateSummary = () => {
-    let totalCredit = 0;
-    let totalDebit = 0;
-    let customerCount = customers.length;
-
-    customers.forEach(customer => {
-      if (customer.balance > 0) {
-        totalDebit += customer.balance; // You will give
-      } else if (customer.balance < 0) {
-        totalCredit += Math.abs(customer.balance); // You will get
-      }
-    });
-
-    return { totalCredit, totalDebit, customerCount };
   };
 
   // Get top customers by balance (positive and negative)
@@ -75,7 +75,6 @@ function Analytics() {
     );
   }
 
-  const summary = calculateSummary();
   const topCustomers = getTopCustomers();
 
   return (
@@ -177,7 +176,7 @@ function Analytics() {
           </div>
         </div>
 
-        {customers.length === 0 ? (
+        {analyticsData.totalCustomers === 0 ? (
           <div style={{ 
             textAlign: 'center', 
             padding: '3rem', 
@@ -197,239 +196,295 @@ function Analytics() {
           </div>
         ) : (
           <>
-            {/* Enhanced Overall Summary */}
-            <div style={{ 
-              background: '#269bb9',
-              borderRadius: '16px',
-              padding: '2.5rem',
-              marginBottom: '2rem',
-              color: 'white',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
-            }}>
-              <h2 style={{ 
-                margin: '0 0 2rem 0', 
-                fontSize: '2rem', 
-                fontWeight: '700',
-                textAlign: 'center',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
-              }}>
-                📈 Financial Overview
+            {/* Analytics Dashboard - Single Line Layout */}
+            <div 
+              className="analytics-dashboard"
+              style={{ 
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: '16px',
+                padding: '2.5rem',
+                marginBottom: '2rem',
+                color: 'white',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
+              }}
+            >
+              <h2 
+                className="analytics-title"
+                style={{ 
+                  margin: '0 0 3rem 0', 
+                  fontSize: '2rem', 
+                  fontWeight: '700',
+                  textAlign: 'center',
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
+                }}
+              >
+                📊 Business Analytics Dashboard
               </h2>
               
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-                gap: '2rem' 
-              }}>
-                {/* Total Customers */}
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.25)',
-                  borderRadius: '12px',
-                  padding: '2rem',
-                  textAlign: 'center',
-                  backdropFilter: 'blur(10px)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  transition: 'transform 0.3s ease',
-                  cursor: 'pointer'
-                }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👥</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    {summary.customerCount}
+              {/* Single Line Grid Layout */}
+              <div 
+                className="analytics-grid"
+                style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(4, 1fr)', 
+                  gap: '1.5rem',
+                  width: '100%',
+                  maxWidth: '1200px',
+                  margin: '0 auto'
+                }}
+              >
+                {/* Card 1 - Total Number of Customers */}
+                <div 
+                  className="analytics-card"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    cursor: 'pointer',
+                    minHeight: '160px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>👥</div>
+                  <div className="analytics-card-value" style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    {analyticsData.totalCustomers}
                   </div>
-                  <div style={{ fontSize: '1rem', opacity: 0.9 }}>
+                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
                     Total Customers
                   </div>
                 </div>
 
-                {/* Debit Amount box */}
-                <div style={{
-                  background: 'rgba(251, 146, 60, 0.3)',
-                  borderRadius: '12px',
-                  padding: '2rem',
-                  textAlign: 'center',
-                  backdropFilter: 'blur(10px)',
-                  border: '2px solid rgba(251, 146, 60, 0.5)',
-                  transition: 'transform 0.3s ease',
-                  cursor: 'pointer'
-                }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📉</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{summary.totalDebit.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '1rem', opacity: 0.9 }}>
-                    Total Debit Amount
-                  </div>
-                </div>
-
-                {/* Credit Amount box*/}
-                <div style={{
-                  background: 'rgba(72, 187, 120, 0.3)',
-                  borderRadius: '12px',
-                  padding: '2rem',
-                  textAlign: 'center',
-                  backdropFilter: 'blur(10px)',
-                  border: '2px solid rgba(72, 187, 120, 0.5)',
-                  transition: 'transform 0.3s ease',
-                  cursor: 'pointer'
-                }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💰</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{summary.totalCredit.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '1rem', opacity: 0.9 }}>
-                    Total Credit Amount
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Top Customers */}
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
-              gap: '2rem',
-              marginBottom: '2rem'
-            }}>
-              {/* Top Creditors */}
-              {topCustomers.highest.length > 0 && (
-                <div style={{
-                  background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)',
-                  borderRadius: '12px',
-                  padding: '1.5rem',
-                  color: 'white'
-                }}>
-                  <h3 style={{ 
-                    margin: '0 0 1.5rem 0', 
-                    fontSize: '1.3rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}>
-                    🏆 Top 5 - You Will Give
-                  </h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {topCustomers.highest.map((customer, index) => (
-                      <div key={customer._id} style={{
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        borderRadius: '8px',
-                        padding: '1rem',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        transition: 'background 0.2s ease'
-                      }}
-                      onClick={() => navigate(`/customer/${customer._id}`)}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <span style={{ 
-                            fontSize: '1.2rem', 
-                            fontWeight: 'bold',
-                            minWidth: '2rem',
-                            textAlign: 'center'
-                          }}>
-                            {index + 1}.
-                          </span>
-                          <span style={{ fontWeight: '600' }}>{customer.name}</span>
-                        </div>
-                        <span style={{ 
-                          fontSize: '1.1rem', 
-                          fontWeight: 'bold',
-                          color: '#f0fff4'
-                        }}>
-                          ₹{customer.balance.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Top Debtors */}
-              {topCustomers.lowest.length > 0 && (
-                <div style={{
-                  background: 'linear-gradient(135deg, #f56565 0%, #e53e3e 100%)',
-                  borderRadius: '12px',
-                  padding: '1.5rem',
-                  color: 'white'
-                }}>
-                  <h3 style={{ 
-                    margin: '0 0 1.5rem 0', 
-                    fontSize: '1.3rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}>
-                    📉 Top 5 - You Will Get
-                  </h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {topCustomers.lowest.map((customer, index) => (
-                      <div key={customer._id} style={{
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        borderRadius: '8px',
-                        padding: '1rem',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        transition: 'background 0.2s ease'
-                      }}
-                      onClick={() => navigate(`/customer/${customer._id}`)}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <span style={{ 
-                            fontSize: '1.2rem', 
-                            fontWeight: 'bold',
-                            minWidth: '2rem',
-                            textAlign: 'center'
-                          }}>
-                            {index + 1}.
-                          </span>
-                          <span style={{ fontWeight: '600' }}>{customer.name}</span>
-                        </div>
-                        <span style={{ 
-                          fontSize: '1.1rem', 
-                          fontWeight: 'bold',
-                          color: '#fff5f5'
-                        }}>
-                          ₹{Math.abs(customer.balance).toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Quick Actions */}
-            <div style={{
-              background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)',
-              borderRadius: '12px',
-              padding: '2rem',
-              color: 'white',
-              textAlign: 'center'
-            }}>
-              <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.5rem' }}>
-                🚀 Quick Actions
-              </h3>
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button 
-                  onClick={() => navigate('/dashboard')}
+                {/* Card 2 - Total Debit Amount */}
+                <div 
+                  className="analytics-card"
                   style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    color: 'white',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '8px',
+                    background: 'rgba(239, 68, 68, 0.3)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(239, 68, 68, 0.5)',
                     cursor: 'pointer',
-                    fontWeight: '600',
-                    transition: 'all 0.2s ease'
+                    minHeight: '160px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
                   }}
                 >
-                  📋 View All Customers
-                </button>
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📉</div>
+                  <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{analyticsData.totalDebitAmount.toLocaleString()}
+                  </div>
+                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Total Debit
+                  </div>
+                  <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
+                    (Paid Out)
+                  </div>
+                </div>
+
+                {/* Card 3 - Total Credit Amount */}
+                <div 
+                  className="analytics-card"
+                  style={{
+                    background: 'rgba(34, 197, 94, 0.3)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(34, 197, 94, 0.5)',
+                    cursor: 'pointer',
+                    minHeight: '160px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>💰</div>
+                  <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{analyticsData.totalCreditAmount.toLocaleString()}
+                  </div>
+                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Total Credit
+                  </div>
+                  <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
+                    (Received)
+                  </div>
+                </div>
+
+                {/* Card 4 - Net Balance */}
+                <div 
+                  className="analytics-card"
+                  style={{
+                    background: analyticsData.netBalance >= 0 
+                      ? 'rgba(34, 197, 94, 0.3)' 
+                      : 'rgba(239, 68, 68, 0.3)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: analyticsData.netBalance >= 0 
+                      ? '2px solid rgba(34, 197, 94, 0.5)'
+                      : '2px solid rgba(239, 68, 68, 0.5)',
+                    cursor: 'pointer',
+                    minHeight: '160px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
+                    {analyticsData.netBalance >= 0 ? '📈' : '📉'}
+                  </div>
+                  <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{Math.abs(analyticsData.netBalance).toLocaleString()}
+                  </div>
+                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Net Balance
+                  </div>
+                  <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
+                    {analyticsData.netBalance >= 0 ? '(Profit)' : '(Loss)'}
+                  </div>
+                </div>
               </div>
             </div>
+
+            {/* Top Customers Section */}
+            {customers.length > 0 && (
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+                gap: '2rem',
+                marginBottom: '2rem'
+              }}>
+                {/* Top Creditors */}
+                {topCustomers.highest.length > 0 && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    color: 'white'
+                  }}>
+                    <h3 style={{ 
+                      margin: '0 0 1.5rem 0', 
+                      fontSize: '1.3rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      🏆 Top 5 - You Will Give
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {topCustomers.highest.map((customer, index) => (
+                        <div key={customer._id} style={{
+                          background: 'rgba(255, 255, 255, 0.15)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backdropFilter: 'blur(10px)',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => navigate(`/customer/${customer._id}`)}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{ 
+                              background: '#2d3748',
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.9rem',
+                              fontWeight: 'bold'
+                            }}>
+                              {index + 1}
+                            </div>
+                            <span style={{ fontWeight: '600' }}>{customer.name}</span>
+                          </div>
+                          <div style={{ 
+                            textAlign: 'right',
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem'
+                          }}>
+                            ₹{customer.balance.toLocaleString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Top Debtors */}
+                {topCustomers.lowest.length > 0 && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #f56565 0%, #e53e3e 100%)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    color: 'white'
+                  }}>
+                    <h3 style={{ 
+                      margin: '0 0 1.5rem 0', 
+                      fontSize: '1.3rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      💸 Top 5 - You Will Get
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {topCustomers.lowest.map((customer, index) => (
+                        <div key={customer._id} style={{
+                          background: 'rgba(255, 255, 255, 0.15)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backdropFilter: 'blur(10px)',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => navigate(`/customer/${customer._id}`)}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{ 
+                              background: '#2d3748',
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.9rem',
+                              fontWeight: 'bold'
+                            }}>
+                              {index + 1}
+                            </div>
+                            <span style={{ fontWeight: '600' }}>{customer.name}</span>
+                          </div>
+                          <div style={{ 
+                            textAlign: 'right',
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem'
+                          }}>
+                            ₹{Math.abs(customer.balance).toLocaleString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

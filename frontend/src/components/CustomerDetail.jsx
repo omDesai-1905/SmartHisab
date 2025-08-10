@@ -328,6 +328,16 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
             </button>
             
             <button 
+              className="sidebar-nav-item"
+              onClick={() => {
+                navigate('/analytics');
+                actualSetSidebarOpen(false);
+              }}
+            >
+              📊 Analytics
+            </button>
+            
+            <button 
               className="sidebar-nav-item active"
               onClick={() => actualSetSidebarOpen(false)}
             >
