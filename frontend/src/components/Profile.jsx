@@ -168,6 +168,16 @@ function Profile() {
               </button>
               
               <button 
+                className="sidebar-nav-item"
+                onClick={() => {
+                  navigate('/cashbook');
+                  setSidebarOpen(false);
+                }}
+              >
+                📖 Cashbook
+              </button>
+              
+              <button 
                 className="sidebar-nav-item active"
                 onClick={() => setSidebarOpen(false)}
               >
@@ -310,7 +320,7 @@ function Profile() {
                   className="btn btn-primary"
                   style={{ marginRight: '1rem' }}
                 >
-                  ✏️ Edit Profile
+                  update Edit Profile
                 </button>
                 <button 
                   onClick={handleLogout}

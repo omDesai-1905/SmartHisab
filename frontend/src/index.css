@@ -895,3 +895,636 @@ body {
     margin-bottom: 1.5rem;
   }
 }
+
+/* Cashbook Page Styles */
+.cashbook-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+}
+
+.cashbook-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.cashbook-header {
+  margin-bottom: 2rem;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.income-card {
+  border-left: 4px solid #48bb78;
+}
+
+.expense-card {
+  border-left: 4px solid #e53e3e;
+}
+
+.balance-card.positive {
+  border-left: 4px solid #38a169;
+}
+
+.balance-card.negative {
+  border-left: 4px solid #e53e3e;
+}
+
+.summary-icon {
+  font-size: 2.5rem;
+  opacity: 0.8;
+}
+
+.summary-details {
+  flex: 1;
+}
+
+.summary-amount {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #2d3748;
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: #718096;
+  font-weight: 500;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+  min-width: 150px;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.search-filter {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.search-filter label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.type-filter,
+.date-range-filter {
+  min-width: 150px;
+}
+
+/* Date Range Filter */
+.date-range-filter {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.date-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 140px;
+}
+
+.date-input-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+.clear-dates {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  height: fit-content;
+  white-space: nowrap;
+}
+
+/* Action buttons in table */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.btn-edit, .btn-delete {
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  min-width: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-edit {
+  background: #f39c12;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #e67e22;
+}
+
+.btn-delete {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+}
+
+/* Notification System */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideIn 0.3s ease-out;
+  border-left: 4px solid rgba(255,255,255,0.3);
+}
+
+.notification.success {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  border-left-color: #68d391;
+}
+
+.notification.error {
+  background: linear-gradient(135deg, #f56565, #e53e3e);
+  border-left-color: #fc8181;
+}
+
+.notification.info {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  border-left-color: #63b3ed;
+}
+
+.notification-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.notification-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.5rem;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.notification-close:hover {
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.filter-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.entries-section {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.no-entries {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #718096;
+}
+
+.no-entries-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-entries h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+.entries-table {
+  overflow-x: auto;
+}
+
+.entries-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.entries-table th,
+.entries-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.entries-table th:last-child,
+.entries-table td:last-child {
+  width: 140px;
+  min-width: 140px;
+  text-align: center;
+}
+
+.entries-table th {
+  background: #f7fafc;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.entries-table tr:hover {
+  background: #f8fafc;
+}
+
+.entries-table tr.income {
+  border-left: 3px solid #48bb78;
+}
+
+.entries-table tr.expense {
+  border-left: 3px solid #e53e3e;
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.type-badge.income {
+  background: rgba(72, 187, 120, 0.1);
+  color: #2f855a;
+}
+
+.type-badge.expense {
+  background: rgba(229, 62, 62, 0.1);
+  color: #c53030;
+}
+
+.amount.income {
+  color: #2f855a;
+  font-weight: 600;
+}
+
+.amount.expense {
+  color: #c53030;
+  font-weight: 600;
+}
+
+/* Modal Styles for Cashbook */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 0;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #718096;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #2d3748;
+  background: #f7fafc;
+}
+
+.modal-content form {
+  padding: 2rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.modal-actions .btn {
+  min-width: 100px;
+}
+
+/* Responsive Design for Cashbook */
+@media (max-width: 768px) {
+  .cashbook-container {
+    padding: 1rem;
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .summary-card {
+    padding: 1.25rem;
+  }
+  
+  .summary-amount {
+    font-size: 1.5rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+  }
+  
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-filter {
+    min-width: auto;
+  }
+  
+  .entries-table {
+    font-size: 0.875rem;
+  }
+  
+  .entries-table th,
+  .entries-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .modal-content {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    padding: 1rem 1.5rem;
+  }
+  
+  .modal-content form {
+    padding: 1.5rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-icon {
+    font-size: 2rem;
+  }
+  
+  .summary-amount {
+    font-size: 1.3rem;
+  }
+  
+  .summary-label {
+    font-size: 0.8rem;
+  }
+  
+  .entries-table th,
+  .entries-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+  }
+  
+  .type-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: scale(0.9) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Simple Entry Info for Delete Modal */
+.entry-info {
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.entry-info p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+/* Center Delete Modal Content */
+.modal-overlay .modal-content .modal-body {
+  text-align: center;
+}
+
+.modal-overlay .modal-content .modal-body p {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.modal-overlay .modal-content .entry-info {
+  text-align: left;
+  margin: 1rem auto;
+  max-width: 280px;
+}
+
+.modal-overlay .modal-content .modal-footer {
+  justify-content: center !important;
+  gap: 1rem;
+  display: flex !important;
+  align-items: center;
+}
+
+/* Center content in all confirmation modals */
+.modal .modal-content > div:not(.modal-header):not(.modal-footer) {
+  text-align: center;
+}
+
+.modal .modal-content p {
+  text-align: center;
+}
+
+/* Center buttons in all modals */
+.modal .modal-content div[style*="justify-content: flex-end"] {
+  justify-content: center !important;
+}

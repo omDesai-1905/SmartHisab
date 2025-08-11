@@ -263,6 +263,16 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
             
             <button 
               className="sidebar-nav-item"
+              onClick={() => {
+                navigate('/cashbook');
+                actualSetSidebarOpen(false);
+              }}
+            >
+              📖 Cashbook
+            </button>
+            
+            <button 
+              className="sidebar-nav-item"
               onClick={handleProfile}
             >
               👤 Profile

@@ -338,6 +338,16 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
             </button>
             
             <button 
+              className="sidebar-nav-item"
+              onClick={() => {
+                navigate('/cashbook');
+                actualSetSidebarOpen(false);
+              }}
+            >
+              📖 Cashbook
+            </button>
+            
+            <button 
               className="sidebar-nav-item active"
               onClick={() => actualSetSidebarOpen(false)}
             >

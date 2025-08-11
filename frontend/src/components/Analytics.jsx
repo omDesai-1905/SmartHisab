@@ -12,6 +12,11 @@ function Analytics() {
     netBalance: 0,
     transactions: 0
   });
+  const [cashbookData, setCashbookData] = useState({
+    monthlyIncome: 0,
+    monthlyExpense: 0,
+    monthlyNet: 0
+  });
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -20,6 +25,7 @@ function Analytics() {
   useEffect(() => {
     fetchCustomers();
     fetchAnalyticsData();
+    fetchCashbookData();
   }, []);
 
   const fetchCustomers = async () => {
@@ -39,6 +45,43 @@ function Analytics() {
       console.error('Error fetching analytics data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCashbookData = async () => {
+    try {
+      const response = await axios.get('/api/cashbook');
+      const entries = response.data;
+      
+      // Get current month and year
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      
+      // Filter entries for current month
+      const currentMonthEntries = entries.filter(entry => {
+        const entryDate = new Date(entry.date);
+        return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+      });
+      
+      // Calculate monthly totals
+      const monthlyIncome = currentMonthEntries
+        .filter(entry => entry.type === 'income')
+        .reduce((sum, entry) => sum + entry.amount, 0);
+        
+      const monthlyExpense = currentMonthEntries
+        .filter(entry => entry.type === 'expense')
+        .reduce((sum, entry) => sum + entry.amount, 0);
+        
+      const monthlyNet = monthlyIncome - monthlyExpense;
+      
+      setCashbookData({
+        monthlyIncome,
+        monthlyExpense,
+        monthlyNet
+      });
+    } catch (error) {
+      console.error('Error fetching cashbook data:', error);
     }
   };
 
@@ -119,6 +162,16 @@ function Analytics() {
               }}
             >
               📊 Analytics
+            </button>
+            
+            <button 
+              className="sidebar-nav-item"
+              onClick={() => {
+                navigate('/cashbook');
+                setSidebarOpen(false);
+              }}
+            >
+              📖 Cashbook
             </button>
             
             <button 
@@ -349,6 +402,125 @@ function Analytics() {
                   </div>
                   <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
                     {analyticsData.netBalance >= 0 ? '(Profit)' : '(Loss)'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Current Month Cashbook Analytics */}
+            <div 
+              className="cashbook-analytics"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(140, 140, 120, 0.8), rgba(150, 230, 267, 0.6))',
+                borderRadius: '16px',
+                padding: '2.5rem',
+                marginBottom: '2rem',
+                color: 'white',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
+              }}
+            >
+              <h3 
+                className="cashbook-title"
+                style={{ 
+                  margin: '0 0 2rem 0', 
+                  fontSize: '1.5rem', 
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
+                }}
+              >
+                📖 Current Month Cashbook Summary
+              </h3>
+              
+              <div 
+                className="cashbook-grid"
+                style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(3, 1fr)', 
+                  gap: '1.5rem',
+                  width: '100%',
+                  maxWidth: '800px',
+                  margin: '0 auto'
+                }}
+              >
+                {/* Monthly Income */}
+                <div 
+                  className="cashbook-card"
+                  style={{
+                    background: 'rgba(72, 187, 120, 0.4)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(72, 187, 120, 0.6)',
+                    minHeight: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>💚</div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{cashbookData.monthlyIncome.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Monthly Income
+                  </div>
+                </div>
+
+                {/* Monthly Expense */}
+                <div 
+                  className="cashbook-card"
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.4)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(239, 68, 68, 0.6)',
+                    minHeight: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>💸</div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{cashbookData.monthlyExpense.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Monthly Expense
+                  </div>
+                </div>
+
+                {/* Net Balance */}
+                <div 
+                  className="cashbook-card"
+                  style={{
+                    background: cashbookData.monthlyNet >= 0 
+                      ? 'rgba(72, 187, 120, 0.4)' 
+                      : 'rgba(239, 68, 68, 0.4)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: cashbookData.monthlyNet >= 0 
+                      ? '2px solid rgba(72, 187, 120, 0.6)'
+                      : '2px solid rgba(239, 68, 68, 0.6)',
+                    minHeight: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
+                    {cashbookData.monthlyNet >= 0 ? '📈' : '📉'}
+                  </div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{Math.abs(cashbookData.monthlyNet).toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    {cashbookData.monthlyNet >= 0 ? 'Net Profit' : 'Net Loss'}
                   </div>
                 </div>
               </div>
