@@ -161,7 +161,7 @@ function Analytics() {
                 setSidebarOpen(false);
               }}
             >
-              📊 Analytics
+              Analytics
             </button>
             
             <button 
@@ -171,7 +171,7 @@ function Analytics() {
                 setSidebarOpen(false);
               }}
             >
-              📖 Cashbook
+              Cashbook
             </button>
             
             <button 
@@ -215,17 +215,18 @@ function Analytics() {
               className="sidebar-toggle"
               style={{
                 background: 'none',
-                border: 'none',
+                border: '1px solid white',
                 fontSize: '1.5rem',
                 cursor: 'pointer',
                 padding: '0.5rem',
                 borderRadius: '4px',
-                color: '#4a5568'
+                color: '#4a5568',
+                width: '50px',
               }}
             >
               ☰
             </button>
-            <h1 className="dashboard-title">📊 Business Analytics</h1>
+            <h1 className="dashboard-title">Business Analytics</h1>
           </div>
         </div>
 
@@ -236,7 +237,6 @@ function Analytics() {
             color: '#718096',
             fontSize: '1.1rem'
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
             <h2>No Data Available</h2>
             <p>Add customers and transactions to view analytics</p>
             <button 
@@ -253,7 +253,7 @@ function Analytics() {
             <div 
               className="analytics-dashboard"
               style={{ 
-                background: 'linear-gradient(135deg,rgba(0, 0, 55, 1), rgba(140, 140, 120, 0.8) )',
+                background: 'linear-gradient(135deg,rgba(150, 80, 94, 2), rgba(58, 90, 136, 1) )',
                 borderRadius: '16px',
                 padding: '2.5rem',
                 marginBottom: '2rem',
@@ -271,7 +271,7 @@ function Analytics() {
                   textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
                 }}
               >
-                📊 Business Analytics Dashboard
+                Business Analytics Dashboard
               </h2>
               
               {/* Single Line Grid Layout */}
@@ -303,7 +303,7 @@ function Analytics() {
                     justifyContent: 'center'
                   }}
                 >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>👥</div>
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}></div>
                   <div className="analytics-card-value" style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     {analyticsData.totalCustomers}
                   </div>
@@ -329,7 +329,7 @@ function Analytics() {
                     justifyContent: 'center'
                   }}
                 >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📉</div>
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}></div>
                   <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     ₹{analyticsData.totalDebitAmount.toLocaleString()}
                   </div>
@@ -355,10 +355,11 @@ function Analytics() {
                     minHeight: '160px',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    height: '200px'
                   }}
                 >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>💰</div>
+                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}></div>
                   <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     ₹{analyticsData.totalCreditAmount.toLocaleString()}
                   </div>
@@ -392,7 +393,6 @@ function Analytics() {
                   }}
                 >
                   <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
-                    {analyticsData.netBalance >= 0 ? '📈' : '📉'}
                   </div>
                   <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
                     ₹{Math.abs(analyticsData.netBalance).toLocaleString()}
@@ -402,125 +402,6 @@ function Analytics() {
                   </div>
                   <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
                     {analyticsData.netBalance >= 0 ? '(Profit)' : '(Loss)'}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Current Month Cashbook Analytics */}
-            <div 
-              className="cashbook-analytics"
-              style={{ 
-                background: 'linear-gradient(135deg, rgba(140, 140, 120, 0.8), rgba(150, 230, 267, 0.6))',
-                borderRadius: '16px',
-                padding: '2.5rem',
-                marginBottom: '2rem',
-                color: 'white',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
-              }}
-            >
-              <h3 
-                className="cashbook-title"
-                style={{ 
-                  margin: '0 0 2rem 0', 
-                  fontSize: '1.5rem', 
-                  fontWeight: '600',
-                  textAlign: 'center',
-                  textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
-                }}
-              >
-                📖 Current Month Cashbook Summary
-              </h3>
-              
-              <div 
-                className="cashbook-grid"
-                style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(3, 1fr)', 
-                  gap: '1.5rem',
-                  width: '100%',
-                  maxWidth: '800px',
-                  margin: '0 auto'
-                }}
-              >
-                {/* Monthly Income */}
-                <div 
-                  className="cashbook-card"
-                  style={{
-                    background: 'rgba(72, 187, 120, 0.4)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(72, 187, 120, 0.6)',
-                    minHeight: '140px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>💚</div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{cashbookData.monthlyIncome.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Monthly Income
-                  </div>
-                </div>
-
-                {/* Monthly Expense */}
-                <div 
-                  className="cashbook-card"
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.4)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(239, 68, 68, 0.6)',
-                    minHeight: '140px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>💸</div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{cashbookData.monthlyExpense.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Monthly Expense
-                  </div>
-                </div>
-
-                {/* Net Balance */}
-                <div 
-                  className="cashbook-card"
-                  style={{
-                    background: cashbookData.monthlyNet >= 0 
-                      ? 'rgba(72, 187, 120, 0.4)' 
-                      : 'rgba(239, 68, 68, 0.4)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: cashbookData.monthlyNet >= 0 
-                      ? '2px solid rgba(72, 187, 120, 0.6)'
-                      : '2px solid rgba(239, 68, 68, 0.6)',
-                    minHeight: '140px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
-                    {cashbookData.monthlyNet >= 0 ? '📈' : '📉'}
-                  </div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{Math.abs(cashbookData.monthlyNet).toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    {cashbookData.monthlyNet >= 0 ? 'Net Profit' : 'Net Loss'}
                   </div>
                 </div>
               </div>
@@ -549,7 +430,7 @@ function Analytics() {
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      🏆 Top 5 - You Will Give
+                      Top 5 - You Will Give
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                       {topCustomers.highest.map((customer, index) => (
@@ -610,7 +491,7 @@ function Analytics() {
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      💸 Top 5 - You Will Get
+                      Top 5 - You Will Get
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                       {topCustomers.lowest.map((customer, index) => (
@@ -657,6 +538,125 @@ function Analytics() {
                 )}
               </div>
             )}
+              {/* Current Month Cashbook Analytics */}
+              <div 
+              className="cashbook-analytics"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(230, 150, 120, 0.8), rgba(150, 200, 267, 0.6))',
+                borderRadius: '16px',
+                padding: '2.5rem',
+                marginBottom: '2rem',
+                color: 'white',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
+              }}
+            >
+              <h3 
+                className="cashbook-title"
+                style={{ 
+                  margin: '0 0 2rem 0', 
+                  fontSize: '2rem', 
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
+                }}
+              >
+                Current Month Cashbook Summary
+              </h3>
+              
+              <div 
+                className="cashbook-grid"
+                style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(3, 1fr)', 
+                  gap: '3.5rem',
+                  width: '100%',
+                  maxWidth: '900px',
+                  margin: '0 auto',
+                  height: '230px',
+                }}
+              >
+                {/* Monthly Income */}
+                <div 
+                  className="cashbook-card"
+                  style={{
+                    background: 'rgba(72, 187, 120, 0.4)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(72, 187, 120, 0.6)',
+                    minHeight: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}></div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{cashbookData.monthlyIncome.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Monthly Income
+                  </div>
+                </div>
+
+                {/* Monthly Expense */}
+                <div 
+                  className="cashbook-card"
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.4)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(239, 68, 68, 0.6)',
+                    minHeight: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}></div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{cashbookData.monthlyExpense.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    Monthly Expense
+                  </div>
+                </div>
+
+                {/* Net Balance */}
+                <div 
+                  className="cashbook-card"
+                  style={{
+                    background: cashbookData.monthlyNet >= 0 
+                      ? 'rgba(72, 187, 120, 0.4)' 
+                      : 'rgba(239, 68, 68, 0.4)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    border: cashbookData.monthlyNet >= 0 
+                      ? '2px solid rgba(72, 187, 120, 0.6)'
+                      : '2px solid rgba(239, 68, 68, 0.6)',
+                    minHeight: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
+                    {cashbookData.monthlyNet >= 0 ? '' : ''}
+                  </div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    ₹{Math.abs(cashbookData.monthlyNet).toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                    {cashbookData.monthlyNet >= 0 ? 'Net Profit' : 'Net Loss'}
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>

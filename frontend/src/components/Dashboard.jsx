@@ -227,18 +227,6 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
         </div>
         
         <div className="sidebar-content">
-          {/* Search Bar */}
-          <div className="sidebar-section">
-            <label className="sidebar-label">Search Customers</label>
-            <input
-              type="text"
-              placeholder="Search by name or phone..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="sidebar-search"
-            />
-          </div>
-
           {/* Navigation Items */}
           <div className="sidebar-nav">
             <button 
@@ -375,6 +363,49 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
               + Add New Customer
             </button>
           </div>
+        </div>
+
+        {/* Search Bar */}
+        <div style={{ 
+          padding: '1rem',
+          background: '#f7fafc',
+          borderRadius: '12px',
+          margin: '1rem 0',
+          border: '1px solid #e2e8f0'
+        }}>
+          <label style={{ 
+            display: 'block',
+            fontSize: '0.9rem',
+            fontWeight: '600',
+            color: '#4a5568',
+            marginBottom: '0.5rem'
+          }}>
+            Search Customers
+          </label>
+          <input
+            type="text"
+            placeholder="Search by name or phone..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem 1rem',
+              border: '2px solid #e2e8f0',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              background: 'white',
+              transition: 'all 0.2s ease',
+              outline: 'none'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = '#667eea';
+              e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = '#e2e8f0';
+              e.target.style.boxShadow = 'none';
+            }}
+          />
         </div>
 
         {customers.length === 0 ? (
