@@ -198,7 +198,7 @@ function Profile() {
                 <div style={{ 
                   width: '60px', 
                   height: '60px', 
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  background: '#667eea',
                   borderRadius: '50%',
                   margin: '0 auto 0.5rem',
                   display: 'flex',
@@ -263,7 +263,7 @@ function Profile() {
               <div style={{ 
                 width: '100px', 
                 height: '100px', 
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                background: '#667eea',
                 borderRadius: '50%',
                 margin: '0 auto 1rem',
                 display: 'flex',

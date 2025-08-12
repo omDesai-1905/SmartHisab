@@ -253,7 +253,7 @@ function Analytics() {
             <div 
               className="analytics-dashboard"
               style={{ 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'linear-gradient(135deg,rgba(0, 0, 55, 1), rgba(140, 140, 120, 0.8) )',
                 borderRadius: '16px',
                 padding: '2.5rem',
                 marginBottom: '2rem',

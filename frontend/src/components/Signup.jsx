@@ -111,7 +111,7 @@ function Signup() {
           <div style={{ 
             width: '80px', 
             height: '80px', 
-            background: 'linear-gradient(135deg, #667eea, #764ba2)',
+            background: '#667eea',
             borderRadius: '50%',
             margin: '0 auto 1rem',
             display: 'flex',
