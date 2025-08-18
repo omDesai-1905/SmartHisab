@@ -56,9 +56,7 @@ function Cashbook() {
       newErrors.amount = 'Amount must be greater than 0';
     }
     
-    if (!newEntry.description.trim()) {
-      newErrors.description = 'Description is required';
-    }
+    // Description is now optional - no validation required
     
     if (!newEntry.date) {
       newErrors.date = 'Date is required';
@@ -77,6 +75,7 @@ function Cashbook() {
     try {
       const entryData = {
         ...newEntry,
+        description: newEntry.description.trim() || 'NONE',
         type: entryType,
         amount: parseFloat(newEntry.amount)
       };
@@ -504,21 +503,6 @@ function Cashbook() {
               </div>
 
               <div className="form-group">
-                <label>Description</label>
-                <input
-                  type="text"
-                  placeholder="Enter description..."
-                  value={newEntry.description}
-                  onChange={(e) => {
-                    setNewEntry(prev => ({ ...prev, description: e.target.value }));
-                    if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
-                  }}
-                  className={`form-input ${errors.description ? 'error' : ''}`}
-                />
-                {errors.description && <div className="error-message">{errors.description}</div>}
-              </div>
-
-              <div className="form-group">
                 <label>Amount (₹)</label>
                 <input
                   type="number"
@@ -532,6 +516,21 @@ function Cashbook() {
                   className={`form-input ${errors.amount ? 'error' : ''}`}
                 />
                 {errors.amount && <div className="error-message">{errors.amount}</div>}
+              </div>
+
+              <div className="form-group">
+                <label>Description (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="Enter description (optional)..."
+                  value={newEntry.description}
+                  onChange={(e) => {
+                    setNewEntry(prev => ({ ...prev, description: e.target.value }));
+                    if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
+                  }}
+                  className={`form-input ${errors.description ? 'error' : ''}`}
+                />
+                {errors.description && <div className="error-message">{errors.description}</div>}
               </div>
 
               <div className="modal-actions">

@@ -93,8 +93,12 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
   const validateTransactionForm = () => {
     const newErrors = {};
 
-    if (!newTransaction.amount || parseFloat(newTransaction.amount) <= 0) {
-      newErrors.amount = 'Amount must be greater than 0';
+    if (!newTransaction.amount || isNaN(newTransaction.amount) || parseFloat(newTransaction.amount) <= 0) {
+      newErrors.amount = 'Amount must be a positive number';
+    }
+
+    if (!newTransaction.description.trim()) {
+      // Description is optional, will default to 'NONE'
     }
 
     if (!newTransaction.date) {
@@ -125,11 +129,12 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
     try {
       let response;
       const description = newTransaction.description.trim() || 'NONE';
+      const amount = parseFloat(newTransaction.amount);
       
       if (modalType === 'add') {
         response = await axios.post(`/api/customers/${id}/transactions`, {
           type: transactionType,
-          amount: parseFloat(newTransaction.amount),
+          amount: amount,
           description: description,
           date: newTransaction.date
         });
@@ -146,7 +151,7 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
       } else {
         response = await axios.put(`/api/customers/${id}/transactions/${selectedTransaction._id}`, {
           type: transactionType,
-          amount: parseFloat(newTransaction.amount),
+          amount: amount,
           description: description,
           date: newTransaction.date
         });
@@ -523,8 +528,8 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
                   <tr>
                     <th>Date</th>
                     <th>Description</th>
-                    <th>Type</th>
-                    <th>Amount</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -538,13 +543,11 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
                   >
                     <td>{formatDate(transaction.date || transaction.createdAt)}</td>
                     <td>{transaction.description || 'NONE'}</td>
-                    <td>
-                      <span className={transaction.type === 'debit' ? 'transaction-debit' : 'transaction-credit'}>
-                        {transaction.type === 'debit' ? ' Debit' : ' Credit'}
-                      </span>
+                    <td className="transaction-debit">
+                      {transaction.type === 'debit' ? formatAmount(transaction.amount) : '-'}
                     </td>
-                    <td className={transaction.type === 'debit' ? 'transaction-debit' : 'transaction-credit'}>
-                      {transaction.type === 'debit' ? '-' : '+'}{formatAmount(transaction.amount)}
+                    <td className="transaction-credit">
+                      {transaction.type === 'credit' ? formatAmount(transaction.amount) : '-'}
                     </td>
                   </tr>
                 ))}
@@ -598,20 +601,6 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
               )}
 
               <form onSubmit={handleTransactionSubmit}>
-                {modalType === 'edit' && (
-                  <div className="form-group">
-                    <label className="form-label">Transaction Type</label>
-                    <select
-                      value={transactionType}
-                      onChange={(e) => setTransactionType(e.target.value)}
-                      className="form-input"
-                    >
-                      <option value="debit">Debit (You Gave)</option>
-                      <option value="credit">Credit (You Got)</option>
-                    </select>
-                  </div>
-                )}
-
                 <div className="form-group">
                   <label htmlFor="date" className="form-label">Date</label>
                   <input
@@ -629,7 +618,9 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="amount" className="form-label">Amount (₹)</label>
+                  <label htmlFor="amount" className="form-label">
+                    {transactionType === 'debit' ? 'You Gave (₹)' : 'You Got (₹)'}
+                  </label>
                   <input
                     type="number"
                     id="amount"
@@ -641,7 +632,7 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
                       if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                     }}
                     className={`form-input ${errors.amount ? 'error' : ''}`}
-                    placeholder="Enter amount"
+                    placeholder={`Enter ${transactionType === 'debit' ? 'debit' : 'credit'} amount`}
                   />
                   {errors.amount && <div className="error-message">{errors.amount}</div>}
                 </div>
@@ -657,7 +648,7 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
                       if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
                     }}
                     className={`form-input ${errors.description ? 'error' : ''}`}
-                    placeholder={`Enter ${transactionType} description (optional - will show 'NONE' if empty)`}
+                    placeholder={`Enter ${transactionType === 'debit' ? 'debit' : 'credit'} description (optional - will show 'NONE' if empty)`}
                     style={{ resize: 'vertical', minHeight: '80px' }}
                   />
                   {errors.description && <div className="error-message">{errors.description}</div>}

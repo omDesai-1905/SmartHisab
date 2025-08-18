@@ -21,6 +21,7 @@ export const createCashbookEntry = async (req, res) => {
 
     const newEntry = new Cashbook({
       userId: req.user.userId,
+      userEmail: req.user.email,
       type,
       amount: parseFloat(amount),
       description: description.trim(),
@@ -53,6 +54,7 @@ export const updateCashbookEntry = async (req, res) => {
     entry.amount = parseFloat(amount);
     entry.description = description.trim();
     entry.date = new Date(date);
+    entry.userEmail = req.user.email; // Ensure userEmail is updated
 
     const updatedEntry = await entry.save();
     res.json(updatedEntry);

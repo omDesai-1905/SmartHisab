@@ -7,6 +7,11 @@ const cashbookSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    userEmail: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     type: {
       type: String,
       enum: ["income", "expense"],
