@@ -16,6 +16,6 @@ const router = express.Router();
 router.post("/signup", validateRegistration, signup);
 router.post("/login", validateLogin, login);
 router.get("/verify-token", verifyToken);
-router.put("/profile", validateProfileUpdate, updateProfile);
+router.post("/profile", validateProfileUpdate, updateProfile);
 
 export default router;

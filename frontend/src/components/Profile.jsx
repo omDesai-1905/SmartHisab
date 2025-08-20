@@ -85,7 +85,7 @@ function Profile() {
         businessName: formData.businessName.trim()
       };
 
-      const response = await axios.put('/api/profile', updateData);
+      const response = await axios.post('/api/profile', updateData);
       
       // Update user context
       updateUser(response.data.user);

@@ -28,9 +28,9 @@ router.get("/analytics", getAnalytics);
 router.post("/", validateCustomerCreation, createCustomer);
 router.get("/:id/transactions", getCustomerTransactions);
 router.post("/:id/transactions", validateTransactionCreation, addTransaction);
-router.put("/:id", validateCustomerUpdate, updateCustomer);
+router.post("/:id", validateCustomerUpdate, updateCustomer);
 router.delete("/:id", deleteCustomer);
-router.put(
+router.post(
   "/:id/transactions/:transactionId",
   validateTransactionUpdate,
   updateTransaction

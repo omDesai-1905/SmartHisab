@@ -149,7 +149,7 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
           });
         });
       } else {
-        response = await axios.put(`/api/customers/${id}/transactions/${selectedTransaction._id}`, {
+        response = await axios.post(`/api/customers/${id}/transactions/${selectedTransaction._id}`, {
           type: transactionType,
           amount: amount,
           description: description,
