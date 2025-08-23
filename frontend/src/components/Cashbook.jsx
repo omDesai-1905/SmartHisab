@@ -318,7 +318,6 @@ function Cashbook() {
             <div className="summary-cards">
               {/* Total Income Card */}
               <div className="summary-card income-card">
-                <div className="summary-icon">💰</div>
                 <div className="summary-details">
                   <div className="summary-amount">{formatAmount(totalIncome)}</div>
                   <div className="summary-label">Total Income</div>
@@ -327,7 +326,6 @@ function Cashbook() {
 
               {/* Total Expense Card */}
               <div className="summary-card expense-card">
-                <div className="summary-icon">💸</div>
                 <div className="summary-details">
                   <div className="summary-amount">{formatAmount(totalExpense)}</div>
                   <div className="summary-label">Total Expense</div>
@@ -336,7 +334,6 @@ function Cashbook() {
 
               {/* Balance Card */}
               <div className={`summary-card balance-card ${balance >= 0 ? 'positive' : 'negative'}`}>
-                <div className="summary-icon">{balance >= 0 ? '📈' : '📉'}</div>
                 <div className="summary-details">
                   <div className="summary-amount">{formatAmount(Math.abs(balance))}</div>
                   <div className="summary-label">Net Balance</div>
