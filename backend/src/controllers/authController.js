@@ -67,6 +67,7 @@ export const login = async (req, res) => {
         email: user.email,
         mobileNumber: user.mobileNumber,
         businessName: user.businessName,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
@@ -101,6 +102,9 @@ export const verifyToken = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        mobileNumber: user.mobileNumber,
+        businessName: user.businessName,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
@@ -173,5 +177,50 @@ export const updateProfile = async (req, res) => {
       return res.status(401).json({ message: "Invalid token" });
     }
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    const token = authHeader.substring(7); // Remove "Bearer " prefix
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Find the user
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Import the models we need to delete related data
+    const Customer = (await import("../model/Customer.model.js")).default;
+    const Transaction = (await import("../model/Transaction.model.js")).default;
+    const Cashbook = (await import("../model/Cashbook.model.js")).default;
+
+    // Delete all related data for this user
+    await Promise.all([
+      Customer.deleteMany({ userId: decoded.userId }),
+      Transaction.deleteMany({ userId: decoded.userId }),
+      Cashbook.deleteMany({ userId: decoded.userId }),
+    ]);
+
+    // Finally delete the user
+    await User.findByIdAndDelete(decoded.userId);
+
+    res.json({
+      message: "Account and all associated data deleted successfully",
+    });
+  } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };

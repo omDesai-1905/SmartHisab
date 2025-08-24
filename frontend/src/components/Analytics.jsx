@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Layout from './Layout';
+import Notification from './Notification';
 import axios from 'axios';
 
 function Analytics() {
@@ -18,9 +20,9 @@ function Analytics() {
     monthlyNet: 0
   });
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchCustomers();
@@ -28,12 +30,18 @@ function Analytics() {
     fetchCashbookData();
   }, []);
 
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
   const fetchCustomers = async () => {
     try {
       const response = await axios.get('/api/customers');
       setCustomers(response.data);
     } catch (error) {
       console.error('Error fetching customers:', error);
+      showNotification('Failed to load customer data', 'error');
     }
   };
 
@@ -43,6 +51,7 @@ function Analytics() {
       setAnalyticsData(response.data);
     } catch (error) {
       console.error('Error fetching analytics data:', error);
+      showNotification('Failed to load analytics data', 'error');
     } finally {
       setLoading(false);
     }
@@ -53,18 +62,15 @@ function Analytics() {
       const response = await axios.get('/api/cashbook');
       const entries = response.data;
       
-      // Get current month and year
       const now = new Date();
       const currentMonth = now.getMonth();
       const currentYear = now.getFullYear();
       
-      // Filter entries for current month
       const currentMonthEntries = entries.filter(entry => {
         const entryDate = new Date(entry.date);
         return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
       });
       
-      // Calculate monthly totals
       const monthlyIncome = currentMonthEntries
         .filter(entry => entry.type === 'income')
         .reduce((sum, entry) => sum + entry.amount, 0);
@@ -82,585 +88,527 @@ function Analytics() {
       });
     } catch (error) {
       console.error('Error fetching cashbook data:', error);
+      showNotification('Failed to load cashbook data', 'error');
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const handleProfile = () => {
-    navigate('/profile');
-    setSidebarOpen(false);
-  };
-
-  // Get top customers by balance (positive and negative)
   const getTopCustomers = () => {
     const sortedByHighest = [...customers]
       .filter(c => c.balance > 0)
       .sort((a, b) => b.balance - a.balance)
       .slice(0, 5);
-    
+
     const sortedByLowest = [...customers]
       .filter(c => c.balance < 0)
       .sort((a, b) => a.balance - b.balance)
       .slice(0, 5);
 
-    return { highest: sortedByHighest, lowest: sortedByLowest };
+    return {
+      highest: sortedByHighest,
+      lowest: sortedByLowest
+    };
+  };
+
+  const topCustomers = getTopCustomers();
+
+  const formatAmount = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0
+    }).format(amount);
+  };
+
+  const formatBalance = (balance) => {
+    return formatAmount(Math.abs(balance));
   };
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="loading">Loading analytics...</div>
-      </div>
+      <Layout currentPage="/analytics">
+        <div className="analytics-page">
+          <div className="loading">Loading analytics...</div>
+        </div>
+      </Layout>
     );
   }
 
-  const topCustomers = getTopCustomers();
-
   return (
-    <div className="container">
-      {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <h3 style={{ 
-            fontFamily: 'Georgia, "Times New Roman", serif',
-            fontWeight: 'bold',
-            color: '#2563eb',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-            letterSpacing: '0.5px',
-            margin: 0
-          }}>SmartHisab</h3>
-          <button 
-            className="sidebar-close"
-            onClick={() => setSidebarOpen(false)}
-          >
-            ×
-          </button>
-        </div>
-        
-        <div className="sidebar-content">
-          {/* Navigation Items */}
-          <div className="sidebar-nav">
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/dashboard');
-                setSidebarOpen(false);
-              }}
-            >
-              🏠 Dashboard
-            </button>
-            
-            <button 
-              className="sidebar-nav-item active"
-              onClick={() => {
-                navigate('/analytics');
-                setSidebarOpen(false);
-              }}
-            >
-              Analytics
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/cashbook');
-                setSidebarOpen(false);
-              }}
-            >
-              Cashbook
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={handleProfile}
-            >
-              👤 Profile
-            </button>
-            
-            <button 
-              className="sidebar-nav-item logout"
-              onClick={handleLogout}
-            >
-              🚪 Logout
-            </button>
-          </div>
+    <Layout currentPage="/analytics">
+      <div className="analytics-page">
+        <style jsx>{`
+          .analytics-page {
+            padding: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+          }
 
-          {/* User Info */}
-          <div className="sidebar-user">
-            <div className="sidebar-user-info">
-              <strong>{user?.name}</strong>
-              <span>{user?.email}</span>
+          .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+          }
+
+          .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+          }
+
+          .page-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+          }
+
+          .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+          }
+
+          .analytics-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+          }
+
+          .analytics-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+          }
+
+          .analytics-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+          }
+
+          .analytics-card-content {
+            position: relative;
+            z-index: 1;
+          }
+
+          .analytics-card.income {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+          }
+
+          .analytics-card.expense {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+          }
+
+          .analytics-card.customers {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+          }
+
+          .analytics-card.balance.positive {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+          }
+
+          .analytics-card.balance.negative {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+          }
+
+          .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+          }
+
+          .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+          }
+
+          .card-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+          }
+
+          .card-description {
+            font-size: 0.85rem;
+            opacity: 0.7;
+          }
+
+          .cashbook-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 2rem;
+          }
+
+          .cashbook-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+          }
+
+          .cashbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+          }
+
+          .cashbook-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+          }
+
+          .top-customers-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+          }
+
+          .customer-section {
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+          }
+
+          .customer-section.creditors {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+          }
+
+          .customer-section.debtors {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+          }
+
+          .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+
+          .customer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+          }
+
+          .customer-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+          }
+
+          .customer-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(4px);
+          }
+
+          .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+          }
+
+          .customer-rank {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+          }
+
+          .customer-details h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+          }
+
+          .customer-phone {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin: 0;
+          }
+
+          .customer-balance {
+            font-size: 1rem;
+            font-weight: 600;
+          }
+
+          .no-data {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+          }
+
+          .no-data-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+          }
+
+          .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+          }
+
+          /* Mobile Responsiveness */
+          @media (max-width: 768px) {
+            .analytics-page {
+              padding: 0.5rem;
+            }
+
+            .page-title {
+              font-size: 2rem;
+            }
+
+            .analytics-grid {
+              grid-template-columns: 1fr;
+              gap: 1rem;
+            }
+
+            .card-value {
+              font-size: 1.5rem;
+            }
+
+            .card-icon {
+              font-size: 2rem;
+            }
+
+            .top-customers-section {
+              grid-template-columns: 1fr;
+              gap: 1rem;
+            }
+
+            .cashbook-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .customer-item {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0.5rem;
+            }
+
+            .customer-info {
+              width: 100%;
+            }
+
+            .customer-balance {
+              align-self: flex-end;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .analytics-grid {
+              grid-template-columns: 1fr;
+            }
+            
+            .analytics-card {
+              padding: 1rem;
+            }
+            
+            .page-title {
+              font-size: 1.5rem;
+            }
+            
+            .card-value {
+              font-size: 1.25rem;
+            }
+          }
+        `}</style>
+
+        {/* Page Header */}
+        <div className="page-header">
+          <h1 className="page-title">Business Analytics</h1>
+          <p className="page-subtitle">Track your business performance and insights</p>
+        </div>
+
+        {/* Main Analytics Cards */}
+        <div className="analytics-grid">
+          {/* Total Customers */}
+          <div className="analytics-card customers">
+            <div className="analytics-card-content">
+              <div className="card-icon">👥</div>
+              <div className="card-value">{analyticsData.totalCustomers}</div>
+              <div className="card-label">Total Customers</div>
+              <div className="card-description">Active customers in your business</div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      <div className="dashboard">
-        <div className="dashboard-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button 
-              onClick={() => setSidebarOpen(true)}
-              className="sidebar-toggle"
-              style={{
-                background: 'none',
-                border: '1px solid white',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                padding: '0.5rem',
-                borderRadius: '4px',
-                color: '#4a5568',
-                width: '50px',
-              }}
-            >
-              ☰
-            </button>
-            <h1 className="dashboard-title">Business Analytics</h1>
+          {/* Total Credit (You Will Get) */}
+          <div className="analytics-card income">
+            <div className="analytics-card-content">
+              <div className="card-icon">💰</div>
+              <div className="card-value">{formatAmount(analyticsData.totalCreditAmount)}</div>
+              <div className="card-label">Total Credit</div>
+              <div className="card-description">You will receive</div>
+            </div>
           </div>
-        </div>
 
-        {analyticsData.totalCustomers === 0 ? (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: '3rem', 
-            color: '#718096',
-            fontSize: '1.1rem'
-          }}>
-            <h2>No Data Available</h2>
-            <p>Add customers and transactions to view analytics</p>
-            <button 
-              onClick={() => navigate('/dashboard')}
-              className="btn btn-primary"
-              style={{ marginTop: '1rem' }}
-            >
-              Go to Dashboard
-            </button>
+          {/* Total Debit (You Will Give) */}
+          <div className="analytics-card expense">
+            <div className="analytics-card-content">
+              <div className="card-icon">💸</div>
+              <div className="card-value">{formatAmount(analyticsData.totalDebitAmount)}</div>
+              <div className="card-label">Total Debit</div>
+              <div className="card-description">You will pay</div>
+            </div>
           </div>
-        ) : (
-          <>
-            {/* Analytics Dashboard - Single Line Layout */}
-            <div 
-              className="analytics-dashboard"
-              style={{ 
-                background: 'linear-gradient(135deg,rgba(150, 80, 94, 2), rgba(58, 90, 136, 1) )',
-                borderRadius: '16px',
-                padding: '2.5rem',
-                marginBottom: '2rem',
-                color: 'white',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
-              }}
-            >
-              <h2 
-                className="analytics-title"
-                style={{ 
-                  margin: '0 0 3rem 0', 
-                  fontSize: '2rem', 
-                  fontWeight: '700',
-                  textAlign: 'center',
-                  textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
-                }}
-              >
-                Business Analytics Dashboard
-              </h2>
-              
-              {/* Single Line Grid Layout */}
-              <div 
-                className="analytics-grid"
-                style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(4, 1fr)', 
-                  gap: '1.5rem',
-                  width: '100%',
-                  maxWidth: '1200px',
-                  margin: '0 auto'
-                }}
-              >
-                {/* Card 1 - Total Number of Customers */}
-                <div 
-                  className="analytics-card"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    cursor: 'pointer',
-                    minHeight: '160px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}></div>
-                  <div className="analytics-card-value" style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    {analyticsData.totalCustomers}
-                  </div>
-                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Total Customers
-                  </div>
-                </div>
 
-                {/* Card 2 - Total Debit Amount */}
-                <div 
-                  className="analytics-card"
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.3)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(239, 68, 68, 0.5)',
-                    cursor: 'pointer',
-                    minHeight: '160px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}></div>
-                  <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{analyticsData.totalDebitAmount.toLocaleString()}
-                  </div>
-                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Total Debit
-                  </div>
-                  <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
-                    (Paid Out)
-                  </div>
-                </div>
-
-                {/* Card 3 - Total Credit Amount */}
-                <div 
-                  className="analytics-card"
-                  style={{
-                    background: 'rgba(34, 197, 94, 0.3)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(34, 197, 94, 0.5)',
-                    cursor: 'pointer',
-                    minHeight: '160px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    height: '200px'
-                  }}
-                >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}></div>
-                  <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{analyticsData.totalCreditAmount.toLocaleString()}
-                  </div>
-                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Total Credit
-                  </div>
-                  <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
-                    (Received)
-                  </div>
-                </div>
-
-                {/* Card 4 - Net Balance */}
-                <div 
-                  className="analytics-card"
-                  style={{
-                    background: analyticsData.netBalance >= 0 
-                      ? 'rgba(34, 197, 94, 0.3)' 
-                      : 'rgba(239, 68, 68, 0.3)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: analyticsData.netBalance >= 0 
-                      ? '2px solid rgba(34, 197, 94, 0.5)'
-                      : '2px solid rgba(239, 68, 68, 0.5)',
-                    cursor: 'pointer',
-                    minHeight: '160px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div className="analytics-card-icon" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
-                  </div>
-                  <div className="analytics-card-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{Math.abs(analyticsData.netBalance).toLocaleString()}
-                  </div>
-                  <div className="analytics-card-label" style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Net Balance
-                  </div>
-                  <div className="analytics-card-description" style={{ fontSize: '0.7rem', opacity: 0.7 }}>
-                    {analyticsData.netBalance >= 0 ? '(Profit)' : '(Loss)'}
-                  </div>
-                </div>
+          {/* Net Balance */}
+          <div className={`analytics-card balance ${analyticsData.netBalance >= 0 ? 'positive' : 'negative'}`}>
+            <div className="analytics-card-content">
+              <div className="card-icon">{analyticsData.netBalance >= 0 ? '📈' : '📉'}</div>
+              <div className="card-value">{formatAmount(Math.abs(analyticsData.netBalance))}</div>
+              <div className="card-label">Net Balance</div>
+              <div className="card-description">
+                {analyticsData.netBalance >= 0 ? 'Overall profit' : 'Overall loss'}
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Top Customers Section */}
-            {customers.length > 0 && (
+        {/* Cashbook Summary */}
+        <div className="cashbook-summary">
+          <h3 className="cashbook-title">This Month's Cashbook Summary</h3>
+          <div className="cashbook-grid">
+            <div className="cashbook-item">
+              <div style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+                {formatAmount(cashbookData.monthlyIncome)}
+              </div>
+              <div style={{ opacity: 0.9 }}>Monthly Income</div>
+            </div>
+            <div className="cashbook-item">
+              <div style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+                {formatAmount(cashbookData.monthlyExpense)}
+              </div>
+              <div style={{ opacity: 0.9 }}>Monthly Expense</div>
+            </div>
+            <div className="cashbook-item">
               <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
-                gap: '2rem',
-                marginBottom: '2rem'
+                fontSize: '1.5rem', 
+                fontWeight: '600', 
+                marginBottom: '0.5rem',
+                color: cashbookData.monthlyNet >= 0 ? '#68d391' : '#feb2b2'
               }}>
-                {/* Top Creditors */}
-                {topCustomers.highest.length > 0 && (
-                  <div style={{
-                    background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    color: 'white'
-                  }}>
-                    <h3 style={{ 
-                      margin: '0 0 1.5rem 0', 
-                      fontSize: '1.3rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      Top 5 - You Will Give
-                    </h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      {topCustomers.highest.map((customer, index) => (
-                        <div key={customer._id} style={{
-                          background: 'rgba(255, 255, 255, 0.15)',
-                          borderRadius: '8px',
-                          padding: '1rem',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          backdropFilter: 'blur(10px)',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => navigate(`/customer/${customer._id}`)}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <div style={{ 
-                              background: '#2d3748',
-                              borderRadius: '50%',
-                              width: '30px',
-                              height: '30px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '0.9rem',
-                              fontWeight: 'bold'
-                            }}>
-                              {index + 1}
-                            </div>
-                            <span style={{ fontWeight: '600' }}>{customer.name}</span>
-                          </div>
-                          <div style={{ 
-                            textAlign: 'right',
-                            fontWeight: 'bold',
-                            fontSize: '1.1rem'
-                          }}>
-                            ₹{customer.balance.toLocaleString()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {formatAmount(Math.abs(cashbookData.monthlyNet))}
+              </div>
+              <div style={{ opacity: 0.9 }}>
+                Net {cashbookData.monthlyNet >= 0 ? 'Profit' : 'Loss'}
+              </div>
+            </div>
+          </div>
+        </div>
 
-                {/* Top Debtors */}
-                {topCustomers.lowest.length > 0 && (
-                  <div style={{
-                    background: 'linear-gradient(135deg, #f56565 0%, #e53e3e 100%)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    color: 'white'
-                  }}>
-                    <h3 style={{ 
-                      margin: '0 0 1.5rem 0', 
-                      fontSize: '1.3rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      Top 5 - You Will Get
-                    </h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      {topCustomers.lowest.map((customer, index) => (
-                        <div key={customer._id} style={{
-                          background: 'rgba(255, 255, 255, 0.15)',
-                          borderRadius: '8px',
-                          padding: '1rem',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          backdropFilter: 'blur(10px)',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => navigate(`/customer/${customer._id}`)}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <div style={{ 
-                              background: '#2d3748',
-                              borderRadius: '50%',
-                              width: '30px',
-                              height: '30px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '0.9rem',
-                              fontWeight: 'bold'
-                            }}>
-                              {index + 1}
-                            </div>
-                            <span style={{ fontWeight: '600' }}>{customer.name}</span>
-                          </div>
-                          <div style={{ 
-                            textAlign: 'right',
-                            fontWeight: 'bold',
-                            fontSize: '1.1rem'
-                          }}>
-                            ₹{Math.abs(customer.balance).toLocaleString()}
-                          </div>
+        {/* Top Customers Section */}
+        {customers.length > 0 ? (
+          <div className="top-customers-section">
+            {/* Top Creditors */}
+            {topCustomers.highest.length > 0 && (
+              <div className="customer-section creditors">
+                <h3 className="section-title">
+                  <span>💰</span> Top 5 - You Will Give
+                </h3>
+                <div className="customer-list">
+                  {topCustomers.highest.map((customer, index) => (
+                    <div 
+                      key={customer._id} 
+                      className="customer-item"
+                      onClick={() => navigate(`/customer/${customer._id}`)}
+                    >
+                      <div className="customer-info">
+                        <div className="customer-rank">{index + 1}</div>
+                        <div className="customer-details">
+                          <h4>{customer.name}</h4>
+                          <p className="customer-phone">📞 {customer.phone}</p>
                         </div>
-                      ))}
+                      </div>
+                      <div className="customer-balance">
+                        {formatBalance(customer.balance)}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             )}
-              {/* Current Month Cashbook Analytics */}
-              <div 
-              className="cashbook-analytics"
-              style={{ 
-                background: 'linear-gradient(135deg, rgba(230, 150, 120, 0.8), rgba(150, 200, 267, 0.6))',
-                borderRadius: '16px',
-                padding: '2.5rem',
-                marginBottom: '2rem',
-                color: 'white',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
-              }}
-            >
-              <h3 
-                className="cashbook-title"
-                style={{ 
-                  margin: '0 0 2rem 0', 
-                  fontSize: '2rem', 
-                  fontWeight: '600',
-                  textAlign: 'center',
-                  textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
-                }}
-              >
-                Current Month Cashbook Summary
-              </h3>
-              
-              <div 
-                className="cashbook-grid"
-                style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(3, 1fr)', 
-                  gap: '3.5rem',
-                  width: '100%',
-                  maxWidth: '900px',
-                  margin: '0 auto',
-                  height: '230px',
-                }}
-              >
-                {/* Monthly Income */}
-                <div 
-                  className="cashbook-card"
-                  style={{
-                    background: 'rgba(72, 187, 120, 0.4)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(72, 187, 120, 0.6)',
-                    minHeight: '140px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}></div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{cashbookData.monthlyIncome.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Monthly Income
-                  </div>
-                </div>
 
-                {/* Monthly Expense */}
-                <div 
-                  className="cashbook-card"
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.4)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(239, 68, 68, 0.6)',
-                    minHeight: '140px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}></div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{cashbookData.monthlyExpense.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    Monthly Expense
-                  </div>
-                </div>
-
-                {/* Net Balance */}
-                <div 
-                  className="cashbook-card"
-                  style={{
-                    background: cashbookData.monthlyNet >= 0 
-                      ? 'rgba(72, 187, 120, 0.4)' 
-                      : 'rgba(239, 68, 68, 0.4)',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    border: cashbookData.monthlyNet >= 0 
-                      ? '2px solid rgba(72, 187, 120, 0.6)'
-                      : '2px solid rgba(239, 68, 68, 0.6)',
-                    minHeight: '140px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
-                    {cashbookData.monthlyNet >= 0 ? '' : ''}
-                  </div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                    ₹{Math.abs(cashbookData.monthlyNet).toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                    {cashbookData.monthlyNet >= 0 ? 'Net Profit' : 'Net Loss'}
-                  </div>
+            {/* Top Debtors */}
+            {topCustomers.lowest.length > 0 && (
+              <div className="customer-section debtors">
+                <h3 className="section-title">
+                  <span>💸</span> Top 5 - You Will Get
+                </h3>
+                <div className="customer-list">
+                  {topCustomers.lowest.map((customer, index) => (
+                    <div 
+                      key={customer._id} 
+                      className="customer-item"
+                      onClick={() => navigate(`/customer/${customer._id}`)}
+                    >
+                      <div className="customer-info">
+                        <div className="customer-rank">{index + 1}</div>
+                        <div className="customer-details">
+                          <h4>{customer.name}</h4>
+                          <p className="customer-phone">📞 {customer.phone}</p>
+                        </div>
+                      </div>
+                      <div className="customer-balance">
+                        {formatBalance(customer.balance)}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-          </>
+            )}
+          </div>
+        ) : (
+          <div className="no-data">
+            <div className="no-data-icon">📊</div>
+            <h3>No Customer Data</h3>
+            <p>Add customers to see analytics and insights</p>
+          </div>
         )}
+
+        {/* Notification */}
+        <Notification 
+          notification={notification} 
+          onClose={() => setNotification(null)} 
+        />
       </div>
-    </div>
+    </Layout>
   );
 }
 

@@ -18,6 +18,7 @@ function Profile() {
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -115,6 +116,51 @@ function Profile() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      await axios.delete('/api/delete-account', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      // Clear all local storage and logout
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      logout();
+      
+      setNotification({
+        type: 'success',
+        message: 'Account deleted successfully'
+      });
+
+      // Redirect to signup page after a short delay
+      setTimeout(() => {
+        navigate('/signup');
+      }, 2000);
+
+    } catch (error) {
+      setNotification({
+        type: 'error',
+        message: error.response?.data?.message || 'Failed to delete account'
+      });
+    } finally {
+      setLoading(false);
+      setShowDeleteConfirmation(false);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmation(false);
   };
 
   const handleToggleSidebar = () => {
@@ -306,7 +352,7 @@ function Profile() {
                 
                 <div className="info-item">
                   <label>📅 Member Since</label>
-                  <p>{new Date(user.createdAt || Date.now()).toLocaleDateString('en-IN', {
+                  <p>{new Date(user.createdAt).toLocaleDateString('en-IN', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -325,8 +371,16 @@ function Profile() {
                 <button 
                   onClick={handleLogout}
                   className="btn btn-danger"
+                  style={{ marginRight: '1rem' }}
                 >
                   🚪 Logout
+                </button>
+                <button 
+                  onClick={handleDeleteClick}
+                  className="btn btn-danger"
+                  style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+                >
+                  🗑️ Delete Account
                 </button>
               </div>
             </div>
@@ -411,6 +465,74 @@ function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteConfirmation && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}
+        >
+          <div 
+            style={{
+              backgroundColor: 'white',
+              padding: '2rem',
+              borderRadius: '12px',
+              maxWidth: '400px',
+              width: '90%',
+              textAlign: 'center',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+            }}
+          >
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+            <h3 style={{ color: '#dc3545', marginBottom: '1rem' }}>Delete Account</h3>
+            <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+              Are you sure you want to delete your account? This will permanently delete all your data including customers, transactions, and cashbook entries. This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button
+                onClick={handleCancelDelete}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  backgroundColor: 'white',
+                  color: '#333',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={loading}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: 'none',
+                  borderRadius: '6px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  fontSize: '1rem',
+                  opacity: loading ? 0.6 : 1
+                }}
+              >
+                {loading ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

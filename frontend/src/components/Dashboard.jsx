@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Layout from './Layout';
+import Notification from './Notification';
 import axios from 'axios';
 
-function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSidebarOpen }) {
+function Dashboard() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -12,18 +14,13 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
   const [newCustomer, setNewCustomer] = useState({ name: '', phone: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [notification, setNotification] = useState(null); // For custom notifications
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // Confirmation modal
-  const [customerToDelete, setCustomerToDelete] = useState(null); // Customer to delete
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Sidebar state 
-  const [searchTerm, setSearchTerm] = useState(''); // Search functionality
-  
-  // Use props if provided, otherwise use local state
-  const actualSidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : sidebarOpen;
-  const actualSetSidebarOpen = propSetSidebarOpen || setSidebarOpen;
+  const [notification, setNotification] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   
   useEffect(() => {
@@ -37,16 +34,6 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const handleProfile = () => {
-    navigate('/profile');
-    actualSetSidebarOpen(false);
   };
 
   // Filter customers
@@ -199,141 +186,18 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="loading">Loading customers...</div>
-      </div>
+      <Layout currentPage="/dashboard">
+        <div className="container">
+          <div className="loading">Loading customers...</div>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="container">
-      {/* Sidebar */}
-      <div className={`sidebar ${actualSidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <h3 style={{ 
-            fontFamily: 'Georgia, "Times New Roman", serif',
-            fontWeight: 'bold',
-            color: '#2563eb',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-            letterSpacing: '0.5px',
-            margin: 0
-          }}>SmartHisab</h3>
-          <button 
-            className="sidebar-close"
-            onClick={() => actualSetSidebarOpen(false)}
-          >
-            ×
-          </button>
-        </div>
-        
-        <div className="sidebar-content">
-          {/* Navigation Items */}
-          <div className="sidebar-nav">
-            <button 
-              className="sidebar-nav-item active"
-              onClick={() => {
-                navigate('/dashboard');
-                actualSetSidebarOpen(false);
-              }}
-            >
-              🏠 Dashboard
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/analytics');
-                actualSetSidebarOpen(false);
-              }}
-            >
-              📊 Analytics
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/cashbook');
-                actualSetSidebarOpen(false);
-              }}
-            >
-              📖 Cashbook
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={handleProfile}
-            >
-              👤 Profile
-            </button>
-            
-            <button 
-              className="sidebar-nav-item logout"
-              onClick={handleLogout}
-            >
-              🚪 Logout
-            </button>
-          </div>
-
-          {/* User Info */}
-          <div className="sidebar-user">
-            <div className="sidebar-user-info">
-              <strong>{user?.name}</strong>
-              <span>{user?.email}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sidebar Overlay */}
-      {actualSidebarOpen && (
-        <div 
-          className="sidebar-overlay"
-          onClick={() => actualSetSidebarOpen(false)}
-        />
-      )}
-
-      {/* Custom Notification Toast */}
-      {notification && (
-        <div 
-          className={`notification ${notification.type}`}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            padding: '1rem 1.5rem',
-            borderRadius: '8px',
-            color: 'white',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            zIndex: 1000,
-            minWidth: '300px',
-            backgroundColor: notification.type === 'success' ? '#48bb78' : notification.type === 'error' ? '#f56565' : '#4299e1',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            animation: 'slideIn 0.3s ease-out'
-          }}
-        >
-          <span>{notification.message}</span>
-          <button
-            onClick={() => setNotification(null)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              fontSize: '1.2rem',
-              cursor: 'pointer',
-              marginLeft: '1rem',
-              opacity: 0.8
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
-
-      <div className="dashboard">
+    <Layout currentPage="/dashboard">
+      <div className="container">
+        {/* Dashboard Header */}
         <div className="dashboard-header">
           <h1 className="dashboard-title">Customer List</h1>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -615,7 +479,13 @@ function Dashboard({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSideba
           </div>
         )}
       </div>
-    </div>
+
+      {/* Notification */}
+      <Notification 
+        notification={notification} 
+        onClose={() => setNotification(null)} 
+      />
+    </Layout>
   );
 }
 

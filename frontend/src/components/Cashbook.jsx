@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Layout from './Layout';
+import Notification from './Notification';
 import axios from 'axios';
 
 function Cashbook() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -142,16 +143,6 @@ function Cashbook() {
     }
   };
 
-  const handleProfile = () => {
-    navigate('/profile');
-    setSidebarOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-IN', {
       day: '2-digit',
@@ -199,119 +190,8 @@ function Cashbook() {
   const balance = totalIncome - totalExpense;
 
   return (
-    <div className="cashbook-page">
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="container">
-          <div className="navbar-content">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button 
-                className="sidebar-toggle"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-              >
-                ☰
-              </button>
-              <div className="navbar-brand" style={{ 
-                fontFamily: 'Georgia, "Times New Roman", serif',
-                fontWeight: 'bold',
-                fontSize: '1.5rem',
-                color: '#2563eb',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-                letterSpacing: '0.5px'
-              }}>
-                SmartHisab
-              </div>
-            </div>
-            
-            <div className="navbar-user">
-              <span>Welcome, {user?.name}</span>
-              <button 
-                onClick={handleLogout}
-                className="btn btn-secondary"
-                style={{ padding: '0.5rem 1rem' }}
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <h3>Navigation</h3>
-          <button
-            className="sidebar-close"
-            onClick={() => setSidebarOpen(false)}
-          >
-            ×
-          </button>
-        </div>
-        
-        <div className="sidebar-content">
-          <div className="sidebar-nav">
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/dashboard');
-                setSidebarOpen(false);
-              }}
-            >
-              🏠 Dashboard
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/analytics');
-                setSidebarOpen(false);
-              }}
-            >
-              📊 Analytics
-            </button>
-            
-            <button 
-              className="sidebar-nav-item active"
-              onClick={() => setSidebarOpen(false)}
-            >
-              📖 Cashbook
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={handleProfile}
-            >
-              👤 Profile
-            </button>
-            
-            <button 
-              className="sidebar-nav-item logout"
-              onClick={handleLogout}
-            >
-              🚪 Logout
-            </button>
-          </div>
-
-          <div className="sidebar-user">
-            <div className="sidebar-user-info">
-              <strong>{user?.name}</strong>
-              <span>{user?.email}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Main Content */}
-      <div className="main-content">
+    <Layout currentPage="/cashbook">
+      <div className="cashbook-page">
         <div className="cashbook-container">
           {/* Header with Summary Cards */}
           <div className="cashbook-header">
@@ -596,21 +476,11 @@ function Cashbook() {
       )}
 
       {/* Notification */}
-      {notification && (
-        <div className={`notification ${notification.type}`}>
-          <div className="notification-icon">
-            {notification.type === 'success' ? '✅' : notification.type === 'error' ? '❌' : 'ℹ️'}
-          </div>
-          <span className="notification-message">{notification.message}</span>
-          <button 
-            className="notification-close"
-            onClick={() => setNotification(null)}
-          >
-            ×
-          </button>
-        </div>
-      )}
-    </div>
+      <Notification 
+        notification={notification} 
+        onClose={() => setNotification(null)} 
+      />
+    </Layout>
   );
 }
 

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Layout from './Layout';
+import Notification from './Notification';
 import axios from 'axios';
 
-function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetSidebarOpen }) {
+function CustomerDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [customer, setCustomer] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,12 +26,11 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Use props if provided, otherwise use local state
-  const actualSidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : sidebarOpen;
-  const actualSetSidebarOpen = propSetSidebarOpen || setSidebarOpen;
+  // Temporarily commented out for Layout refactoring
+  // const actualSidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : sidebarOpen;
+  // const actualSetSidebarOpen = propSetSidebarOpen || setSidebarOpen;
 
   useEffect(() => {
     fetchCustomerData();
@@ -278,151 +279,31 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="loading">Loading customer details...</div>
-      </div>
+      <Layout currentPage="/customer">
+        <div className="container">
+          <div className="loading">Loading customer details...</div>
+        </div>
+      </Layout>
     );
   }
 
   if (!customer) {
     return (
-      <div className="container">
-        <div className="loading">Customer not found</div>
-      </div>
+      <Layout currentPage="/customer">
+        <div className="container">
+          <div className="loading">Customer not found</div>
+        </div>
+      </Layout>
     );
   }
 
   const balance = calculateBalance();
 
   return (
-    <div className="container" style={{ marginBottom: '4rem' }}>
-      {/* Sidebar */}
-      <div className={`sidebar ${actualSidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <button 
-            className="sidebar-close"
-            onClick={() => actualSetSidebarOpen(false)}
-          >
-            ×
-          </button>
-        </div>
-        
-        <div className="sidebar-content">
-          {/* Navigation Items */}
-          <div className="sidebar-nav">
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/dashboard');
-                actualSetSidebarOpen(false);
-              }}
-            >
-              🏠 Dashboard
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/analytics');
-                actualSetSidebarOpen(false);
-              }}
-            >
-              📊 Analytics
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={() => {
-                navigate('/cashbook');
-                actualSetSidebarOpen(false);
-              }}
-            >
-              📖 Cashbook
-            </button>
-            
-            <button 
-              className="sidebar-nav-item active"
-              onClick={() => actualSetSidebarOpen(false)}
-            >
-              👤 Customer Details
-            </button>
-            
-            <button 
-              className="sidebar-nav-item"
-              onClick={handleProfile}
-            >
-              ⚙️ Profile
-            </button>
-            
-            <button 
-              className="sidebar-nav-item logout"
-              onClick={handleLogout}
-            >
-              🚪 Logout
-            </button>
-          </div>
-
-          {/* User Info */}
-          <div className="sidebar-user">
-            <div className="sidebar-user-info">
-              <strong>{user?.name}</strong>
-              <span>{user?.email}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sidebar Overlay */}
-      {actualSidebarOpen && (
-        <div 
-          className="sidebar-overlay"
-          onClick={() => actualSetSidebarOpen(false)}
-        />
-      )}
-
-      {/* Custom Notification Toast */}
-      {notification && (
-        <div 
-          className={`notification ${notification.type}`}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            padding: '1rem 1.5rem',
-            borderRadius: '8px',
-            color: 'white',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            zIndex: 1000,
-            minWidth: '300px',
-            backgroundColor: notification.type === 'success' ? '#48bb78' : notification.type === 'error' ? '#f56565' : '#4299e1',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            animation: 'slideIn 0.3s ease-out'
-          }}
-        >
-          <span>{notification.message}</span>
-          <button
-            onClick={() => setNotification(null)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              fontSize: '1.2rem',
-              cursor: 'pointer',
-              marginLeft: '1rem',
-              opacity: 0.8
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
-
-      {/* Customer Header */}
-      <div className="customer-header">
+    <Layout currentPage="/customer">
+      <div className="container" style={{ marginBottom: '4rem' }}>
+        {/* Customer Header */}
+        <div className="customer-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
             <button 
               onClick={() => navigate('/dashboard')}
@@ -790,7 +671,14 @@ function CustomerDetail({ sidebarOpen: propSidebarOpen, setSidebarOpen: propSetS
             </div>
           </div>
         )}
+
+        {/* Notification */}
+        <Notification 
+          notification={notification} 
+          onClose={() => setNotification(null)} 
+        />
     </div>
+    </Layout>
   );
 }
 

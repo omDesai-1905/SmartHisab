@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Signup from './components/Signup';
 import Login from './components/Login';
-import DashboardWrapper from './components/DashboardWrapper';
-import CustomerDetailWrapper from './components/CustomerDetailWrapper';
+import Dashboard from './components/Dashboard';
+import CustomerDetail from './components/CustomerDetail';
 import Profile from './components/Profile';
 import Analytics from './components/Analytics';
 import Cashbook from './components/Cashbook';
@@ -53,7 +53,7 @@ function App() {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <DashboardWrapper />
+                  <Dashboard />
                 </ProtectedRoute>
               } 
             />
@@ -85,7 +85,7 @@ function App() {
               path="/customer/:id" 
               element={
                 <ProtectedRoute>
-                  <CustomerDetailWrapper />
+                  <CustomerDetail />
                 </ProtectedRoute>
               } 
             />
