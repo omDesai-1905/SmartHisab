@@ -122,7 +122,8 @@ export const updateProfile = async (req, res) => {
     const token = authHeader.substring(7); // Remove "Bearer " prefix
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const { businessName, currentPassword, newPassword } = req.body;
+    const { name, mobileNumber, businessName, currentPassword, newPassword } =
+      req.body;
 
     // Find the user
     const user = await User.findById(decoded.userId);
@@ -153,7 +154,13 @@ export const updateProfile = async (req, res) => {
       user.password = hashedNewPassword;
     }
 
-    // Update only business name (name, email, and mobile number are not editable)
+    // Update editable fields
+    if (name !== undefined) {
+      user.name = name;
+    }
+    if (mobileNumber !== undefined) {
+      user.mobileNumber = mobileNumber;
+    }
     if (businessName !== undefined) {
       user.businessName = businessName;
     }

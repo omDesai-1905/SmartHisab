@@ -61,18 +61,18 @@ export const validateLogin = (req, res, next) => {
 };
 
 export const validateProfileUpdate = (req, res, next) => {
-  const { name, email } = req.body;
+  const { name, email, mobileNumber } = req.body;
 
-  if (name && name.trim().length < 3) {
+  if (name && name.trim().length < 2) {
     return res
       .status(400)
-      .json({ message: "Name must be at least 3 characters long" });
+      .json({ message: "Name must be at least 2 characters long" });
   }
 
-  if (name && name.trim().length > 30) {
+  if (name && name.trim().length > 50) {
     return res
       .status(400)
-      .json({ message: "Name cannot exceed 30 characters" });
+      .json({ message: "Name cannot exceed 50 characters" });
   }
 
   if (email) {
@@ -81,6 +81,15 @@ export const validateProfileUpdate = (req, res, next) => {
       return res
         .status(400)
         .json({ message: "Please provide a valid email address" });
+    }
+  }
+
+  if (mobileNumber && mobileNumber.trim()) {
+    const mobileRegex = /^\d{10}$/;
+    if (!mobileRegex.test(mobileNumber.trim())) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid 10-digit mobile number" });
     }
   }
 

@@ -48,7 +48,20 @@ function Profile() {
   const validateForm = () => {
     const newErrors = {};
 
-    // Only validate business name (name, email, mobile number are not editable)
+    // Validate name
+    if (!formData.name || formData.name.trim().length < 2) {
+      newErrors['name'] = 'Name must be at least 2 characters';
+    }
+
+    // Validate mobile number (optional but if provided should be valid)
+    if (formData.mobileNumber && formData.mobileNumber.trim()) {
+      const mobileRegex = /^\d{10}$/;
+      if (!mobileRegex.test(formData.mobileNumber.trim())) {
+        newErrors['mobileNumber'] = 'Please enter a valid 10-digit mobile number';
+      }
+    }
+
+    // Validate business name (optional but if provided should be valid)
     if (formData.businessName && formData.businessName.trim().length < 2) {
       newErrors['businessName'] = 'Business name must be at least 2 characters';
     }
@@ -84,10 +97,17 @@ function Profile() {
 
     try {
       const updateData = {
+        name: formData.name.trim(),
+        mobileNumber: formData.mobileNumber.trim(),
         businessName: formData.businessName.trim()
       };
 
-      const response = await axios.post('/api/profile', updateData);
+      const token = localStorage.getItem('token');
+      const response = await axios.post('/api/profile', updateData, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       
       // Update user context
       updateUser(response.data.user);
@@ -327,37 +347,44 @@ function Profile() {
             </div>
           </div>
 
-          <div className="profile-card">
+          {/* Main Content Layout - Profile Left, Contact Right */}
+          <div className="profile-main-layout">
+            {/* Profile Card - Left Side */}
+            <div className="profile-card">
             {!isEditing ? (
             <div className="profile-view">
-              <div className="profile-info">
-                <div className="info-item">
-                  <label>👤 Full Name</label>
-                  <p>{user.name}</p>
+              <div className="profile-info profile-info-two-column">
+                <div className="info-column">
+                  <div className="info-item">
+                    <label>👤 Full Name</label>
+                    <p>{user.name}</p>
+                  </div>
+                  
+                  <div className="info-item">
+                    <label>� Mobile Number</label>
+                    <p>{user.mobileNumber || 'Not provided'}</p>
+                  </div>
+                  
+                  <div className="info-item">
+                    <label>� Member Since</label>
+                    <p>{new Date(user.createdAt).toLocaleDateString('en-IN', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}</p>
+                  </div>
                 </div>
                 
-                <div className="info-item">
-                  <label>📧 Email Address</label>
-                  <p>{user.email}</p>
-                </div>
-                
-                <div className="info-item">
-                  <label>📱 Mobile Number</label>
-                  <p>{user.mobileNumber || 'Not provided'}</p>
-                </div>
-                
-                <div className="info-item">
-                  <label>🏢 Business Name</label>
-                  <p>{user.businessName || 'Not provided'}</p>
-                </div>
-                
-                <div className="info-item">
-                  <label>📅 Member Since</label>
-                  <p>{new Date(user.createdAt).toLocaleDateString('en-IN', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}</p>
+                <div className="info-column">
+                  <div className="info-item">
+                    <label>📧 Email Address</label>
+                    <p>{user.email}</p>
+                  </div>
+                  
+                  <div className="info-item">
+                    <label>🏢 Business Name</label>
+                    <p>{user.businessName || 'Not provided'}</p>
+                  </div>
                 </div>
               </div>
 
@@ -395,11 +422,12 @@ function Profile() {
                     id="name"
                     name="name"
                     value={formData.name}
-                    className="form-input readonly"
-                    placeholder="Full name"
-                    readOnly
+                    onChange={handleChange}
+                    className={`form-input ${errors['name'] ? 'error' : ''}`}
+                    placeholder="Enter your full name"
+                    required
                   />
-                  <small className="form-hint">Name cannot be changed</small>
+                  {errors['name'] && <div className="error-message">{errors['name']}</div>}
                 </div>
 
                 <div className="form-group">
@@ -423,11 +451,12 @@ function Profile() {
                     id="mobileNumber"
                     name="mobileNumber"
                     value={formData.mobileNumber}
-                    className="form-input readonly"
-                    placeholder="Mobile number"
-                    readOnly
+                    onChange={handleChange}
+                    className={`form-input ${errors['mobileNumber'] ? 'error' : ''}`}
+                    placeholder="Enter your 10-digit mobile number"
+                    maxLength="10"
                   />
-                  <small className="form-hint">Mobile number cannot be changed</small>
+                  {errors['mobileNumber'] && <div className="error-message">{errors['mobileNumber']}</div>}
                 </div>
 
                 <div className="form-group">
@@ -465,7 +494,7 @@ function Profile() {
           )}
           </div>
 
-          {/* Contact Us Section */}
+          {/* Contact Us Section - Right Side */}
           <div className="contact-section">
             <div className="contact-card">
               <div className="contact-header">
@@ -500,6 +529,7 @@ function Profile() {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
