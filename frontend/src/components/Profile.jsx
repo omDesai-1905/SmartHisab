@@ -252,6 +252,16 @@ function Profile() {
               </button>
               
               <button 
+                className="sidebar-nav-item"
+                onClick={() => {
+                  navigate('/contact');
+                  setSidebarOpen(false);
+                }}
+              >
+                📞 Contact Us
+              </button>
+              
+              <button 
                 className="sidebar-nav-item logout"
                 onClick={handleLogout}
               >
@@ -347,9 +357,9 @@ function Profile() {
             </div>
           </div>
 
-          {/* Main Content Layout - Profile Left, Contact Right */}
+          {/* Main Content Layout - Profile */}
           <div className="profile-main-layout">
-            {/* Profile Card - Left Side */}
+            {/* Profile Card */}
             <div className="profile-card">
             {!isEditing ? (
             <div className="profile-view">
@@ -492,43 +502,6 @@ function Profile() {
               </form>
             </div>
           )}
-          </div>
-
-          {/* Contact Us Section - Right Side */}
-          <div className="contact-section">
-            <div className="contact-card">
-              <div className="contact-header">
-                <h2 style={{ 
-                  color: '#2d3748', 
-                  marginBottom: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
-                   Contact Us
-                </h2>
-                <p style={{ color: '#718096', margin: 0 }}>
-                  We're here to help! Reach out for any complaints, suggestions, or general inquiries.
-                </p>
-              </div>
-              
-              <div className="contact-content">
-                <div className="contact-item">
-                  <div className="contact-details">
-                    <h4>Email Support</h4>
-                    <p>For complaints, suggestions, and general support:</p>
-                    <a 
-                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${supportEmail}&su=Support Request from SmartHisab User`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="contact-email"
-                    >
-                      Send Email
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           </div>
         </div>

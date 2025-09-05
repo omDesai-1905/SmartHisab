@@ -20,7 +20,8 @@ function Sidebar({ isOpen, onClose, currentPage = '' }) {
     { path: '/dashboard', label: 'Dashboard', icon: '🏠' },
     { path: '/analytics', label: 'Analytics', icon: '📊' },
     { path: '/cashbook', label: 'Cashbook', icon: '📖' },
-    { path: '/profile', label: 'Profile', icon: '👤' }
+    { path: '/profile', label: 'Profile', icon: '👤' },
+    { path: '/contact', label: 'Contact Us', icon: '📞' }
   ];
 
   return (

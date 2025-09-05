@@ -8,6 +8,7 @@ import CustomerDetail from './components/CustomerDetail';
 import Profile from './components/Profile';
 import Analytics from './components/Analytics';
 import Cashbook from './components/Cashbook';
+import ContactUs from './components/ContactUs';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -86,6 +87,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CustomerDetail />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/contact" 
+              element={
+                <ProtectedRoute>
+                  <ContactUs />
                 </ProtectedRoute>
               } 
             />

@@ -293,7 +293,6 @@ function Cashbook() {
               <div className="loading">Loading entries...</div>
             ) : filteredEntries.length === 0 ? (
               <div className="no-entries">
-                <div className="no-entries-icon">📋</div>
                 <h3>No entries found</h3>
                 <p>Start by adding your first income or expense entry</p>
               </div>

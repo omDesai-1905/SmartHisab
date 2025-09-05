@@ -461,7 +461,6 @@ function Analytics() {
           {/* Total Customers */}
           <div className="analytics-card customers">
             <div className="analytics-card-content">
-              <div className="card-icon">👥</div>
               <div className="card-value">{analyticsData.totalCustomers}</div>
               <div className="card-label">Total Customers</div>
               <div className="card-description">Active customers in your business</div>
@@ -471,7 +470,6 @@ function Analytics() {
           {/* Total Credit (You Will Get) */}
           <div className="analytics-card income">
             <div className="analytics-card-content">
-              <div className="card-icon">💰</div>
               <div className="card-value">{formatAmount(analyticsData.totalCreditAmount)}</div>
               <div className="card-label">Total Credit</div>
               <div className="card-description">You will receive</div>
@@ -481,7 +479,6 @@ function Analytics() {
           {/* Total Debit (You Will Give) */}
           <div className="analytics-card expense">
             <div className="analytics-card-content">
-              <div className="card-icon">💸</div>
               <div className="card-value">{formatAmount(analyticsData.totalDebitAmount)}</div>
               <div className="card-label">Total Debit</div>
               <div className="card-description">You will pay</div>
@@ -491,7 +488,6 @@ function Analytics() {
           {/* Net Balance */}
           <div className={`analytics-card balance ${analyticsData.netBalance >= 0 ? 'positive' : 'negative'}`}>
             <div className="analytics-card-content">
-              <div className="card-icon">{analyticsData.netBalance >= 0 ? '📈' : '📉'}</div>
               <div className="card-value">{formatAmount(Math.abs(analyticsData.netBalance))}</div>
               <div className="card-label">Net Balance</div>
               <div className="card-description">

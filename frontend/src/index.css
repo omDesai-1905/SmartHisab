@@ -251,12 +251,11 @@ body {
   padding: 2rem;
 }
 
-/* Main Layout - Profile Left, Contact Right */
+/* Main Layout - Centered Profile */
 .profile-main-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: stretch;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .profile-header {
@@ -268,6 +267,8 @@ body {
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 2.5rem;
+  max-width: 800px;
+  width: 100%;
   border: 1px solid #e2e8f0;
   height: fit-content;
   min-height: 100%;
@@ -290,6 +291,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 /* Two Column Layout for Profile Info */
@@ -307,6 +309,7 @@ body {
 .profile-view .info-item {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
+  text-align: center;
   border-bottom: 1px solid #f7fafc;
 }
 
@@ -347,14 +350,14 @@ body {
     max-width: 600px;
   }
   
-  /* Stack layout vertically on tablets and mobile */
+  /* Keep centered layout on tablets and mobile */
   .profile-main-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    justify-content: center;
   }
   
   .profile-card {
     padding: 1.5rem;
+    max-width: 100%;
   }
   
   /* Stack columns on mobile */

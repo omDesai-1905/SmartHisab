@@ -213,7 +213,7 @@ function Dashboard() {
                 transition: 'transform 0.2s ease'
               }}
             >
-              📊 View Analytics
+               View Analytics
             </button>
             <button 
               onClick={openAddModal}
