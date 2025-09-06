@@ -39,8 +39,8 @@ function AdminDashboard() {
     return (
       <AdminLayout>
         {/* <div className="loading-container"> */}
-        <div className="min-h-[50vh] flex flex-col items-center justify-center gap-5">
-          <div className="loading-spinner"></div>
+        <div className="min-h-1/2-screen flex flex-col items-center justify-center gap-5">
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
           <p>Loading dashboard...</p>
         </div>
       </AdminLayout>
@@ -49,224 +49,52 @@ function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="dashboard-content">
-        <div className="page-header">
-          <h1>Dashboard Overview</h1>
-          <p>Welcome to SmartHisab Admin Panel</p>
+        <div className="max-w-screen-xl mx-auto">
+        <div className="text-xl mb-10">
+        <h1 className="text-gray-800 text-3xl font-bold mb-5">Dashboard Overview</h1><br/>
+        <p className="text-gray-600 text-base p-10">Welcome to SmartHisab Admin Panel</p><br />
         </div>
 
-        {/* Dashboard Cards */}
-        <div className="dashboard-grid">
-          {/* Total Users Card */}
+        <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-7 mb-10 md:grid-cols-1">
           <div 
-            className="dashboard-card users-card"
+            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-transparent cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl border-l-4 border-[#667eea] hover:border-[#667eea]"
             onClick={() => navigate('/admin/users')}
           >
-            <div className="card-content">
-              <h3>Total Users</h3>
-              <p className="card-number">{stats.totalUsers}</p>
-              <span className="card-action">Click to view all users</span>
+            <div className="card-content h-[130px]">
+              <h3 className="text-gray-800 text-lg font-semibold mb-4" style={{ marginLeft: '20px' }}>Total Users</h3>
+              <p className="text-gray-900 text-4xl font-bold block mb-4" style={{ marginLeft: '20px' }}>{stats.totalUsers}</p>
+              <span className="text-gray-600 text-sm" style={{ marginLeft: '20px' }}>Click to view all users</span>
             </div>
           </div>
 
           {/* User Messages Card */}
           <div 
-            className="dashboard-card messages-card"
+            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-transparent cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl border-l-4 hover:border-green-500"
             onClick={() => navigate('/admin/messages')}
           >
-            <div className="card-content">
-              <h3>User Messages</h3>
-              <p className="card-number">{stats.totalMessages}</p>
-              <span className="card-action">Click to view messages</span>
+            <div className="card-content h-[130px]">
+              <h3 className="text-gray-800 text-lg font-semibold mb-4" style={{ marginLeft: '20px' }}>User Messages</h3>
+              <p className="text-gray-900 text-4xl font-bold block mb-4]" style={{ marginLeft: '20px' }}>{stats.totalMessages}</p>
+              <span className="text-gray-600 text-sm" style={{ marginLeft: '20px' }}>Click to view messages</span>
             </div>
           </div>
         </div>
-
-        {/* Quick Stats */}
-        <div className="quick-stats">
-          <h2>Quick Overview</h2>
-          <div className="stats-grid">
-            <div className="stat-item">
-              <span className="stat-label">Total Messages</span>
-              <span className="stat-value">{stats.totalMessages}</span>
+        <br />
+        <div className="bg-white rounded-xl p-8 shadow-md h-[170px] w-[950px]" >
+          <h2 className="text-gray-800 text-lg font-semibold mb-6" style={{ marginBottom: '20px' }}>Quick Overview</h2>
+          <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-5 md:grid-cols-1">
+            <div className="flex flex-col p-5 bg-gray-100 rounded-lg text-center h-[90px]">
+              <span className="text-gray-600 text-sm mb-2">Total Messages</span>
+              <span className="text-gray-800 text-2xl font-semibold">{stats.totalMessages}</span>
             </div>
-            <div className="stat-item">
-              <span className="stat-label">Total Users</span>
-              <span className="stat-value">{stats.totalUsers}</span>
+            <div className="flex flex-col p-5 bg-gray-100 rounded-lg text-center h-[90px]">
+              <span className="text-gray-600 text-sm mb-2">Total Users</span>
+              <span className="text-gray-900 text-2xl font-semibold">{stats.totalUsers}</span>
             </div>
           </div>
+          <br />
         </div>
       </div>
-
-      <style jsx>{`
-        .loading-container {
-          min-height: 50vh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 20px;
-        }
-
-        .loading-spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid #e2e8f0;
-          border-top: 4px solid #667eea;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        .dashboard-content {
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        .page-header {
-          margin-bottom: 40px;
-        }
-
-        .page-header h1 {
-          color: #2d3748;
-          font-size: 32px;
-          font-weight: 600;
-          margin: 0 0 10px 0;
-        }
-
-        .page-header p {
-          color: #718096;
-          font-size: 16px;
-          margin: 0;
-        }
-
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 30px;
-          margin-bottom: 40px;
-        }
-
-        .dashboard-card {
-          background: white;
-          border-radius: 12px;
-          padding: 30px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-          cursor: pointer;
-          transition: all 0.3s ease;
-          border: 2px solid transparent;
-        }
-
-        .dashboard-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .users-card {
-          border-left: 4px solid #667eea;
-        }
-
-        .users-card:hover {
-          border-color: #667eea;
-        }
-
-        .messages-card {
-          border-left: 4px solid #48bb78;
-        }
-
-        .messages-card:hover {
-          border-color: #48bb78;
-        }
-
-        .card-content h3 {
-          color: #2d3748;
-          font-size: 18px;
-          font-weight: 600;
-          margin: 0 0 15px 0;
-        }
-
-        .card-number {
-          color: #1a202c;
-          font-size: 36px;
-          font-weight: 700;
-          display: block;
-          margin-bottom: 15px;
-        }
-
-        .card-action {
-          color: #718096;
-          font-size: 14px;
-        }
-
-        .unread-badge {
-          background: #e53e3e;
-          color: white;
-          font-size: 12px;
-          padding: 4px 8px;
-          border-radius: 12px;
-          display: inline-block;
-          margin-bottom: 10px;
-        }
-
-        .quick-stats {
-          background: white;
-          border-radius: 12px;
-          padding: 30px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-        }
-
-        .quick-stats h2 {
-          color: #2d3748;
-          font-size: 20px;
-          font-weight: 600;
-          margin: 0 0 25px 0;
-        }
-
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 20px;
-        }
-
-        .stat-item {
-          display: flex;
-          flex-direction: column;
-          padding: 20px;
-          background: #f7fafc;
-          border-radius: 8px;
-          text-align: center;
-        }
-
-        .stat-label {
-          color: #718096;
-          font-size: 14px;
-          margin-bottom: 8px;
-        }
-
-        .stat-value {
-          color: #2d3748;
-          font-size: 24px;
-          font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-          .dashboard-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .page-header h1 {
-            font-size: 24px;
-          }
-        }
-      `}</style>
     </AdminLayout>
   );
 }

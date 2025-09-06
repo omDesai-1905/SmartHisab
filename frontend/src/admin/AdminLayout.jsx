@@ -26,33 +26,36 @@ function AdminLayout({ children }) {
   return (
     <div className="admin-layout">
       {/* Navbar */}
-      <header className="admin-navbar">
-        <div className="navbar-content">
-          <div className="navbar-left">
+      <header className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-[1000] h-[60px]">
+        <div className="w-full h-full flex justify-between items-center px-[20px] md:px-[15px] sm:px-[10px">
+          <div className="flex items-center gap-[15px]">
             <button 
-              className="sidebar-toggle"
+              className="lg:hidden bg-none border-none text-[18px] cursor-pointer p-2 rounded hover:bg-gray-100 transition-colors duration-200"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               ☰
             </button>
-            <h1 className="admin-title">SmartHisab Admin</h1>
-          </div>
-          <div className="navbar-right">
-            <span className="admin-email">smarthisab@admin.com</span>
-            <button onClick={handleLogout} className="logout-btn">
+            <h1 className="text-blue-800 font-bold text-[20px] md:text-[18px] sm:text-[16px] m-0" style={{ marginLeft: '20px' }}>SmartHisab Admin</h1>
+        </div>
+        <div className="flex items-center gap-4">
+            <span className="text-gray-600 text-sm hidden lg:block">smarthisab@admin.com</span>
+            <button onClick={handleLogout} className="h-[40px] w-[80px] bg-red-500 text-white rounded-[10px] cursor-pointer transition-colors duration-200 px-4 py-2 text-sm md:px-3 md:py-1.5 md:text-xs sm:px-2 sm:py-1 sm:text-[11px] hover:bg-red-700">
               Logout
             </button>
           </div>
         </div>
       </header>
 
-      <div className="admin-container">
+      <div className="relative mt-[60px] min-h-[calc(100vh-60px)]" style={{ position: 'relative', marginTop: '60px', minHeight: 'calc(100vh - 60px)' }}>
         {/* Sidebar */}
-        <aside className={`admin-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-          <div className="sidebar-header">
-            <h2>Navigation</h2>
+        <aside className={`fixed top-[60px] h-[calc(100vh-60px)] bg-white border-r border-gray-200
+              overflow-y-auto transition-left duration-300 ease-in-out z-[999]
+              ${sidebarOpen ? "left-0" : "-left-[250px]"}
+              w-[250px] lg:left-0 lg:w-[250px] md:w-[280px] sm:w-full`}>
+          <div className="p-5 border-b border-gray-200 flex justify-between items-center hidden">
+            <h2 className="text-gray-800 text-[18px] font-semibold m-0">Navigation</h2>
             <button 
-              className="sidebar-close"
+              className="bg-none border-none text-[24px] text-gray-400 cursor-pointer p-0 w-[30px] h-[30px] flex items-center justify-center hover:text-gray-500"
               onClick={() => setSidebarOpen(false)}
             >
               ×
@@ -63,7 +66,9 @@ function AdminLayout({ children }) {
             {menuItems.map((item) => (
               <button
                 key={item.path}
-                className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+                className={`h-[50px] w-full px-5 py-3 text-left text-[16px] text-gray-600 border-none bg-none 
+               border-l-4 border-transparent cursor-pointer transition-all duration-200 
+               hover:bg-gray-100 hover:text-gray-800 ${isActive(item.path) ? 'bg-blue-100 text-blue-500 border-blue-500 font-medium ' : 'text-gray-600 border-transparent hover:bg-gray-100 hover:text-gray-800'}`}
                 onClick={() => {
                   navigate(item.path);
                   setSidebarOpen(false);
@@ -78,7 +83,7 @@ function AdminLayout({ children }) {
         {/* Sidebar Overlay */}
         {sidebarOpen && (
           <div 
-            className="sidebar-overlay"
+            className="fixed top-[60px] left-0 right-0 bottom-0 bg-black/50 z-[998] hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -90,185 +95,6 @@ function AdminLayout({ children }) {
       </div>
 
       <style jsx>{`
-        .admin-layout {
-          min-height: 100vh;
-          background-color: #f7fafc;
-          position: relative;
-        }
-
-        /* Navbar Styles */
-        .admin-navbar {
-          background: white;
-          border-bottom: 1px solid #e2e8f0;
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 1000;
-          height: 60px;
-        }
-
-        .navbar-content {
-          max-width: 100%;
-          height: 100%;
-          padding: 0 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .navbar-left {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
-
-        .sidebar-toggle {
-          background: none;
-          border: none;
-          font-size: 18px;
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 4px;
-          transition: background-color 0.2s;
-        }
-
-        .sidebar-toggle:hover {
-          background-color: #f7fafc;
-        }
-
-        .admin-title {
-          color: #2d3748;
-          font-size: 20px;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        .navbar-right {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
-
-        .admin-email {
-          color: #4a5568;
-          font-size: 14px;
-          display: none;
-        }
-
-        .logout-btn {
-          background: #e53e3e;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 14px;
-          transition: background-color 0.2s;
-        }
-
-        .logout-btn:hover {
-          background: #c53030;
-        }
-
-        /* Container */
-        .admin-container {
-          position: relative;
-          margin-top: 60px;
-          min-height: calc(100vh - 60px);
-        }
-
-        /* Sidebar Styles */
-        .admin-sidebar {
-          width: 250px;
-          background: white;
-          border-right: 1px solid #e2e8f0;
-          position: fixed;
-          top: 60px;
-          left: -250px;
-          height: calc(100vh - 60px);
-          overflow-y: auto;
-          transition: left 0.3s ease;
-          z-index: 999;
-        }
-
-        .admin-sidebar.sidebar-open {
-          left: 0;
-        }
-
-        .sidebar-header {
-          padding: 20px;
-          border-bottom: 1px solid #e2e8f0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .sidebar-header h2 {
-          color: #2d3748;
-          font-size: 18px;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        .sidebar-close {
-          background: none;
-          border: none;
-          font-size: 24px;
-          color: #a0aec0;
-          cursor: pointer;
-          padding: 0;
-          width: 30px;
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .sidebar-close:hover {
-          color: #718096;
-        }
-
-        .sidebar-nav {
-          padding: 20px 0;
-        }
-
-        .nav-item {
-          width: 100%;
-          padding: 12px 20px;
-          border: none;
-          background: none;
-          text-align: left;
-          cursor: pointer;
-          font-size: 16px;
-          color: #4a5568;
-          transition: all 0.2s;
-          border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-          background-color: #f7fafc;
-          color: #2d3748;
-        }
-
-        .nav-item.active {
-          background-color: #ebf8ff;
-          color: #667eea;
-          border-left-color: #667eea;
-          font-weight: 500;
-        }
-
-        .sidebar-overlay {
-          position: fixed;
-          top: 60px;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
-          z-index: 998;
-        }
-
-        /* Main Content */
         .admin-main {
           padding: 30px;
           min-height: calc(100vh - 60px);
@@ -277,85 +103,21 @@ function AdminLayout({ children }) {
           background-color: #f7fafc;
         }
 
-        /* Desktop Styles */
         @media (min-width: 1024px) {
-          .sidebar-toggle {
-            display: none;
-          }
 
-          .admin-email {
-            display: block;
-          }
-
-          .admin-sidebar {
-            position: fixed;
-            left: 0;
-            top: 60px;
-            height: calc(100vh - 60px);
-          }
-
-          .sidebar-header {
-            display: none;
-          }
-
-          .sidebar-overlay {
-            display: none;
-          }
 
           .admin-main {
             margin-left: 250px;
             padding: 30px;
           }
         }
-
-        /* Tablet Styles */
         @media (max-width: 768px) {
-          .navbar-content {
-            padding: 0 15px;
-          }
-
-          .admin-title {
-            font-size: 18px;
-          }
-
-          .admin-email {
-            display: none;
-          }
-
-          .logout-btn {
-            padding: 6px 12px;
-            font-size: 12px;
-          }
-
-          .admin-sidebar {
-            width: 280px;
-            left: -280px;
-          }
 
           .admin-main {
             padding: 15px;
           }
         }
-
-        /* Mobile Styles */
         @media (max-width: 480px) {
-          .navbar-content {
-            padding: 0 10px;
-          }
-
-          .admin-title {
-            font-size: 16px;
-          }
-
-          .logout-btn {
-            padding: 4px 8px;
-            font-size: 11px;
-          }
-
-          .admin-sidebar {
-            width: 100%;
-            left: -100%;
-          }
 
           .admin-main {
             padding: 10px;
