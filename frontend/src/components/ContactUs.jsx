@@ -6,7 +6,6 @@ import Navbar from './Navbar';
 function ContactUs() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const supportEmail = import.meta.env.VITE_SUPPORT_EMAIL;
   
   const [formData, setFormData] = useState({
     emailAddress: '',
@@ -82,7 +81,7 @@ function ContactUs() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -90,36 +89,39 @@ function ContactUs() {
       return;
     }
 
-    // Prepare email content
-    const subject = encodeURIComponent(formData.topic.trim());
-    const body = encodeURIComponent(`Hello SmartHisab Support Team,
-
-${formData.description.trim()}
-
----
-Sent from: ${formData.emailAddress}
-User: ${user?.name || 'Guest'}
-Date: ${new Date().toLocaleDateString('en-IN')}
-
-Best regards,
-${user?.name || 'User'}`);
-
-    // Create Gmail compose URL with pre-filled content
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${supportEmail}&su=${subject}&body=${body}`;
-    
-    // Open Gmail in new tab
-    window.open(gmailUrl, '_blank');
-    
-    showNotification('Redirecting to Gmail with your message...', 'success');
-    
-    // Optionally reset form after a delay
-    setTimeout(() => {
-      setFormData({
-        emailAddress: user?.email || '',
-        topic: '',
-        description: ''
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5001/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          emailAddress: formData.emailAddress.trim(),
+          topic: formData.topic.trim(),
+          description: formData.description.trim()
+        }),
       });
-    }, 2000);
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showNotification('Message sent successfully! Admin will review it soon.', 'success');
+        
+        // Reset form after successful submission
+        setFormData({
+          emailAddress: user?.email || '',
+          topic: '',
+          description: ''
+        });
+      } else {
+        showNotification(data.message || 'Failed to send message', 'error');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      showNotification('Network error occurred. Please try again.', 'error');
+    }
   };
 
   const handleLogout = () => {

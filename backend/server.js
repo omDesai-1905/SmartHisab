@@ -6,6 +6,8 @@ import connectDB from "./src/connection/mongoConnection.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import customerRoutes from "./src/routes/customerRoutes.js";
 import cashbookRoutes from "./src/routes/cashbookRoutes.js";
+import adminRoutes from "./src/admin/routes/adminRoutes.js";
+import messageRoutes from "./src/routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -28,6 +30,8 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/customers", authenticateToken, customerRoutes);
 app.use("/api/cashbook", authenticateToken, cashbookRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
