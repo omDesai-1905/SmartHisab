@@ -214,7 +214,7 @@ function AdminUsers() {
           width: 60px;
           height: 60px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #66c2ff;
           color: white;
           display: flex;
           align-items: center;

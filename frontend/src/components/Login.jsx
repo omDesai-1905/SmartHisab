@@ -172,9 +172,7 @@ function Login() {
           Don't have an account? <Link to="/signup">Create one here</Link>
         </div>
         
-        <div className="auth-link" style={{ marginTop: '10px', fontSize: '14px' }}>
-          Admin? <Link to="/admin/login" style={{ color: '#e53e3e' }}>Login here</Link>
-        </div>
+
       </div>
     </div>
   );

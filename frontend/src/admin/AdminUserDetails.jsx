@@ -222,7 +222,7 @@ function AdminUserDetails() {
           width: 80px;
           height: 80px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #66c2ff;
           color: white;
           display: flex;
           align-items: center;
@@ -284,23 +284,23 @@ function AdminUserDetails() {
         }
 
         .customers-card {
-          border-left-color: #667eea;
+          border: 2px solid #667eea;
         }
 
         .debit-card {
-          border-left-color: #e53e3e;
+          border: 2px solid #e53e3e;
         }
 
         .credit-card {
-          border-left-color: #48bb78;
+          border: 2px solid #48bb78;
         }
 
         .net-card.positive {
-          border-left-color: #48bb78;
+          border: 2px solid #48bb78;
         }
 
         .net-card.negative {
-          border-left-color: #e53e3e;
+          border: 2px solid #e53e3e;
         }
 
         .stat-content h3 {

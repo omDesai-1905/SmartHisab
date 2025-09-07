@@ -151,7 +151,7 @@ function Analytics() {
           .page-title {
             font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #008ae6;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -248,7 +248,7 @@ function Analytics() {
           }
 
           .cashbook-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #002699;
             border-radius: 16px;
             padding: 1.5rem;
             color: white;
@@ -290,11 +290,11 @@ function Analytics() {
           }
 
           .customer-section.creditors {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            background:  #38a169;
           }
 
           .customer-section.debtors {
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            background: #ff4d4d;
           }
 
           .section-title {

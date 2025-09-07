@@ -57,7 +57,7 @@ function AdminDashboard() {
 
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-7 mb-10 md:grid-cols-1">
           <div 
-            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-transparent cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl border-l-4 border-[#667eea] hover:border-[#667eea]"
+            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-[#667eea] cursor-pointer "
             onClick={() => navigate('/admin/users')}
           >
             <div className="card-content h-[130px]">
@@ -69,7 +69,7 @@ function AdminDashboard() {
 
           {/* User Messages Card */}
           <div 
-            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-transparent cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl border-l-4 hover:border-green-500"
+            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-green-500 cursor-pointer"
             onClick={() => navigate('/admin/messages')}
           >
             <div className="card-content h-[130px]">
