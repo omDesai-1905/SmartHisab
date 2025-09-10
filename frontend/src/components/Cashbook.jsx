@@ -184,9 +184,29 @@ function Cashbook() {
     return matchesSearch && matchesDateRange;
   }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  // Calculate totals
-  const totalIncome = entries.filter(e => e.type === 'income').reduce((sum, e) => sum + e.amount, 0);
-  const totalExpense = entries.filter(e => e.type === 'expense').reduce((sum, e) => sum + e.amount, 0);
+  // Calculate totals based on filtered entries (date range)
+  const dateFilteredEntries = entries.filter(entry => {
+    let matchesDateRange = true;
+    if (dateFrom || dateTo) {
+      const entryDate = new Date(entry.date);
+      
+      if (dateFrom && dateTo) {
+        const fromDate = new Date(dateFrom);
+        const toDate = new Date(dateTo);
+        matchesDateRange = entryDate >= fromDate && entryDate <= toDate;
+      } else if (dateFrom) {
+        const fromDate = new Date(dateFrom);
+        matchesDateRange = entryDate >= fromDate;
+      } else if (dateTo) {
+        const toDate = new Date(dateTo);
+        matchesDateRange = entryDate <= toDate;
+      }
+    }
+    return matchesDateRange;
+  });
+
+  const totalIncome = dateFilteredEntries.filter(e => e.type === 'income').reduce((sum, e) => sum + e.amount, 0);
+  const totalExpense = dateFilteredEntries.filter(e => e.type === 'expense').reduce((sum, e) => sum + e.amount, 0);
   const balance = totalIncome - totalExpense;
 
   return (
@@ -195,31 +215,51 @@ function Cashbook() {
         <div className="cashbook-container">
           {/* Header with Summary Cards */}
           <div className="cashbook-header">
-            <div className="summary-cards">
+            <div className="flex flex-wrap gap-6 mb-8">
               {/* Total Income Card */}
-              <div className="summary-card income-card">
-                <div className="summary-details">
-                  <div className="summary-amount">{formatAmount(totalIncome)}</div>
-                  <div className="summary-label">Total Income</div>
+              <div className="flex-1 min-w-[280px] bg-white border-2 border-green-500 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-green-500/30 h-[100px]">
+                <div className="flex items-center gap-4">
+                  
+                  <div>
+                    <div className="text-3xl font-bold text-green-500 mb-1 ">
+                      &nbsp;&nbsp;&nbsp;&nbsp;{formatAmount(totalIncome)}
+                    </div>
+                    <div className="text-base font-medium text-gray-600">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Income
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Total Expense Card */}
-              <div className="summary-card expense-card">
-                <div className="summary-details">
-                  <div className="summary-amount">{formatAmount(totalExpense)}</div>
-                  <div className="summary-label">Total Expense</div>
+              <div className="flex-1 min-w-[280px] bg-white border-2 border-red-500 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-red-500/30">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <div className="text-3xl font-bold text-red-500 mb-1">
+                      &nbsp;&nbsp;&nbsp;&nbsp;{formatAmount(totalExpense)}
+                    </div>
+                    <div className="text-base font-medium text-gray-600">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Expense
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Balance Card */}
-              <div className={`summary-card balance-card ${balance >= 0 ? 'positive' : 'negative'}`}>
-                <div className="summary-details">
-                  <div className="summary-amount">{formatAmount(Math.abs(balance))}</div>
-                  <div className="summary-label">Net Balance</div>
+              <div className={`flex-1 min-w-[280px] bg-white border-2 ${balance >= 0 ? 'border-blue-500 hover:shadow-blue-500/30' : 'border-amber-500 hover:shadow-amber-500/30'} rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}>
+                <div className="flex items-center gap-4">
+                  <div>
+                    <div className={`text-3xl font-bold ${balance >= 0 ? 'text-blue-500' : 'text-amber-500'} mb-1`}>
+                      &nbsp;&nbsp;&nbsp;&nbsp;{formatAmount(Math.abs(balance))}
+                    </div>
+                    <div className="text-base font-medium text-gray-600">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Net Balance {balance >= 0 ? '(Profit)' : '(Loss)'}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <br />
 
             {/* Action Buttons */}
             <div className="action-buttons">

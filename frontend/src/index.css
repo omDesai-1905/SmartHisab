@@ -1091,9 +1091,9 @@ body {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-.income-card {
+/* .income-card {
   border-left: 4px solid #48bb78;
-}
+} */
 
 .expense-card {
   border-left: 4px solid #e53e3e;

@@ -573,48 +573,284 @@ function CustomerDetail() {
 
       {/* Transaction Action Modal */}
       {showActionModal && selectedTransaction && (
-          <div className="modal">
-            <div className="modal-content" style={{ maxWidth: '300px' }}>
-              <div className="modal-header">
-                <h2 className="modal-title">Transaction Actions</h2>
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem'
+          }}>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '20px',
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
+              maxWidth: '420px',
+              width: '100%',
+              overflow: 'hidden',
+              transform: 'scale(1)',
+              transition: 'all 0.3s ease'
+            }}>
+              {/* Modal Header */}
+              <div style={{
+                padding: '2rem 2rem 1rem 2rem',
+                borderBottom: '1px solid #f0f0f0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
+                    backgroundColor: selectedTransaction.type === 'debit' ? '#fee2e2' : '#dcfce7',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    color: selectedTransaction.type === 'debit' ? '#dc2626' : '#16a34a'
+                  }}>
+                    {selectedTransaction.type === 'debit' ? '−' : '+'}
+                  </div>
+                  <div>
+                    <h2 style={{
+                      margin: 0,
+                      fontSize: '1.5rem',
+                      fontWeight: '600',
+                      color: '#1f2937'
+                    }}>
+                      Transaction Details
+                    </h2>
+                    <p style={{
+                      margin: '0.25rem 0 0 0',
+                      fontSize: '0.875rem',
+                      color: '#6b7280'
+                    }}>
+                      Choose an action for this transaction
+                    </p>
+                  </div>
+                </div>
                 <button 
-                  className="modal-close"
                   onClick={() => {
                     setShowActionModal(false);
                     setSelectedTransaction(null);
+                  }}
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    backgroundColor: '#f3f4f6',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    color: '#6b7280',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#e5e7eb';
+                    e.target.style.color = '#374151';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#f3f4f6';
+                    e.target.style.color = '#6b7280';
                   }}
                 >
                   ×
                 </button>
               </div>
 
-              <div style={{ padding: '1rem 0' }}>
-                <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                  <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600' }}>
-                    {selectedTransaction.type === 'debit' ? ' Debit' : ' Credit'} Transaction
-                  </p>
-                  <p style={{ margin: '0 0 0.5rem 0' }}>
-                    <strong>Amount:</strong> ₹{selectedTransaction.amount?.toLocaleString()}
-                  </p>
-                  <p style={{ margin: '0' }}>
-                    <strong>Description:</strong> {selectedTransaction.description || 'NONE'}
-                  </p>
+              {/* Modal Body */}
+              <div style={{ padding: '2rem' }}>
+                {/* Transaction Details Card */}
+                <div style={{
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '16px',
+                  padding: '1.5rem',
+                  marginBottom: '2rem',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  {/* Transaction Type Badge */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#64748b'
+                    }}>
+                      Transaction Type
+                    </span>
+                    <span style={{
+                      backgroundColor: selectedTransaction.type === 'debit' ? '#fef2f2' : '#f0fdf4',
+                      color: selectedTransaction.type === 'debit' ? '#dc2626' : '#16a34a',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '50px',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      border: `2px solid ${selectedTransaction.type === 'debit' ? '#fecaca' : '#bbf7d0'}`
+                    }}>
+                      {selectedTransaction.type === 'debit' ? '📤 Debit' : '📥 Credit'}
+                    </span>
+                  </div>
+                  
+                  {/* Amount */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#64748b'
+                    }}>
+                      Amount
+                    </span>
+                    <span style={{
+                      fontSize: '1.5rem',
+                      fontWeight: '700',
+                      color: '#1f2937'
+                    }}>
+                      ₹{selectedTransaction.amount?.toLocaleString()}
+                    </span>
+                  </div>
+                  
+                  {/* Date */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#64748b'
+                    }}>
+                      Date
+                    </span>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      color: '#374151',
+                      fontWeight: '500'
+                    }}>
+                      {new Date(selectedTransaction.date || selectedTransaction.createdAt).toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                  
+                  {/* Description */}
+                  <div style={{ marginTop: '1rem' }}>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#64748b',
+                      display: 'block',
+                      marginBottom: '0.5rem'
+                    }}>
+                      Description
+                    </span>
+                    <div style={{
+                      backgroundColor: 'white',
+                      borderRadius: '8px',
+                      padding: '0.75rem',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '0.875rem',
+                      color: '#374151',
+                      fontStyle: selectedTransaction.description ? 'normal' : 'italic'
+                    }}>
+                      {selectedTransaction.description || 'No description provided'}
+                    </div>
+                  </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                {/* Action Buttons */}
+                <div style={{
+                  display: 'flex',
+                  gap: '1rem'
+                }}>
                   <button 
                     onClick={handleUpdateClick}
-                    className="btn btn-secondary"
-                    style={{ flex: 1 }}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      padding: '1rem',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#2563eb';
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = '#3b82f6';
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                    }}
                   >
-                    Update
+                    <span style={{ fontSize: '1.2rem' }}>✏️</span>
+                    <span>Update</span>
                   </button>
                   <button 
                     onClick={handleDeleteClick}
-                    className="btn btn-danger"
-                    style={{ flex: 1 }}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      padding: '1rem',
+                      backgroundColor: '#ef4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#dc2626';
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = '#ef4444';
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
+                    }}
                   >
-                    Delete
+                    <span style={{ fontSize: '1.2rem' }}>🗑️</span>
+                    <span>Delete</span>
                   </button>
                 </div>
               </div>

@@ -135,6 +135,35 @@ function AdminUserDetails() {
               </span>
             </div>
           </div>
+
+          {/* Total Income */}
+          <div className="stat-card income-card">
+            <div className="stat-content">
+              <h3>Total Income</h3>
+              <p className="stat-number">{formatCurrency(statistics.totalIncome || 0)}</p>
+              <span className="stat-description">Total earnings</span>
+            </div>
+          </div>
+
+          {/* Total Expense */}
+          <div className="stat-card expense-card">
+            <div className="stat-content">
+              <h3>Total Expense</h3>
+              <p className="stat-number">{formatCurrency(statistics.totalExpense || 0)}</p>
+              <span className="stat-description">Total spending</span>
+            </div>
+          </div>
+
+          {/* Net Income-Expense */}
+          <div className={`stat-card profit-card ${(statistics.netIncomeExpense || 0) >= 0 ? 'positive' : 'negative'}`}>
+            <div className="stat-content">
+              <h3>Net Profit/Loss</h3>
+              <p className="stat-number">{formatCurrency(Math.abs(statistics.netIncomeExpense || 0))}</p>
+              <span className={`net-status ${(statistics.netIncomeExpense || 0) >= 0 ? 'positive' : 'negative'}`}>
+                {(statistics.netIncomeExpense || 0) >= 0 ? 'Profit' : 'Loss'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -277,10 +306,18 @@ function AdminUserDetails() {
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
           transition: transform 0.3s ease;
           border-left: 4px solid #e2e8f0;
+          position: relative;
+          overflow: hidden;
         }
 
         .stat-card:hover {
           transform: translateY(-2px);
+        }
+
+        .stat-icon {
+          font-size: 32px;
+          margin-bottom: 10px;
+          display: block;
         }
 
         .customers-card {
@@ -293,6 +330,22 @@ function AdminUserDetails() {
 
         .credit-card {
           border: 2px solid #48bb78;
+        }
+
+        .income-card {
+          border: 2px solid #38a169;
+        }
+
+        .expense-card {
+          border: 2px solid #d69e2e;
+        }
+
+        .profit-card.positive {
+          border: 2px solid #48bb78;
+        }
+
+        .profit-card.negative {
+          border: 2px solid #e53e3e;
         }
 
         .net-card.positive {

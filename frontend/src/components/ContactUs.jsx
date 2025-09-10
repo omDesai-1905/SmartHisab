@@ -351,7 +351,7 @@ function ContactUs() {
                       gap: '0.5rem'
                     }}
                   >
-                    Send Email
+                    Send Message
                   </button>
                 </div>
               </form>

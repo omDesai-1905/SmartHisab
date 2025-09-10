@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../../model/User.model.js";
 import Customer from "../../model/Customer.model.js";
 import Transaction from "../../model/Transaction.model.js";
+import Cashbook from "../../model/Cashbook.model.js";
 import Message from "../../model/Message.model.js";
 import dotenv from "dotenv";
 
@@ -135,6 +136,22 @@ export const getUserDetails = async (req, res) => {
 
     const netAmount = totalCredit - totalDebit;
 
+    // Get cashbook statistics
+    const cashbookEntries = await Cashbook.find({ userId });
+
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    cashbookEntries.forEach((entry) => {
+      if (entry.type === "income") {
+        totalIncome += entry.amount;
+      } else if (entry.type === "expense") {
+        totalExpense += entry.amount;
+      }
+    });
+
+    const netIncomeExpense = totalIncome - totalExpense;
+
     res.json({
       user,
       statistics: {
@@ -142,6 +159,9 @@ export const getUserDetails = async (req, res) => {
         totalDebit,
         totalCredit,
         netAmount,
+        totalIncome,
+        totalExpense,
+        netIncomeExpense,
       },
     });
   } catch (error) {
