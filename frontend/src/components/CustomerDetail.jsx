@@ -23,6 +23,19 @@ function CustomerDetail() {
     description: '', 
     date: new Date().toISOString().split('T')[0] // Default to today's date
   });
+
+  // Helper: sanitize numeric input (allow digits and one decimal point)
+  const sanitizeNumericInput = (val) => {
+    if (typeof val !== 'string') val = String(val || '');
+    // remove commas and any non digit/dot chars
+    let s = val.replace(/,/g, '').replace(/[^0-9.]/g, '');
+    // allow only a single dot
+    const parts = s.split('.');
+    if (parts.length > 2) {
+      s = parts[0] + '.' + parts.slice(1).join('');
+    }
+    return s;
+  };
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -93,8 +106,9 @@ function CustomerDetail() {
 
   const validateTransactionForm = () => {
     const newErrors = {};
+    const sanitizedAmount = sanitizeNumericInput(newTransaction.amount);
 
-    if (!newTransaction.amount || isNaN(newTransaction.amount) || parseFloat(newTransaction.amount) <= 0) {
+    if (!sanitizedAmount || isNaN(parseFloat(sanitizedAmount)) || parseFloat(sanitizedAmount) <= 0) {
       newErrors.amount = 'Amount must be a positive number';
     }
 
@@ -129,8 +143,8 @@ function CustomerDetail() {
 
     try {
       let response;
-      const description = newTransaction.description.trim() || 'NONE';
-      const amount = parseFloat(newTransaction.amount);
+  const description = newTransaction.description.trim() || 'NONE';
+  const amount = parseFloat(sanitizeNumericInput(newTransaction.amount));
       
       if (modalType === 'add') {
         response = await axios.post(`/api/customers/${id}/transactions`, {
@@ -503,13 +517,14 @@ function CustomerDetail() {
                     {transactionType === 'debit' ? 'You Gave (₹)' : 'You Got (₹)'}
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     id="amount"
-                    step="0.01"
-                    min="0.01"
+                    inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     value={newTransaction.amount}
                     onChange={(e) => {
-                      setNewTransaction(prev => ({ ...prev, amount: e.target.value }));
+                      const sanitized = sanitizeNumericInput(e.target.value);
+                      setNewTransaction(prev => ({ ...prev, amount: sanitized }));
                       if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                     }}
                     className={`form-input ${errors.amount ? 'error' : ''}`}

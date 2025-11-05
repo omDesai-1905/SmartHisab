@@ -20,6 +20,16 @@ function Cashbook() {
     description: '',
     date: new Date().toISOString().split('T')[0]
   });
+  // Helper to sanitize numeric amount input (allow digits and one decimal point)
+  const sanitizeNumericInput = (val) => {
+    if (typeof val !== 'string') val = String(val || '');
+    let s = val.replace(/,/g, '').replace(/[^0-9.]/g, '');
+    const parts = s.split('.');
+    if (parts.length > 2) {
+      s = parts[0] + '.' + parts.slice(1).join('');
+    }
+    return s;
+  };
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -52,8 +62,9 @@ function Cashbook() {
 
   const validateEntry = () => {
     const newErrors = {};
-    
-    if (!newEntry.amount || parseFloat(newEntry.amount) <= 0) {
+    const sanitized = sanitizeNumericInput(newEntry.amount);
+
+    if (!sanitized || isNaN(parseFloat(sanitized)) || parseFloat(sanitized) <= 0) {
       newErrors.amount = 'Amount must be greater than 0';
     }
     
@@ -78,7 +89,7 @@ function Cashbook() {
         ...newEntry,
         description: newEntry.description.trim() || 'NONE',
         type: entryType,
-        amount: parseFloat(newEntry.amount)
+        amount: parseFloat(sanitizeNumericInput(newEntry.amount))
       };
       
       if (editingEntry) {
@@ -421,12 +432,14 @@ function Cashbook() {
               <div className="form-group">
                 <label>Amount (₹)</label>
                 <input
-                  type="number"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0.00"
                   value={newEntry.amount}
                   onChange={(e) => {
-                    setNewEntry(prev => ({ ...prev, amount: e.target.value }));
+                    const sanitized = sanitizeNumericInput(e.target.value);
+                    setNewEntry(prev => ({ ...prev, amount: sanitized }));
                     if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                   }}
                   className={`form-input ${errors.amount ? 'error' : ''}`}
