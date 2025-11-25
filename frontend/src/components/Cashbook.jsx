@@ -91,16 +91,14 @@ function Cashbook() {
         type: entryType,
         amount: parseFloat(sanitizeNumericInput(newEntry.amount))
       };
-      
+
       if (editingEntry) {
-        // Update existing entry
         const response = await axios.post(`/api/cashbook/${editingEntry._id || editingEntry.id}`, entryData);
         setEntries(prev => prev.map(entry => 
           (entry._id || entry.id) === (editingEntry._id || editingEntry.id) ? response.data : entry
         ));
         showNotification(`${entryType === 'income' ? 'Income' : 'Expense'} entry updated successfully!`);
       } else {
-        // Add new entry
         const response = await axios.post('/api/cashbook', entryData);
         setEntries(prev => [response.data, ...prev]);
         showNotification(`${entryType === 'income' ? 'Income' : 'Expense'} entry added successfully!`);
@@ -224,10 +222,8 @@ function Cashbook() {
     <Layout currentPage="/cashbook">
       <div className="cashbook-page">
         <div className="cashbook-container">
-          {/* Header with Summary Cards */}
           <div className="cashbook-header">
             <div className="flex flex-wrap gap-6 mb-8">
-              {/* Total Income Card */}
               <div className="flex-1 min-w-[280px] bg-white border-2 border-green-500 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-green-500/30 h-[100px]">
                 <div className="flex items-center gap-4">
                   
@@ -242,7 +238,6 @@ function Cashbook() {
                 </div>
               </div>
 
-              {/* Total Expense Card */}
               <div className="flex-1 min-w-[280px] bg-white border-2 border-red-500 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-red-500/30">
                 <div className="flex items-center gap-4">
                   <div>
@@ -256,7 +251,6 @@ function Cashbook() {
                 </div>
               </div>
 
-              {/* Balance Card */}
               <div className={`flex-1 min-w-[280px] bg-white border-2 ${balance >= 0 ? 'border-blue-500 hover:shadow-blue-500/30' : 'border-amber-500 hover:shadow-amber-500/30'} rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}>
                 <div className="flex items-center gap-4">
                   <div>
@@ -272,7 +266,6 @@ function Cashbook() {
             </div>
             <br />
 
-            {/* Action Buttons */}
             <div className="action-buttons">
               <button 
                 className="btn btn-success"
@@ -295,7 +288,6 @@ function Cashbook() {
             </div>
           </div>
 
-          {/* Filters */}
           <div className="filters">
             <div className="search-filter">
               <label>Search Description:</label>
@@ -338,7 +330,6 @@ function Cashbook() {
             </div>
           </div>
 
-          {/* Entries Table */}
           <div className="entries-section">
             {loading ? (
               <div className="loading">Loading entries...</div>
@@ -396,7 +387,6 @@ function Cashbook() {
         </div>
       </div>
 
-      {/* Add Entry Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>

@@ -26,7 +26,6 @@ function Sidebar({ isOpen, onClose, currentPage = '' }) {
 
   return (
     <>
-      {/* Sidebar */}
       <div className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">
           <h3>Navigation</h3>
@@ -61,7 +60,6 @@ function Sidebar({ isOpen, onClose, currentPage = '' }) {
         </div>
       </div>
 
-      {/* Sidebar Overlay */}
       {isOpen && (
         <div className="sidebar-overlay" onClick={onClose} />
       )}

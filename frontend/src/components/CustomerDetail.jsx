@@ -40,11 +40,6 @@ function CustomerDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Temporarily commented out for Layout refactoring
-  // const actualSidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : sidebarOpen;
-  // const actualSetSidebarOpen = propSetSidebarOpen || setSidebarOpen;
-
   useEffect(() => {
     fetchCustomerData();
   }, [id]);
@@ -85,8 +80,7 @@ function CustomerDetail() {
     try {
       const response = await axios.get(`/api/customers/${id}/transactions`);
       setCustomer(response.data.customer);
-      
-      // Sort transactions by date
+
       const sortedTransactions = response.data.transactions.sort((a, b) => {
         const dateA = new Date(a.date || a.createdAt);
         const dateB = new Date(b.date || b.createdAt);
@@ -110,10 +104,6 @@ function CustomerDetail() {
 
     if (!sanitizedAmount || isNaN(parseFloat(sanitizedAmount)) || parseFloat(sanitizedAmount) <= 0) {
       newErrors.amount = 'Amount must be a positive number';
-    }
-
-    if (!newTransaction.description.trim()) {
-      // Description is optional, will default to 'NONE'
     }
 
     if (!newTransaction.date) {
@@ -153,8 +143,7 @@ function CustomerDetail() {
           description: description,
           date: newTransaction.date
         });
-        
-        // Add new transaction and re sort the list
+
         setTransactions(prev => {
           const newTransactions = [response.data, ...prev];
           return newTransactions.sort((a, b) => {
@@ -170,8 +159,7 @@ function CustomerDetail() {
           description: description,
           date: newTransaction.date
         });
-        
-        // Update transaction and re sort the list
+
         setTransactions(prev => {
           const updatedTransactions = prev.map(transaction => 
             transaction._id === selectedTransaction._id 
@@ -316,7 +304,6 @@ function CustomerDetail() {
   return (
     <Layout currentPage="/customer">
       <div className="container" style={{ marginBottom: '4rem' }}>
-        {/* Customer Header */}
         <div className="customer-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
             <button 
@@ -341,7 +328,6 @@ function CustomerDetail() {
           </div>
         </div>
 
-      {/* Transaction Actions */}
       <div className="transaction-actions">
           <button 
             onClick={() => openTransactionModal('debit')}
@@ -357,7 +343,6 @@ function CustomerDetail() {
           </button>
         </div>
 
-      {/* Search Bar */}
       <div style={{ 
         padding: '1rem',
         background: '#f7fafc',
@@ -586,7 +571,6 @@ function CustomerDetail() {
           </div>
         )}
 
-      {/* Transaction Action Modal */}
       {showActionModal && selectedTransaction && (
           <div style={{
             position: 'fixed',
@@ -873,7 +857,6 @@ function CustomerDetail() {
           </div>
         )}
 
-      {/* Confirmation Modal */}
       {showConfirmModal && selectedTransaction && (
           <div className="modal">
             <div className="modal-content" style={{ maxWidth: '400px' }}>

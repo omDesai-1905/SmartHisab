@@ -15,17 +15,14 @@ function Layout({ children, currentPage = '' }) {
 
   return (
     <div className="app-layout">
-      {/* Navbar */}
       <Navbar onToggleSidebar={toggleSidebar} />
       
-      {/* Sidebar */}
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={closeSidebar} 
         currentPage={currentPage}
       />
       
-      {/* Main Content */}
       <div className="main-content">
         {children}
       </div>

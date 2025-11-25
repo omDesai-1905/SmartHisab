@@ -467,8 +467,7 @@ function Analytics() {
             </div>
           </div>
 
-          {/* Total Credit (You Will Get) */}
-          <div className="analytics-card income">
+          <div className="analytics-card">
             <div className="analytics-card-content">
               <div className="card-value">{formatAmount(analyticsData.totalCreditAmount)}</div>
               <div className="card-label">Total Credit</div>
@@ -476,8 +475,7 @@ function Analytics() {
             </div>
           </div>
 
-          {/* Total Debit (You Will Give) */}
-          <div className="analytics-card expense">
+          <div className="analytics-card">
             <div className="analytics-card-content">
               <div className="card-value">{formatAmount(analyticsData.totalDebitAmount)}</div>
               <div className="card-label">Total Debit</div>
@@ -497,7 +495,6 @@ function Analytics() {
           </div>
         </div>
 
-        {/* Cashbook Summary */}
         <div className="cashbook-summary">
           <h3 className="cashbook-title">This Month's Cashbook Summary</h3>
           <div className="cashbook-grid">

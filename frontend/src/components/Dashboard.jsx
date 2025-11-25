@@ -9,7 +9,7 @@ function Dashboard() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState('add'); // 'add', 'edit'
+  const [modalType, setModalType] = useState('add');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [newCustomer, setNewCustomer] = useState({ name: '', phone: '' });
   const [errors, setErrors] = useState({});
@@ -22,7 +22,6 @@ function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
@@ -36,7 +35,6 @@ function Dashboard() {
     setNotification({ message, type });
   };
 
-  // Filter customers
   const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.phone.includes(searchTerm)
@@ -99,16 +97,14 @@ function Dashboard() {
           name: newCustomer.name.trim(),
           phone: newCustomer.phone.trim()
         });
-        
-        // Update customer in the list
+
         setCustomers(prev => prev.map(customer => 
           customer._id === selectedCustomer._id 
             ? { ...customer, ...response.data }
             : customer
         ));
       }
-      
-      // Reset form and close modal
+
       setNewCustomer({ name: '', phone: '' });
       setSelectedCustomer(null);
       setErrors({});
@@ -147,15 +143,12 @@ function Dashboard() {
   const confirmDeleteCustomer = async () => {
     try {
       await axios.delete(`/api/customers/${customerToDelete._id}`);
-      
-      // Remove customer from the list
+
       setCustomers(prev => prev.filter(c => c._id !== customerToDelete._id));
-      
-      // Close modal
+
       setShowConfirmModal(false);
       setCustomerToDelete(null);
-      
-      //success notification
+
       showNotification(`Customer "${customerToDelete.name}" deleted successfully`, 'success');
     } catch (error) {
       console.error('Error deleting customer:', error);
@@ -197,7 +190,6 @@ function Dashboard() {
   return (
     <Layout currentPage="/dashboard">
       <div className="container">
-        {/* Dashboard Header */}
         <div className="dashboard-header">
           <h1 className="dashboard-title">Customer List</h1>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -229,7 +221,6 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Search Bar */}
         <div style={{ 
           padding: '1rem',
           background: '#f7fafc',
@@ -338,7 +329,6 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Add/Edit Customer Modal */}
         {showModal && (
           <div className="modal">
             <div className="modal-content">
@@ -431,7 +421,6 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Confirmation Modal */}
         {showConfirmModal && customerToDelete && (
           <div className="modal">
             <div className="modal-content" style={{ maxWidth: '400px' }}>
@@ -480,7 +469,6 @@ function Dashboard() {
         )}
       </div>
 
-      {/* Notification */}
       <Notification 
         notification={notification} 
         onClose={() => setNotification(null)} 

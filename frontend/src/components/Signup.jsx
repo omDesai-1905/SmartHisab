@@ -20,14 +20,12 @@ function Signup() {
   const validateForm = () => {
     const newErrors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors['name'] = 'Name is required';
     } else if (formData.name.trim().length < 2) {
-      newErrors['name'] = 'Name must be at least 2 characters';
+      newErrors.name = 'Name must be at least 2 characters';
     }
 
-    // Email validation
     if (!formData.email.trim()) {
       newErrors['email'] = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -38,10 +36,9 @@ function Signup() {
     if (!formData.mobileNumber.trim()) {
       newErrors['mobileNumber'] = 'Mobile number is required';
     } else if (!/^\d{10}$/.test(formData.mobileNumber.trim())) {
-      newErrors['mobileNumber'] = 'Mobile number must be 10 digits';
+      newErrors.mobile = 'Mobile number must be 10 digits';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors['password'] = 'Password is required';
     } else if (formData.password.length < 6) {
