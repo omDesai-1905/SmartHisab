@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../model/User.model.js";
+import User from "../models/User.model.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -204,9 +204,10 @@ export const deleteAccount = async (req, res) => {
     }
 
     // Import the models we need to delete related data
-    const Customer = (await import("../model/Customer.model.js")).default;
-    const Transaction = (await import("../model/Transaction.model.js")).default;
-    const Cashbook = (await import("../model/Cashbook.model.js")).default;
+    const Customer = (await import("../models/Customer.model.js")).default;
+    const Transaction = (await import("../models/Transaction.model.js"))
+      .default;
+    const Cashbook = (await import("../models/Cashbook.model.js")).default;
 
     // Delete all related data for this user
     await Promise.all([

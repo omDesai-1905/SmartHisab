@@ -4,7 +4,7 @@ import {
   getUserMessages,
 } from "../controllers/messageController.js";
 import authenticateToken from "../middlewares/authMiddleware.js";
-import { validateMessage } from "../admin/middlewares/adminValidation.js";
+import { validateMessage } from "../../admin/middlewares/adminValidation.js";
 
 const router = express.Router();
 

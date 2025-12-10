@@ -1,4 +1,4 @@
-import Cashbook from "../model/Cashbook.model.js";
+import Cashbook from "../models/Cashbook.model.js";
 
 // Get all cashbook entries for a user
 export const getCashbookEntries = async (req, res) => {

@@ -317,6 +317,46 @@ function CustomerDetail() {
           <div className="customer-name">{customer.name}</div>
           <div className="customer-phone">📞 {customer.phone}</div>
           
+          {customer.customerId && (
+            <div style={{ 
+              marginTop: '1rem', 
+              padding: '1rem',
+              background: '#f0f9ff',
+              borderRadius: '8px',
+              border: '2px solid #3b82f6'
+            }}>
+              <div style={{ marginBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.9rem', color: '#1e40af', fontWeight: '600' }}>
+                  🔑 Customer Portal Login Credentials
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Customer ID: </span>
+                  <span style={{ 
+                    fontSize: '1rem', 
+                    fontWeight: '600', 
+                    color: '#1e293b',
+                    fontFamily: 'monospace'
+                  }}>
+                    {customer.customerId}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Password: </span>
+                  <span style={{ 
+                    fontSize: '1rem', 
+                    fontWeight: '600', 
+                    color: '#dc2626',
+                    fontFamily: 'monospace'
+                  }}>
+                    {customer.password || '••••••••'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div style={{ marginTop: '1rem' }}>
             <span style={{ fontSize: '1.1rem', color: '#718096' }}>Current Balance: </span>
             <span className={`${balance > 0 ? 'balance-positive' : balance < 0 ? 'balance-negative' : ''}`} style={{ fontSize: '1.3rem', fontWeight: '600' }}>

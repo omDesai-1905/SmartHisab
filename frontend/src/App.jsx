@@ -10,6 +10,11 @@ import Profile from './components/Profile';
 import Analytics from './components/Analytics';
 import Cashbook from './components/Cashbook';
 import ContactUs from './components/ContactUs';
+import CustomerMessagesList from './components/CustomerMessagesList';
+import CustomerLogin from './customer/CustomerLogin';
+import CustomerPortal from './customer/CustomerPortal';
+import CustomerMessages from './customer/CustomerMessages';
+import CustomerTransactions from './customer/CustomerTransactions';
 
 // Admin Components
 import AdminLogin from './admin/AdminLogin';
@@ -118,6 +123,20 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/customer-messages" 
+                element={
+                  <ProtectedRoute>
+                    <CustomerMessagesList />
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* Customer Portal Routes */}
+              <Route path="/customer/login" element={<CustomerLogin />} />
+              <Route path="/customer/portal" element={<CustomerPortal />} />
+              <Route path="/customer/transactions" element={<CustomerTransactions />} />
+              <Route path="/customer/messages" element={<CustomerMessages />} />
 
               {/* Admin Routes */}
               <Route 

@@ -1,5 +1,5 @@
-import Customer from "../model/Customer.model.js";
-import Transaction from "../model/Transaction.model.js";
+import Customer from "../models/Customer.model.js";
+import Transaction from "../models/Transaction.model.js";
 
 export const getCustomerTransactions = async (req, res) => {
   try {

@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import User from "../../model/User.model.js";
-import Customer from "../../model/Customer.model.js";
-import Transaction from "../../model/Transaction.model.js";
-import Cashbook from "../../model/Cashbook.model.js";
-import Message from "../../model/Message.model.js";
+import User from "../../user/models/User.model.js";
+import Customer from "../../user/models/Customer.model.js";
+import Transaction from "../../user/models/Transaction.model.js";
+import Cashbook from "../../user/models/Cashbook.model.js";
+import Message from "../../user/models/Message.model.js";
 import dotenv from "dotenv";
 
 dotenv.config();

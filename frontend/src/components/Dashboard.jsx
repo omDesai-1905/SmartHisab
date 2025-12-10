@@ -92,6 +92,7 @@ function Dashboard() {
         });
 
         setCustomers(prev => [...prev, { ...response.data, balance: 0 }]);
+        
       } else {
         response = await axios.post(`/api/customers/${selectedCustomer._id}`, {
           name: newCustomer.name.trim(),

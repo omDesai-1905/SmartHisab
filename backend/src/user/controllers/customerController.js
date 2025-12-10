@@ -1,5 +1,22 @@
-import Customer from "../model/Customer.model.js";
-import Transaction from "../model/Transaction.model.js";
+import Customer from "../models/Customer.model.js";
+import Transaction from "../models/Transaction.model.js";
+import jwt from "jsonwebtoken";
+
+const generateCustomerId = (name) => {
+  const cleanName = name.replace(/\s+/g, "").toLowerCase();
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  return `${cleanName}${randomNum}`;
+};
+
+const generatePassword = () => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let password = "";
+  for (let i = 0; i < 8; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+};
 
 export const getAllCustomers = async (req, res) => {
   try {
@@ -73,15 +90,32 @@ export const createCustomer = async (req, res) => {
   try {
     const { name, phone } = req.body;
 
+    const customerId = generateCustomerId(name);
+    const password = generatePassword();
+
     const customer = new Customer({
       name,
       phone,
+      customerId,
+      password,
       userId: req.user.userId,
       userEmail: req.user.email,
     });
 
     await customer.save();
-    res.status(201).json(customer);
+
+    res.status(201).json({
+      _id: customer._id,
+      name: customer.name,
+      phone: customer.phone,
+      customerId: customer.customerId,
+      temporaryPassword: password,
+      userId: customer.userId,
+      userEmail: customer.userEmail,
+      createdAt: customer.createdAt,
+      message:
+        "Customer created successfully. Please note the Customer ID and Password for customer portal access.",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
