@@ -80,32 +80,10 @@ const CustomerLogin = () => {
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            width: '90px',
-            height: '90px',
-            borderRadius: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '3rem',
-            margin: '0 auto 1.5rem',
-            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
-            transform: 'rotate(-5deg)',
-            transition: 'transform 0.3s ease'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'rotate(0deg) scale(1.05)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'rotate(-5deg) scale(1)'}
-          >
-            <span style={{ transform: 'rotate(5deg)' }}>👤</span>
-          </div>
           <h1 style={{
             fontSize: '2rem',
             fontWeight: '800',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            marginBottom: '0.5rem',
+            color: '#764ba2',
             letterSpacing: '-0.5px'
           }}>
             Customer Portal
@@ -256,7 +234,7 @@ const CustomerLogin = () => {
             style={{
               width: '100%',
               padding: '1.125rem',
-              background: loading ? '#9ca3af' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: loading ? '#9ca3af' : '#696FC7',
               color: 'white',
               border: 'none',
               borderRadius: '12px',
@@ -306,42 +284,8 @@ const CustomerLogin = () => {
         </form>
 
         {/* Info Box */}
-        <div style={{
-          marginTop: '2rem',
-          padding: '1.25rem',
-          background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
-          borderRadius: '12px',
-          border: '2px solid #c4b5fd',
-          textAlign: 'center'
-        }}>
-          <p style={{
-            fontSize: '0.875rem',
-            color: '#5b21b6',
-            margin: 0,
-            fontWeight: '600',
-            lineHeight: '1.6'
-          }}>
-            <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>💡</span>
-            Don't have credentials? Contact your business owner to get access
-          </p>
-        </div>
+        
       </div>
-
-      {/* Add keyframe animations */}
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-10px); }
-          75% { transform: translateX(10px); }
-        }
-      `}</style>
     </div>
   );
 };

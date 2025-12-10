@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import CustomerLayout from "./CustomerLayout";
 
 const CustomerMessages = () => {
   const [messages, setMessages] = useState([]);
-  const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageForm, setMessageForm] = useState({
@@ -16,14 +16,12 @@ const CustomerMessages = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("customerToken");
-    const customerData = localStorage.getItem("customerData");
 
-    if (!token || !customerData) {
+    if (!token) {
       navigate("/customer/login");
       return;
     }
 
-    setCustomer(JSON.parse(customerData));
     fetchMessages(token);
   }, [navigate]);
 
@@ -41,17 +39,11 @@ const CustomerMessages = () => {
     } catch (error) {
       console.error("Error fetching messages:", error);
       if (error.response?.status === 401) {
-        handleLogout();
+        navigate("/customer/login");
       }
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("customerToken");
-    localStorage.removeItem("customerData");
-    navigate("/customer/login");
   };
 
   const handleSendMessage = async (e) => {
@@ -81,172 +73,47 @@ const CustomerMessages = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f5f7fa' }}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold text-gray-700">Loading...</p>
+      <CustomerLayout currentPage="messages">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-xl font-semibold text-gray-700">Loading...</p>
+          </div>
         </div>
-      </div>
+      </CustomerLayout>
     );
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f7fa' }}>
-      {/* Sidebar */}
-      <div style={{ width: '280px', background: 'white', borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid #e5e7eb' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-            <div style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: 'white', width: '50px', height: '50px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: '700' }}>
-              {customer?.name?.charAt(0).toUpperCase()}
-            </div>
-            <div style={{ flex: 1 }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#1f2937', margin: 0, lineHeight: 1.2 }}>
-                {customer?.name}
-              </h2>
-              <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: '0.25rem 0 0 0' }}>
-                {customer?.customerId}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ flex: 1, padding: '1rem' }}>
-          <nav>
+    <CustomerLayout currentPage="messages">
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
+        <div style={{ background: 'white', borderRadius: '12px', padding: '2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
+              Messages
+            </h2>
             <button
-              onClick={() => navigate("/customer/portal")}
+              onClick={() => setShowMessageModal(true)}
               style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: 'transparent',
-                color: '#6b7280',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem'
-              }}
-            >
-              <span style={{ fontSize: '1.25rem' }}>🏠</span>
-              Dashboard
-            </button>
-            <button
-              onClick={() => navigate("/customer/transactions")}
-              style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: 'transparent',
-                color: '#6b7280',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem'
-              }}
-            >
-              <span style={{ fontSize: '1.25rem' }}>📋</span>
-              Transaction History
-            </button>
-            <button
-              style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
                 background: '#3b82f6',
                 color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                border: 'none',
                 fontWeight: '600',
-                fontSize: '0.95rem',
                 cursor: 'pointer',
-                textAlign: 'left',
+                fontSize: '0.95rem',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem'
+                gap: '0.5rem'
               }}
             >
-              <span style={{ fontSize: '1.25rem' }}>💬</span>
-              Messages
-              {messages.filter(m => m.status === 'pending').length > 0 && (
-                <span style={{
-                  background: '#ef4444',
-                  color: 'white',
-                  fontSize: '0.7rem',
-                  padding: '0.15rem 0.5rem',
-                  borderRadius: '10px',
-                  fontWeight: '700',
-                  marginLeft: 'auto'
-                }}>
-                  {messages.filter(m => m.status === 'pending').length}
-                </span>
-              )}
+              <span style={{ fontSize: '1.2rem' }}>+</span>
+              New Message
             </button>
-          </nav>
-        </div>
+          </div>
 
-        <div style={{ padding: '1rem', borderTop: '1px solid #e5e7eb' }}>
-          <button
-            onClick={handleLogout}
-            style={{
-              width: '100%',
-              padding: '0.875rem 1rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#ef4444',
-              color: 'white',
-              fontWeight: '600',
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem'
-            }}
-          >
-            <span>🚪</span>
-            Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
-          <div style={{ background: 'white', borderRadius: '12px', padding: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
-                Messages
-              </h2>
-              <button
-                onClick={() => setShowMessageModal(true)}
-                style={{
-                  background: '#3b82f6',
-                  color: 'white',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
-                  border: 'none',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
-              >
-                <span style={{ fontSize: '1.2rem' }}>+</span>
-                New Message
-              </button>
-            </div>
-
-            {messages.length === 0 ? (
+          {messages.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '4rem 0' }}>
                 <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💬</div>
                 <p style={{ fontSize: '1.25rem', color: '#6b7280', marginBottom: '0.5rem' }}>
@@ -326,7 +193,6 @@ const CustomerMessages = () => {
                 ))}
               </div>
             )}
-          </div>
         </div>
       </div>
 
@@ -473,7 +339,7 @@ const CustomerMessages = () => {
           </div>
         </div>
       )}
-    </div>
+    </CustomerLayout>
   );
 };
 
