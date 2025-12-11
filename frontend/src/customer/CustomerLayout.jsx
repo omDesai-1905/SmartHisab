@@ -5,6 +5,7 @@ import axios from "axios";
 const CustomerLayout = ({ children, currentPage }) => {
   const [customer, setCustomer] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,20 +46,36 @@ const CustomerLayout = ({ children, currentPage }) => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f7fa' }}>
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-[99]" 
+          onClick={() => setSidebarOpen(false)} 
+        />
+      )}
+
       {/* Sidebar */}
-      <div style={{ width: '280px', background: 'white', borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' }}>
+      <div className={`fixed top-0 left-0 h-full w-[280px] bg-white border-r border-gray-200 flex flex-col z-[100] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Sidebar Header */}
-        <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid #e5e7eb' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-            <div style={{ background: '#9CCAD9', color: 'white', width: '50px', height: '50px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: '700' }}>
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-end mb-2">
+            <button 
+              className="text-3xl text-gray-600 hover:text-gray-800 leading-none"
+              onClick={() => setSidebarOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="bg-primary text-white w-[50px] h-[50px] rounded-xl flex items-center justify-center text-2xl font-bold">
               {customer?.name?.charAt(0).toUpperCase()}
             </div>
-            <div style={{ flex: 1 }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#1f2937', margin: 0, lineHeight: 1.2 }}>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold text-gray-800 leading-tight">
                 {customer?.name}
               </h2>
-              <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: '0.25rem 0 0 0' }}>
+              <p className="text-xs text-gray-500 mt-1">
                 {customer?.customerId}
               </p>
             </div>
@@ -66,85 +83,51 @@ const CustomerLayout = ({ children, currentPage }) => {
         </div>
 
         {/* Navigation */}
-        <div style={{ flex: 1, padding: '1rem' }}>
+        <div className="flex-1 p-4">
           <nav>
             <button
-              onClick={() => navigate("/customer/portal")}
-              style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'portal' ? '#9CCAD9' : 'transparent',
-                color: currentPage === 'portal' ? '#2F3E46' : '#6b7280',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                transition: 'all 0.2s'
+              onClick={() => {
+                navigate("/customer/portal");
+                setSidebarOpen(false);
               }}
+              className={`w-full py-3.5 px-4 rounded-lg border-none font-semibold text-[0.95rem] cursor-pointer text-left mb-2 flex items-center gap-3 transition-all ${
+                currentPage === 'portal' 
+                  ? 'bg-primary text-primary-dark' 
+                  : 'bg-transparent text-gray-500 hover:bg-gray-50'
+              }`}
             >
-              <span style={{ fontSize: '1.25rem' }}>🏠</span>
+              <span className="text-xl">🏠</span>
               Dashboard
             </button>
             <button
-              onClick={() => navigate("/customer/transactions")}
-              style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'transactions' ? '#9CCAD9' : 'transparent',
-                color: currentPage === 'transactions' ? '#2F3E46' : '#6b7280',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                transition: 'all 0.2s'
+              onClick={() => {
+                navigate("/customer/transactions");
+                setSidebarOpen(false);
               }}
+              className={`w-full py-3.5 px-4 rounded-lg border-none font-semibold text-[0.95rem] cursor-pointer text-left mb-2 flex items-center gap-3 transition-all ${
+                currentPage === 'transactions' 
+                  ? 'bg-primary text-primary-dark' 
+                  : 'bg-transparent text-gray-500 hover:bg-gray-50'
+              }`}
             >
-              <span style={{ fontSize: '1.25rem' }}>📋</span>
+              <span className="text-xl">📋</span>
               Transaction History
             </button>
             <button
-              onClick={() => navigate("/customer/messages")}
-              style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'messages' ? '#9CCAD9' : 'transparent',
-                color: currentPage === 'messages' ? '#2F3E46' : '#6b7280',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                textAlign: 'left',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                transition: 'all 0.2s'
+              onClick={() => {
+                navigate("/customer/messages");
+                setSidebarOpen(false);
               }}
+              className={`w-full py-3.5 px-4 rounded-lg border-none font-semibold text-[0.95rem] cursor-pointer text-left flex items-center gap-3 transition-all ${
+                currentPage === 'messages' 
+                  ? 'bg-primary text-primary-dark' 
+                  : 'bg-transparent text-gray-500 hover:bg-gray-50'
+              }`}
             >
-              <span style={{ fontSize: '1.25rem' }}>💬</span>
+              <span className="text-xl">💬</span>
               Messages
               {messages.filter(m => m.status === 'pending').length > 0 && (
-                <span style={{
-                  background: '#ef4444',
-                  color: 'white',
-                  fontSize: '0.7rem',
-                  padding: '0.15rem 0.5rem',
-                  borderRadius: '10px',
-                  fontWeight: '700',
-                  marginLeft: 'auto'
-                }}>
+                <span className="bg-red-500 text-white text-[0.7rem] py-0.5 px-2 rounded-full font-bold ml-auto">
                   {messages.filter(m => m.status === 'pending').length}
                 </span>
               )}
@@ -153,24 +136,10 @@ const CustomerLayout = ({ children, currentPage }) => {
         </div>
 
         {/* Logout Button */}
-        <div style={{ padding: '1rem', borderTop: '1px solid #e5e7eb' }}>
+        <div className="p-4 border-t border-gray-200">
           <button
             onClick={handleLogout}
-            style={{
-              width: '100%',
-              padding: '0.875rem 1rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#ef4444',
-              color: 'white',
-              fontWeight: '600',
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem'
-            }}
+            className="w-full py-3.5 px-4 rounded-lg border-none bg-red-500 text-white font-semibold text-[0.95rem] cursor-pointer flex items-center justify-center gap-2 hover:bg-red-600 transition-colors"
           >
             <span>🚪</span>
             Logout
@@ -179,7 +148,21 @@ const CustomerLayout = ({ children, currentPage }) => {
       </div>
 
       {/* Main Content Area */}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div className="flex-1 overflow-y-auto">
+        {/* Mobile Menu Button */}
+        <div className="sticky top-0 bg-white shadow-md z-50 p-4 flex items-center gap-4">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-2xl text-gray-700 hover:text-gray-900"
+          >
+            ☰
+          </button>
+          <h1 className="text-xl font-bold text-gray-800">
+            {currentPage === 'portal' && 'Dashboard'}
+            {currentPage === 'transactions' && 'Transaction History'}
+            {currentPage === 'messages' && 'Messages'}
+          </h1>
+        </div>
         {children}
       </div>
     </div>

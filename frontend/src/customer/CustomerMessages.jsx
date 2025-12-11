@@ -74,8 +74,8 @@ const CustomerMessages = () => {
   if (loading) {
     return (
       <CustomerLayout currentPage="messages">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-          <div style={{ textAlign: 'center' }}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
             <p className="text-xl font-semibold text-gray-700">Loading...</p>
           </div>
@@ -86,90 +86,71 @@ const CustomerMessages = () => {
 
   return (
     <CustomerLayout currentPage="messages">
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
-        <div style={{ background: 'white', borderRadius: '12px', padding: '2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
+      <div className="max-w-7xl mx-auto p-8">
+        <div className="bg-white rounded-xl p-8">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 m-0">
               Messages
             </h2>
             <button
               onClick={() => setShowMessageModal(true)}
-              style={{
-                background: '#3b82f6',
-                color: 'white',
-                padding: '0.75rem 1.5rem',
-                borderRadius: '8px',
-                border: 'none',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontSize: '0.95rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
+              className="bg-blue-500 text-white px-6 py-3 rounded-lg border-none font-semibold cursor-pointer text-[0.95rem] flex items-center gap-2 hover:bg-blue-600 transition-colors"
             >
-              <span style={{ fontSize: '1.2rem' }}>+</span>
+              <span className="text-xl">+</span>
               New Message
             </button>
           </div>
 
           {messages.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💬</div>
-                <p style={{ fontSize: '1.25rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">💬</div>
+                <p className="text-xl text-gray-500 mb-2">
                   No messages yet
                 </p>
-                <p style={{ color: '#9ca3af', marginBottom: '2rem' }}>
+                <p className="text-gray-400 mb-8">
                   Click "New Message" to contact your business owner
                 </p>
               </div>
             ) : (
-              <div style={{ display: 'grid', gap: '1rem' }}>
+              <div className="grid gap-4">
                 {messages.map((msg) => (
                   <div
                     key={msg._id}
-                    style={{
-                      padding: '1.5rem',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '12px',
-                      background: '#fafafa'
-                    }}
+                    className="p-6 border border-gray-200 rounded-xl bg-[#fafafa]"
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
-                      <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-lg font-bold text-gray-800 m-0">
                         {msg.subject}
                       </h3>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div className="flex gap-2">
                         <span
-                          style={{
-                            fontSize: '0.75rem',
-                            padding: '0.35rem 0.75rem',
-                            borderRadius: '6px',
-                            fontWeight: '700',
-                            background: msg.type === 'complaint' ? '#fee2e2' : msg.type === 'dispute' ? '#fed7aa' : '#dbeafe',
-                            color: msg.type === 'complaint' ? '#991b1b' : msg.type === 'dispute' ? '#9a3412' : '#1e40af'
-                          }}
+                          className={`text-xs px-3 py-1.5 rounded-md font-bold ${
+                            msg.type === 'complaint' 
+                              ? 'bg-red-100 text-red-900' 
+                              : msg.type === 'dispute' 
+                              ? 'bg-orange-100 text-orange-900' 
+                              : 'bg-blue-100 text-blue-900'
+                          }`}
                         >
                           {msg.type.toUpperCase()}
                         </span>
                         <span
-                          style={{
-                            fontSize: '0.75rem',
-                            padding: '0.35rem 0.75rem',
-                            borderRadius: '6px',
-                            fontWeight: '700',
-                            background: msg.status === 'resolved' ? '#d1fae5' : msg.status === 'in-progress' ? '#fef3c7' : '#e5e7eb',
-                            color: msg.status === 'resolved' ? '#065f46' : msg.status === 'in-progress' ? '#92400e' : '#374151'
-                          }}
+                          className={`text-xs px-3 py-1.5 rounded-md font-bold ${
+                            msg.status === 'resolved' 
+                              ? 'bg-emerald-100 text-emerald-900' 
+                              : msg.status === 'in-progress' 
+                              ? 'bg-amber-100 text-amber-900' 
+                              : 'bg-gray-200 text-gray-700'
+                          }`}
                         >
                           {msg.status.toUpperCase()}
                         </span>
                       </div>
                     </div>
-                    <p style={{ fontSize: '0.95rem', color: '#4b5563', margin: '0 0 1rem 0', lineHeight: '1.6' }}>
+                    <p className="text-[0.95rem] text-gray-600 m-0 mb-4 leading-relaxed">
                       {msg.message}
                     </p>
-                    <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0 }}>
+                    <p className="text-[0.85rem] text-gray-400 m-0">
                       📅 {new Date(msg.createdAt).toLocaleDateString('en-GB', {
                         day: '2-digit',
                         month: 'short',
@@ -180,11 +161,11 @@ const CustomerMessages = () => {
                       })}
                     </p>
                     {msg.reply && (
-                      <div style={{ marginTop: '1rem', padding: '1rem', background: '#dbeafe', borderRadius: '8px', borderLeft: '4px solid #3b82f6' }}>
-                        <p style={{ fontSize: '0.85rem', fontWeight: '700', color: '#1e40af', margin: '0 0 0.5rem 0' }}>
+                      <div className="mt-4 p-4 bg-blue-100 rounded-lg border-l-4 border-blue-500">
+                        <p className="text-[0.85rem] font-bold text-blue-900 m-0 mb-2">
                           💬 Reply from Business Owner:
                         </p>
-                        <p style={{ fontSize: '0.95rem', color: '#1e3a8a', margin: 0, lineHeight: '1.6' }}>
+                        <p className="text-[0.95rem] text-blue-950 m-0 leading-relaxed">
                           {msg.reply}
                         </p>
                       </div>
@@ -199,53 +180,27 @@ const CustomerMessages = () => {
       {/* Message Modal */}
       {showMessageModal && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '1rem'
-          }}
+          className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-[1000] p-4"
           onClick={() => setShowMessageModal(false)}
         >
           <div
-            style={{
-              background: 'white',
-              borderRadius: '16px',
-              maxWidth: '600px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto'
-            }}
+            className="bg-white rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ background: '#3b82f6', color: 'white', padding: '1.5rem', borderRadius: '16px 16px 0 0' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '700', margin: 0 }}>Send New Message</h3>
-              <p style={{ opacity: 0.9, margin: '0.5rem 0 0 0' }}>Contact your business owner</p>
+            <div className="bg-blue-500 text-white p-6 rounded-t-2xl">
+              <h3 className="text-2xl font-bold m-0">Send New Message</h3>
+              <p className="opacity-90 mt-2 mb-0">Contact your business owner</p>
             </div>
 
-            <form onSubmit={handleSendMessage} style={{ padding: '1.5rem' }}>
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>
+            <form onSubmit={handleSendMessage} className="p-6">
+              <div className="mb-6">
+                <label className="block font-semibold text-gray-700 mb-2">
                   Message Type
                 </label>
                 <select
                   value={messageForm.type}
                   onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    outline: 'none'
-                  }}
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   required
                 >
                   <option value="general">General Inquiry</option>
@@ -254,83 +209,47 @@ const CustomerMessages = () => {
                 </select>
               </div>
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>
+              <div className="mb-6">
+                <label className="block font-semibold text-gray-700 mb-2">
                   Subject
                 </label>
                 <input
                   type="text"
                   value={messageForm.subject}
                   onChange={(e) => setMessageForm({ ...messageForm, subject: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    outline: 'none'
-                  }}
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   placeholder="Brief description"
                   required
                 />
               </div>
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>
+              <div className="mb-6">
+                <label className="block font-semibold text-gray-700 mb-2">
                   Message
                 </label>
                 <textarea
                   value={messageForm.message}
                   onChange={(e) => setMessageForm({ ...messageForm, message: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    outline: 'none',
-                    resize: 'vertical',
-                    minHeight: '120px'
-                  }}
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base outline-none resize-y min-h-[120px] focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   placeholder="Write your message here..."
                   required
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem' }}>
+              <div className="flex gap-4">
                 <button
                   type="button"
                   onClick={() => {
                     setShowMessageModal(false);
                     setMessageForm({ subject: "", message: "", type: "general" });
                   }}
-                  style={{
-                    flex: 1,
-                    padding: '0.875rem',
-                    border: '2px solid #d1d5db',
-                    borderRadius: '8px',
-                    background: 'white',
-                    color: '#374151',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    fontSize: '1rem'
-                  }}
+                  className="flex-1 px-3.5 py-3.5 border-2 border-gray-300 rounded-lg bg-white text-gray-700 font-semibold cursor-pointer text-base hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  style={{
-                    flex: 1,
-                    padding: '0.875rem',
-                    border: 'none',
-                    borderRadius: '8px',
-                    background: '#3b82f6',
-                    color: 'white',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    fontSize: '1rem'
-                  }}
+                  className="flex-1 px-3.5 py-3.5 border-none rounded-lg bg-blue-500 text-white font-semibold cursor-pointer text-base hover:bg-blue-600 transition-colors"
                 >
                   Send Message
                 </button>

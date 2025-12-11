@@ -12,36 +12,28 @@ function Navbar({ onToggleSidebar }) {
   };
 
   return (
-    <nav className="navbar">
-      <div className="container">
-        <div className="navbar-content">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+      <div className="max-w-7xl mx-auto px-5">
+        <div className="flex justify-between items-center py-4">
+          <div className="flex items-center gap-4">
             {onToggleSidebar && (
               <button 
-                className="sidebar-toggle"
+                className="text-2xl p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 onClick={onToggleSidebar}
               >
                 ☰
               </button>
             )}
-            <div className="navbar-brand" style={{ 
-              fontFamily: 'Georgia, "Times New Roman", serif',
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-              color: '#2563eb',
-              textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-              letterSpacing: '0.5px'
-            }}>
+            <div className="font-['Georgia','Times_New_Roman',serif] font-bold text-2xl text-blue-600 drop-shadow-sm tracking-wide">
               SmartHisab
             </div>
           </div>
           
-          <div className="navbar-user">
-            <span>Welcome, {user?.name}</span>
+          <div className="flex items-center gap-4">
+            <span className="hidden sm:inline text-gray-700">Welcome, {user?.name}</span>
             <button 
               onClick={handleLogout}
-              className="btn btn-secondary"
-              style={{ padding: '0.5rem 1rem' }}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
             >
               Logout
             </button>

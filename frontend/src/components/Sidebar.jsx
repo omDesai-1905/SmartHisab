@@ -27,42 +27,48 @@ function Sidebar({ isOpen, onClose, currentPage = '' }) {
 
   return (
     <>
-      <div className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <h3>Navigation</h3>
-          <button className="sidebar-close" onClick={onClose}>
+      <div className={`fixed top-0 left-0 h-full w-[280px] bg-white shadow-2xl transform transition-transform duration-300 z-[100] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex justify-between items-center p-6 border-b border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800">Navigation</h3>
+          <button className="text-3xl text-gray-600 hover:text-gray-800 leading-none" onClick={onClose}>
             ×
           </button>
         </div>
         
-        <div className="sidebar-content">
-          <div className="sidebar-nav">
+        <div className="flex flex-col h-full pt-6 lg:pt-4">
+          <div className="flex-1 px-4">
             {menuItems.map((item) => (
               <button
                 key={item.path}
-                className={`sidebar-nav-item ${currentPage === item.path ? 'active' : ''}`}
+                className={`w-full text-left px-4 py-3.5 rounded-lg mb-2 font-medium transition-all flex items-center gap-3 ${
+                  currentPage === item.path 
+                    ? 'bg-primary text-primary-dark shadow-md' 
+                    : 'bg-transparent text-gray-600 hover:bg-gray-100'
+                }`}
                 onClick={() => handleNavigation(item.path)}
               >
-                {item.icon} {item.label}
+                <span className="text-xl">{item.icon}</span>
+                <span>{item.label}</span>
               </button>
             ))}
             
-            <button className="sidebar-nav-item logout" onClick={handleLogout}>
-              🚪 Logout
+            <button className="w-full text-left px-4 py-3.5 rounded-lg mb-2 font-medium transition-all flex items-center gap-3 bg-transparent text-red-600 hover:bg-red-50 mt-4" onClick={handleLogout}>
+              <span className="text-xl">🚪</span>
+              <span>Logout</span>
             </button>
           </div>
 
-          <div className="sidebar-user">
-            <div className="sidebar-user-info">
-              <strong>{user?.name}</strong>
-              <span>{user?.email}</span>
+          <div className="border-t border-gray-200 p-4 mt-auto">
+            <div className="flex flex-col">
+              <strong className="text-gray-800 mb-1">{user?.name}</strong>
+              <span className="text-sm text-gray-500">{user?.email}</span>
             </div>
           </div>
         </div>
       </div>
 
       {isOpen && (
-        <div className="sidebar-overlay" onClick={onClose} />
+        <div className="fixed inset-0 bg-black/50 z-[99]" onClick={onClose} />
       )}
     </>
   );

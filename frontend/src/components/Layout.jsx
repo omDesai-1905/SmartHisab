@@ -14,17 +14,19 @@ function Layout({ children, currentPage = '' }) {
   };
 
   return (
-    <div className="app-layout">
+    <div className="min-h-screen bg-gray-50">
       <Navbar onToggleSidebar={toggleSidebar} />
       
-      <Sidebar 
-        isOpen={sidebarOpen} 
-        onClose={closeSidebar} 
-        currentPage={currentPage}
-      />
-      
-      <div className="main-content">
-        {children}
+      <div className="flex pt-16">
+        <Sidebar 
+          isOpen={sidebarOpen} 
+          onClose={closeSidebar} 
+          currentPage={currentPage}
+        />
+        
+        <div className="flex-1 p-6 overflow-x-hidden">
+          {children}
+        </div>
       </div>
     </div>
   );

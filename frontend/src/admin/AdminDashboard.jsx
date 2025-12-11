@@ -49,50 +49,44 @@ function AdminDashboard() {
 
   return (
     <AdminLayout>
-        <div className="max-w-screen-xl mx-auto">
-        <div className="text-xl mb-10">
-        <h1 className="text-gray-800 text-3xl font-bold mb-5">Dashboard Overview</h1><br/>
-        <p className="text-gray-600 text-base p-10">Welcome to SmartHisab Admin Panel</p><br />
+      <div className="max-w-screen-xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-gray-800 text-3xl font-bold mb-2">Dashboard Overview</h1>
+          <p className="text-gray-600 text-base">Welcome to SmartHisab Admin Panel</p>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-7 mb-10 md:grid-cols-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div 
-            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-[#667eea] cursor-pointer "
+            className="bg-white rounded-xl p-6 shadow-md border-2 border-[#667eea] cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => navigate('/admin/users')}
           >
-            <div className="card-content h-[130px]">
-              <h3 className="text-gray-800 text-lg font-semibold mb-4" style={{ marginLeft: '20px' }}>Total Users</h3>
-              <p className="text-gray-900 text-4xl font-bold block mb-4" style={{ marginLeft: '20px' }}>{stats.totalUsers}</p>
-              <span className="text-gray-600 text-sm" style={{ marginLeft: '20px' }}>Click to view all users</span>
-            </div>
+            <h3 className="text-gray-800 text-lg font-semibold mb-3">Total Users</h3>
+            <p className="text-gray-900 text-4xl font-bold mb-2">{stats.totalUsers}</p>
+            <span className="text-gray-600 text-sm">Click to view all users</span>
           </div>
 
-          {/* User Messages Card */}
           <div 
-            className="bg-white rounded-[12px] p-[30px] shadow-md border-2 border-green-500 cursor-pointer"
+            className="bg-white rounded-xl p-6 shadow-md border-2 border-green-500 cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => navigate('/admin/messages')}
           >
-            <div className="card-content h-[130px]">
-              <h3 className="text-gray-800 text-lg font-semibold mb-4" style={{ marginLeft: '20px' }}>User Messages</h3>
-              <p className="text-gray-900 text-4xl font-bold block mb-4]" style={{ marginLeft: '20px' }}>{stats.totalMessages}</p>
-              <span className="text-gray-600 text-sm" style={{ marginLeft: '20px' }}>Click to view messages</span>
-            </div>
+            <h3 className="text-gray-800 text-lg font-semibold mb-3">User Messages</h3>
+            <p className="text-gray-900 text-4xl font-bold mb-2">{stats.totalMessages}</p>
+            <span className="text-gray-600 text-sm">Click to view messages</span>
           </div>
         </div>
-        <br />
-        <div className="bg-white rounded-xl p-8 shadow-md h-[170px] w-[950px]" >
-          <h2 className="text-gray-800 text-lg font-semibold mb-6" style={{ marginBottom: '20px' }}>Quick Overview</h2>
-          <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-5 md:grid-cols-1">
-            <div className="flex flex-col p-5 bg-gray-100 rounded-lg text-center h-[90px]">
+
+        <div className="bg-white rounded-xl p-6 shadow-md">
+          <h2 className="text-gray-800 text-lg font-semibold mb-4">Quick Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col p-4 bg-gray-50 rounded-lg text-center">
               <span className="text-gray-600 text-sm mb-2">Total Messages</span>
               <span className="text-gray-800 text-2xl font-semibold">{stats.totalMessages}</span>
             </div>
-            <div className="flex flex-col p-5 bg-gray-100 rounded-lg text-center h-[90px]">
+            <div className="flex flex-col p-4 bg-gray-50 rounded-lg text-center">
               <span className="text-gray-600 text-sm mb-2">Total Users</span>
               <span className="text-gray-900 text-2xl font-semibold">{stats.totalUsers}</span>
             </div>
           </div>
-          <br />
         </div>
       </div>
     </AdminLayout>

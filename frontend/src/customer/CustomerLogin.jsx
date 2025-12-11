@@ -35,194 +35,73 @@ const CustomerLogin = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '2rem',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-8 relative overflow-hidden">
       {/* Animated Background Elements */}
-      <div style={{
-        position: 'absolute',
-        width: '400px',
-        height: '400px',
-        background: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '50%',
-        top: '-100px',
-        left: '-100px',
-        animation: 'float 6s ease-in-out infinite'
-      }}></div>
-      <div style={{
-        position: 'absolute',
-        width: '300px',
-        height: '300px',
-        background: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '50%',
-        bottom: '-50px',
-        right: '-50px',
-        animation: 'float 8s ease-in-out infinite reverse'
-      }}></div>
+      <div className="absolute w-[400px] h-[400px] bg-white/10 rounded-full -top-[100px] -left-[100px] animate-[float_6s_ease-in-out_infinite]"></div>
+      <div className="absolute w-[300px] h-[300px] bg-white/10 rounded-full -bottom-[50px] -right-[50px]" style={{ animation: 'float 8s ease-in-out infinite reverse' }}></div>
 
       {/* Login Card */}
-      <div style={{
-        background: 'white',
-        padding: '3rem',
-        borderRadius: '24px',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-        width: '100%',
-        maxWidth: '480px',
-        position: 'relative',
-        zIndex: 1
-      }}>
+      <div className="bg-white p-12 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] w-full max-w-[480px] relative z-[1]">
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{
-            fontSize: '2rem',
-            fontWeight: '800',
-            color: '#764ba2',
-            letterSpacing: '-0.5px'
-          }}>
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-extrabold text-[#764ba2] tracking-tight">
             Customer Portal
           </h1>
-          <p style={{ fontSize: '1rem', color: '#6b7280', fontWeight: '500' }}>
+          <p className="text-base text-gray-500 font-medium">
             Welcome back! Please login to continue
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div style={{
-            marginBottom: '1.5rem',
-            padding: '1rem 1.25rem',
-            background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
-            borderLeft: '4px solid #ef4444',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            animation: 'shake 0.5s ease'
-          }}>
-            <span style={{ fontSize: '1.5rem' }}>⚠️</span>
-            <p style={{ color: '#991b1b', fontWeight: '600', fontSize: '0.95rem', margin: 0 }}>
+          <div className="mb-6 px-5 py-4 bg-gradient-to-r from-red-100 to-red-200 border-l-4 border-red-500 rounded-xl flex items-center gap-3 animate-[shake_0.5s_ease]">
+            <span className="text-2xl">⚠️</span>
+            <p className="text-red-900 font-semibold text-[0.95rem] m-0">
               {error}
             </p>
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* Customer ID Field */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '700',
-              color: '#374151',
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}>
+            <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
               Customer ID
             </label>
-            <div style={{ position: 'relative' }}>
-              <div style={{
-                position: 'absolute',
-                left: '1rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                fontSize: '1.25rem',
-                color: '#9ca3af'
-              }}>
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400">
                 🆔
               </div>
               <input
                 type="text"
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '1rem 1rem 1rem 3.5rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  outline: 'none',
-                  transition: 'all 0.3s',
-                  background: '#f9fafb'
-                }}
+                className="w-full py-4 pl-14 pr-4 border-2 border-gray-200 rounded-xl text-base font-medium outline-none transition-all bg-gray-50 focus:border-[#667eea] focus:bg-white focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] disabled:opacity-60 disabled:cursor-not-allowed"
                 placeholder="Enter your ID"
                 required
                 disabled={loading}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#667eea';
-                  e.target.style.background = 'white';
-                  e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                  e.target.style.boxShadow = 'none';
-                }}
               />
             </div>
           </div>
 
           {/* Password Field */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '700',
-              color: '#374151',
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}>
+            <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
               Password
             </label>
-            <div style={{ position: 'relative' }}>
-              <div style={{
-                position: 'absolute',
-                left: '1rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                fontSize: '1.25rem',
-                color: '#9ca3af'
-              }}>
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400">
                 🔒
               </div>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '1rem 1rem 1rem 3.5rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  outline: 'none',
-                  transition: 'all 0.3s',
-                  background: '#f9fafb'
-                }}
+                className="w-full py-4 pl-14 pr-4 border-2 border-gray-200 rounded-xl text-base font-medium outline-none transition-all bg-gray-50 focus:border-[#667eea] focus:bg-white focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] disabled:opacity-60 disabled:cursor-not-allowed"
                 placeholder="Enter your password"
                 required
                 disabled={loading}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#667eea';
-                  e.target.style.background = 'white';
-                  e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                  e.target.style.boxShadow = 'none';
-                }}
               />
             </div>
           </div>
@@ -231,53 +110,19 @@ const CustomerLogin = () => {
           <button
             type="submit"
             disabled={loading}
-            style={{
-              width: '100%',
-              padding: '1.125rem',
-              background: loading ? '#9ca3af' : '#696FC7',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '700',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              boxShadow: loading ? 'none' : '0 10px 30px rgba(102, 126, 234, 0.4)',
-              transition: 'all 0.3s',
-              marginTop: '0.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.75rem'
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.5)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.4)';
-              }
-            }}
+            className={`w-full py-4 px-4 ${
+              loading ? 'bg-gray-400 cursor-not-allowed shadow-none' : 'bg-[#696FC7] cursor-pointer shadow-[0_10px_30px_rgba(102,126,234,0.4)] hover:-translate-y-0.5 hover:shadow-[0_15px_40px_rgba(102,126,234,0.5)]'
+            } text-white border-none rounded-xl text-lg font-bold transition-all mt-2 flex items-center justify-center gap-3`}
           >
             {loading ? (
               <>
-                <div style={{
-                  width: '20px',
-                  height: '20px',
-                  border: '3px solid rgba(255, 255, 255, 0.3)',
-                  borderTop: '3px solid white',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }}></div>
+                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Logging in...</span>
               </>
             ) : (
               <>
                 <span>Login</span>
-                <span style={{ fontSize: '1.25rem' }}>→</span>
+                <span className="text-xl">→</span>
               </>
             )}
           </button>

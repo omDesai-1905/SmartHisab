@@ -126,8 +126,8 @@ function Analytics() {
   if (loading) {
     return (
       <Layout currentPage="/analytics">
-        <div className="analytics-page">
-          <div className="loading">Loading analytics...</div>
+        <div className="p-4 max-w-7xl mx-auto">
+          <div className="text-center py-12 text-xl text-gray-500">Loading analytics...</div>
         </div>
       </Layout>
     );
@@ -135,359 +135,72 @@ function Analytics() {
 
   return (
     <Layout currentPage="/analytics">
-      <div className="analytics-page">
-        <style jsx>{`
-          .analytics-page {
-            padding: 1rem;
-            max-width: 1400px;
-            margin: 0 auto;
-          }
-
-          .page-header {
-            text-align: center;
-            margin-bottom: 2rem;
-          }
-
-          .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: #008ae6;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-          }
-
-          .page-subtitle {
-            color: #6b7280;
-            font-size: 1.1rem;
-          }
-
-          .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-          }
-
-          .analytics-card {
-            border-radius: 16px;
-            padding: 1.5rem;
-            color: white;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-          }
-
-          
-
-          
-
-          .analytics-card-content {
-            position: relative;
-            z-index: 1;
-          }
-
-          .analytics-card.customers {
-            background: #5A9CB5;
-          }
-
-          .analytics-card.balance.positive {
-            background: #22C55E;
-          }
-
-          .analytics-card.balance.negative {
-            background: #EF4444;
-          }
-
-          .card-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-          }
-
-          .card-label {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-bottom: 0.25rem;
-          }
-
-          .card-description {
-            font-size: 0.85rem;
-            opacity: 0.7;
-          }
-
-          .cashbook-summary {
-            background: #002699;
-            border-radius: 16px;
-            padding: 1.5rem;
-            color: white;
-            margin-bottom: 2rem;
-          }
-
-          .cashbook-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            text-align: center;
-          }
-
-          .cashbook-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-          }
-
-          .cashbook-item {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            backdrop-filter: blur(10px);
-          }
-
-          .top-customers-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-          }
-
-          .customer-section {
-            border-radius: 16px;
-            padding: 1.5rem;
-            color: white;
-          }
-
-          .customer-section.creditors {
-            background:  #38a169;
-          }
-
-          .customer-section.debtors {
-            background: #ff4d4d;
-          }
-
-          .section-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-          }
-
-          .customer-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-          }
-
-          .customer-item {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            cursor: pointer;
-          }
-
-          .customer-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateX(4px);
-          }
-
-          .customer-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-          }
-
-          .customer-rank {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-          }
-
-          .customer-details h4 {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 600;
-          }
-
-          .customer-phone {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            margin: 0;
-          }
-
-          .customer-balance {
-            font-size: 1rem;
-            font-weight: 600;
-          }
-
-          .no-data {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #6b7280;
-          }
-
-          .no-data-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-          }
-
-          .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: #6b7280;
-          }
-
-          /* Mobile Responsiveness */
-          @media (max-width: 768px) {
-            .analytics-page {
-              padding: 0.5rem;
-            }
-
-            .page-title {
-              font-size: 2rem;
-            }
-
-            .analytics-grid {
-              grid-template-columns: 1fr;
-              gap: 1rem;
-            }
-
-            .card-value {
-              font-size: 1.5rem;
-            }
-
-            .top-customers-section {
-              grid-template-columns: 1fr;
-              gap: 1rem;
-            }
-
-            .cashbook-grid {
-              grid-template-columns: 1fr;
-            }
-
-            .customer-item {
-              flex-direction: column;
-              align-items: flex-start;
-              gap: 0.5rem;
-            }
-
-            .customer-info {
-              width: 100%;
-            }
-
-            .customer-balance {
-              align-self: flex-end;
-            }
-          }
-
-          @media (max-width: 480px) {
-            .analytics-grid {
-              grid-template-columns: 1fr;
-            }
-            
-            .analytics-card {
-              padding: 1rem;
-            }
-            
-            .page-title {
-              font-size: 1.5rem;
-            }
-            
-            .card-value {
-              font-size: 1.25rem;
-            }
-          }
-        `}</style>
-
+      <div className="p-4 max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="page-header">
-          <h1 className="page-title">Business Analytics</h1>
-          <p className="page-subtitle">Track your business performance and insights</p>
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent mb-2">Business Analytics</h1>
+          <p className="text-gray-500 text-lg">Track your business performance and insights</p>
         </div>
 
         {/* Main Analytics Cards */}
-        <div className="analytics-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Customers */}
-          <div className="analytics-card customers">
-            <div className="analytics-card-content">
-              <div className="card-value">{analyticsData.totalCustomers}</div>
-              <div className="card-label">Total Customers</div>
-              <div className="card-description">Active customers in your business</div>
+          <div className="bg-[#5A9CB5] rounded-2xl p-6 text-white text-center shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all relative overflow-hidden">
+            <div className="relative z-[1]">
+              <div className="text-4xl font-bold mb-2">{analyticsData.totalCustomers}</div>
+              <div className="text-base opacity-90 mb-1">Total Customers</div>
+              <div className="text-sm opacity-70">Active customers in your business</div>
             </div>
           </div>
 
-          <div className="analytics-card" style={{ background: '#73AF6F' }}>
-            <div className="analytics-card-content">
-              <div className="card-value">{formatAmount(analyticsData.totalCreditAmount)}</div>
-              <div className="card-label">Total Credit</div>
-              <div className="card-description">You will receive</div>
+          <div className="bg-accent rounded-2xl p-6 text-white text-center shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all relative overflow-hidden">
+            <div className="relative z-[1]">
+              <div className="text-4xl font-bold mb-2">{formatAmount(analyticsData.totalCreditAmount)}</div>
+              <div className="text-base opacity-90 mb-1">Total Credit</div>
+              <div className="text-sm opacity-70">You will receive</div>
             </div>
           </div>
 
-          <div className="analytics-card" style={{ background: '#FF5555' }}>
-            <div className="analytics-card-content">
-              <div className="card-value">{formatAmount(analyticsData.totalDebitAmount)}</div>
-              <div className="card-label">Total Debit</div>
-              <div className="card-description">You will pay</div>
+          <div className="bg-[#FF5555] rounded-2xl p-6 text-white text-center shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all relative overflow-hidden">
+            <div className="relative z-[1]">
+              <div className="text-4xl font-bold mb-2">{formatAmount(analyticsData.totalDebitAmount)}</div>
+              <div className="text-base opacity-90 mb-1">Total Debit</div>
+              <div className="text-sm opacity-70">You will pay</div>
             </div>
           </div>
 
           {/* Net Balance */}
-          <div className={`analytics-card balance ${analyticsData.netBalance >= 0 ? 'positive' : 'negative'}`}>
-            <div className="analytics-card-content">
-              <div className="card-value">{formatAmount(Math.abs(analyticsData.netBalance))}</div>
-              <div className="card-label">Net Balance</div>
-              <div className="card-description">
+          <div className={`${analyticsData.netBalance >= 0 ? 'bg-green-500' : 'bg-red-500'} rounded-2xl p-6 text-white text-center shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all relative overflow-hidden`}>
+            <div className="relative z-[1]">
+              <div className="text-4xl font-bold mb-2">{formatAmount(Math.abs(analyticsData.netBalance))}</div>
+              <div className="text-base opacity-90 mb-1">Net Balance</div>
+              <div className="text-sm opacity-70">
                 {analyticsData.netBalance >= 0 ? 'Overall profit' : 'Overall loss'}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="cashbook-summary">
-          <h3 className="cashbook-title">This Month's Cashbook Summary</h3>
-          <div className="cashbook-grid">
-            <div className="cashbook-item">
-              <div style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+        <div className="bg-[#002699] rounded-2xl p-6 text-white mb-8">
+          <h3 className="text-2xl font-semibold mb-4 text-center">This Month's Cashbook Summary</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 text-center">
+              <div className="text-2xl font-semibold mb-2">
                 {formatAmount(cashbookData.monthlyIncome)}
               </div>
-              <div style={{ opacity: 0.9 }}>Monthly Income</div>
+              <div className="opacity-90">Monthly Income</div>
             </div>
-            <div className="cashbook-item">
-              <div style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 text-center">
+              <div className="text-2xl font-semibold mb-2">
                 {formatAmount(cashbookData.monthlyExpense)}
               </div>
-              <div style={{ opacity: 0.9 }}>Monthly Expense</div>
+              <div className="opacity-90">Monthly Expense</div>
             </div>
-            <div className="cashbook-item">
-              <div style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: '600', 
-                marginBottom: '0.5rem',
-                color: cashbookData.monthlyNet >= 0 ? '#68d391' : '#feb2b2'
-              }}>
+            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 text-center">
+              <div className={`text-2xl font-semibold mb-2 ${cashbookData.monthlyNet >= 0 ? 'text-green-300' : 'text-red-300'}`}>
                 {formatAmount(Math.abs(cashbookData.monthlyNet))}
               </div>
-              <div style={{ opacity: 0.9 }}>
+              <div className="opacity-90">
                 Net {cashbookData.monthlyNet >= 0 ? 'Profit' : 'Loss'}
               </div>
             </div>
@@ -496,28 +209,28 @@ function Analytics() {
 
         {/* Top Customers Section */}
         {customers.length > 0 ? (
-          <div className="top-customers-section">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Top Creditors */}
             {topCustomers.highest.length > 0 && (
-              <div className="customer-section creditors">
-                <h3 className="section-title">
+              <div className="bg-green-600 rounded-2xl p-6 text-white">
+                <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <span>💰</span> Top 5 - You Will Give
                 </h3>
-                <div className="customer-list">
+                <div className="flex flex-col gap-3">
                   {topCustomers.highest.map((customer, index) => (
                     <div 
                       key={customer._id} 
-                      className="customer-item"
+                      className="bg-white/15 backdrop-blur-sm rounded-xl p-4 flex justify-between items-center hover:bg-white/25 hover:translate-x-1 transition-all cursor-pointer"
                       onClick={() => navigate(`/customer/${customer._id}`)}
                     >
-                      <div className="customer-info">
-                        <div className="customer-rank">{index + 1}</div>
-                        <div className="customer-details">
-                          <h4>{customer.name}</h4>
-                          <p className="customer-phone">📞 {customer.phone}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold">{index + 1}</div>
+                        <div>
+                          <h4 className="text-base font-semibold m-0">{customer.name}</h4>
+                          <p className="text-sm opacity-80 m-0">📞 {customer.phone}</p>
                         </div>
                       </div>
-                      <div className="customer-balance">
+                      <div className="text-base font-semibold">
                         {formatBalance(customer.balance)}
                       </div>
                     </div>
@@ -528,25 +241,25 @@ function Analytics() {
 
             {/* Top Debtors */}
             {topCustomers.lowest.length > 0 && (
-              <div className="customer-section debtors">
-                <h3 className="section-title">
+              <div className="bg-red-500 rounded-2xl p-6 text-white">
+                <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <span>💸</span> Top 5 - You Will Get
                 </h3>
-                <div className="customer-list">
+                <div className="flex flex-col gap-3">
                   {topCustomers.lowest.map((customer, index) => (
                     <div 
                       key={customer._id} 
-                      className="customer-item"
+                      className="bg-white/15 backdrop-blur-sm rounded-xl p-4 flex justify-between items-center hover:bg-white/25 hover:translate-x-1 transition-all cursor-pointer"
                       onClick={() => navigate(`/customer/${customer._id}`)}
                     >
-                      <div className="customer-info">
-                        <div className="customer-rank">{index + 1}</div>
-                        <div className="customer-details">
-                          <h4>{customer.name}</h4>
-                          <p className="customer-phone">📞 {customer.phone}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold">{index + 1}</div>
+                        <div>
+                          <h4 className="text-base font-semibold m-0">{customer.name}</h4>
+                          <p className="text-sm opacity-80 m-0">📞 {customer.phone}</p>
                         </div>
                       </div>
-                      <div className="customer-balance">
+                      <div className="text-base font-semibold">
                         {formatBalance(customer.balance)}
                       </div>
                     </div>
@@ -556,9 +269,9 @@ function Analytics() {
             )}
           </div>
         ) : (
-          <div className="no-data">
-            <div className="no-data-icon">📊</div>
-            <h3>No Customer Data</h3>
+          <div className="text-center py-12 text-gray-500">
+            <div className="text-6xl mb-4">📊</div>
+            <h3 className="text-xl font-semibold mb-2">No Customer Data</h3>
             <p>Add customers to see analytics and insights</p>
           </div>
         )}

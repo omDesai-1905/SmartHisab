@@ -303,100 +303,81 @@ function CustomerDetail() {
 
   return (
     <Layout currentPage="/customer">
-      <div className="container" style={{ marginBottom: '4rem' }}>
-        <div className="customer-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-            <button 
-              onClick={() => navigate('/dashboard')}
-              className="btn btn-secondary"
-            >
-              ← Back to Dashboard
-            </button>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        {/* Header Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors inline-flex items-center gap-2"
+          >
+            ← Back to Dashboard
+          </button>
           
-          <div className="customer-name">{customer.name}</div>
-          <div className="customer-phone">📞 {customer.phone}</div>
-          
-          {customer.customerId && (
-            <div style={{ 
-              marginTop: '1rem', 
-              padding: '1rem',
-              background: '#f0f9ff',
-              borderRadius: '8px',
-              border: '2px solid #3b82f6'
-            }}>
-              <div style={{ marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.9rem', color: '#1e40af', fontWeight: '600' }}>
-                  🔑 Customer Portal Login Credentials
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            {/* Left: Customer Info & Balance */}
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{customer.name}</h1>
+              <p className="text-lg text-gray-600 mb-4">📞 {customer.phone}</p>
+              
+              <div className="pt-4 border-t border-gray-200">
+                <span className="text-lg text-gray-600">Current Balance: </span>
+                <span className={`text-2xl font-bold ${
+                  balance > 0 ? 'text-red-600' : balance < 0 ? 'text-green-600' : 'text-gray-600'
+                }`}>
+                  {formatAmount(Math.abs(balance))}
+                  {balance > 0 && ' (You will give)'}
+                  {balance < 0 && ' (You will get)'}
+                  {balance === 0 && ' (No balance)'}
                 </span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Customer ID: </span>
-                  <span style={{ 
-                    fontSize: '1rem', 
-                    fontWeight: '600', 
-                    color: '#1e293b',
-                    fontFamily: 'monospace'
-                  }}>
-                    {customer.customerId}
+            </div>
+            
+            {/* Right: Credentials Box */}
+            {customer.customerId && (
+              <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-4 lg:w-96 lg:flex-shrink-0">
+                <div className="mb-3">
+                  <span className="text-sm font-semibold text-blue-800">
+                    🔑 Customer Portal Login Credentials
                   </span>
                 </div>
-                <div>
-                  <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Password: </span>
-                  <span style={{ 
-                    fontSize: '1rem', 
-                    fontWeight: '600', 
-                    color: '#dc2626',
-                    fontFamily: 'monospace'
-                  }}>
-                    {customer.password || '••••••••'}
-                  </span>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">Customer ID: </span>
+                    <span className="text-base font-semibold text-gray-900 font-mono block mt-1">
+                      {customer.customerId}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Password: </span>
+                    <span className="text-base font-semibold text-red-600 font-mono block mt-1">
+                      {customer.password || '••••••••'}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          
-          <div style={{ marginTop: '1rem' }}>
-            <span style={{ fontSize: '1.1rem', color: '#718096' }}>Current Balance: </span>
-            <span className={`${balance > 0 ? 'balance-positive' : balance < 0 ? 'balance-negative' : ''}`} style={{ fontSize: '1.3rem', fontWeight: '600' }}>
-              {formatAmount(Math.abs(balance))}
-              {balance > 0 && ' (You will give)'}
-              {balance < 0 && ' (You will get)'}
-              {balance === 0 && ' (No balance)'}
-            </span>
+            )}
           </div>
         </div>
 
-      <div className="transaction-actions">
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-4 justify-center mb-6">
           <button 
             onClick={() => openTransactionModal('debit')}
-            className="btn btn-danger"
+            className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors shadow-sm"
           >
              Add Debit (You Gave)
           </button>
           <button 
             onClick={() => openTransactionModal('credit')}
-            className="btn btn-success"
+            className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors shadow-sm"
           >
              Add Credit (You Got)
           </button>
         </div>
 
-      <div style={{ 
-        padding: '1rem',
-        background: '#f7fafc',
-        borderRadius: '12px',
-        margin: '1rem',
-        border: '1px solid #e2e8f0'
-      }}>
-        <label style={{ 
-          display: 'block',
-          fontSize: '0.9rem',
-          fontWeight: '600',
-          color: '#4a5568',
-          marginBottom: '0.5rem'
-        }}>
+      {/* Search Section */}
+      <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 mb-6">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Search Transactions
         </label>
         <input
@@ -404,94 +385,96 @@ function CustomerDetail() {
           placeholder="Search by description or type..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '0.75rem 1rem',
-            border: '2px solid #e2e8f0',
-            borderRadius: '8px',
-            fontSize: '1rem',
-            background: 'white',
-            transition: 'all 0.2s ease',
-            outline: 'none'
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = '#667eea';
-            e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = '#e2e8f0';
-            e.target.style.boxShadow = 'none';
-          }}
+          className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-base bg-white transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none"
         />
       </div>
 
       {/* Transactions Table */}
-      <div className="transactions-table" style={{ paddingBottom: '3rem' }}>
-          <h2 style={{ padding: '1.5rem 1.5rem 0', margin: 0, color: '#2d3748' }}>Transaction History</h2>
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-16">
+          <h2 className="text-2xl font-semibold text-gray-800 p-6 pb-0">Transaction History</h2>
           
           {transactions.length === 0 ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: '#718096' }}>
+            <div className="p-8 text-center text-gray-500">
               No transactions found. Add the first transaction to get started!
             </div>
           ) : (
             <>
               {searchTerm && (
-                <div style={{ padding: '1rem 1.5rem', fontSize: '0.9rem', color: '#718096' }}>
+                <div className="px-6 py-4 text-sm text-gray-500">
                   {filteredTransactions.length === 0 
                     ? `No transactions found matching "${searchTerm}"` 
                     : `Found ${filteredTransactions.length} transaction(s) matching "${searchTerm}"`
                   }
                 </div>
               )}
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(searchTerm ? filteredTransactions : transactions).map((transaction) => (
-                  <tr 
-                    key={transaction._id}
-                    onClick={() => handleTransactionClick(transaction)}
-                    style={{ 
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <td>{formatDate(transaction.date || transaction.createdAt)}</td>
-                    <td>{transaction.description || 'NONE'}</td>
-                    <td className="transaction-debit">
-                      {transaction.type === 'debit' ? formatAmount(transaction.amount) : '-'}
-                    </td>
-                    <td className="transaction-credit">
-                      {transaction.type === 'credit' ? formatAmount(transaction.amount) : '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {/* Add spacing after transaction table */}
-            <div style={{ height: '2rem' }}></div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 border-b-2 border-gray-200">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Description</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Debit</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Credit</th>
+                      <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(searchTerm ? filteredTransactions : transactions).map((transaction) => (
+                    <tr 
+                      key={transaction._id}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-sm text-gray-900">{formatDate(transaction.date || transaction.createdAt)}</td>
+                      <td className="px-6 py-4 text-sm text-gray-900">{transaction.description || 'NONE'}</td>
+                      <td className="px-6 py-4 text-sm font-semibold text-red-600">
+                        {transaction.type === 'debit' ? formatAmount(transaction.amount) : '-'}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-semibold text-green-600">
+                        {transaction.type === 'credit' ? formatAmount(transaction.amount) : '-'}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleEditTransaction(transaction)}
+                            className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-md transition-colors"
+                            title="Edit transaction"
+                          >
+                            Update
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedTransaction(transaction);
+                              setShowConfirmModal(true);
+                            }}
+                            className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md transition-colors"
+                            title="Delete transaction"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              </div>
             </>
           )}
         </div>
 
       {/* Add/Edit Transaction Modal */}
       {showModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h2 className="modal-title">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900">
                   {modalType === 'add' 
                     ? `Add ${transactionType === 'debit' ? 'Debit' : 'Credit'} Transaction`
                     : `Edit ${transactionType === 'debit' ? 'Debit' : 'Credit'} Transaction`
                   }
                 </h2>
                 <button 
-                  className="modal-close"
+                  className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center"
                   onClick={() => {
                     setShowModal(false);
                     setNewTransaction({ 
@@ -508,21 +491,14 @@ function CustomerDetail() {
               </div>
 
               {errors.submit && (
-                <div className="error-message" style={{
-                  padding: '0.75rem',
-                  borderRadius: '8px',
-                  marginBottom: '1rem',
-                  backgroundColor: '#fed7d7',
-                  color: '#c53030',
-                  border: '1px solid #feb2b2'
-                }}>
+                <div className="mx-6 mt-4 p-3 rounded-lg bg-red-100 text-red-700 border border-red-300">
                   {errors.submit}
                 </div>
               )}
 
-              <form onSubmit={handleTransactionSubmit}>
-                <div className="form-group">
-                  <label htmlFor="date" className="form-label">Date</label>
+              <form onSubmit={handleTransactionSubmit} className="p-6">
+                <div className="mb-4">
+                  <label htmlFor="date" className="block text-sm font-semibold text-gray-700 mb-2">Date</label>
                   <input
                     type="date"
                     id="date"
@@ -531,14 +507,16 @@ function CustomerDetail() {
                       setNewTransaction(prev => ({ ...prev, date: e.target.value }));
                       if (errors.date) setErrors(prev => ({ ...prev, date: '' }));
                     }}
-                    className={`form-input ${errors.date ? 'error' : ''}`}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.date ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     max={new Date().toISOString().split('T')[0]} // Prevent future dates
                   />
-                  {errors.date && <div className="error-message">{errors.date}</div>}
+                  {errors.date && <div className="text-red-600 text-sm mt-1">{errors.date}</div>}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="amount" className="form-label">
+                <div className="mb-4">
+                  <label htmlFor="amount" className="block text-sm font-semibold text-gray-700 mb-2">
                     {transactionType === 'debit' ? 'You Gave (₹)' : 'You Got (₹)'}
                   </label>
                   <input
@@ -552,14 +530,16 @@ function CustomerDetail() {
                       setNewTransaction(prev => ({ ...prev, amount: sanitized }));
                       if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                     }}
-                    className={`form-input ${errors.amount ? 'error' : ''}`}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.amount ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     placeholder={`Enter ${transactionType === 'debit' ? 'debit' : 'credit'} amount`}
                   />
-                  {errors.amount && <div className="error-message">{errors.amount}</div>}
+                  {errors.amount && <div className="text-red-600 text-sm mt-1">{errors.amount}</div>}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="description" className="form-label">Description (Optional)</label>
+                <div className="mb-6">
+                  <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">Description (Optional)</label>
                   <textarea
                     id="description"
                     rows="2"
@@ -568,14 +548,15 @@ function CustomerDetail() {
                       setNewTransaction(prev => ({ ...prev, description: e.target.value }));
                       if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
                     }}
-                    className={`form-input ${errors.description ? 'error' : ''}`}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[80px] ${
+                      errors.description ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     placeholder={`Enter ${transactionType === 'debit' ? 'debit' : 'credit'} description (optional - will show 'NONE' if empty)`}
-                    style={{ resize: 'vertical', minHeight: '80px' }}
                   />
-                  {errors.description && <div className="error-message">{errors.description}</div>}
+                  {errors.description && <div className="text-red-600 text-sm mt-1">{errors.description}</div>}
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                <div className="flex gap-3 justify-end">
                   <button 
                     type="button"
                     onClick={() => {
@@ -588,13 +569,15 @@ function CustomerDetail() {
                       setSelectedTransaction(null);
                       setErrors({});
                     }}
-                    className="btn btn-secondary"
+                    className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit"
-                    className={`btn ${transactionType === 'debit' ? 'btn-danger' : 'btn-success'}`}
+                    className={`px-6 py-2 font-medium rounded-lg transition-colors text-white ${
+                      transactionType === 'debit' ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+                    }`}
                     disabled={submitting}
                   >
                     {submitting 
@@ -898,12 +881,12 @@ function CustomerDetail() {
         )}
 
       {showConfirmModal && selectedTransaction && (
-          <div className="modal">
-            <div className="modal-content" style={{ maxWidth: '400px' }}>
-              <div className="modal-header">
-                <h2 className="modal-title">Confirm Delete</h2>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900">Confirm Delete</h2>
                 <button 
-                  className="modal-close"
+                  className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center"
                   onClick={() => {
                     setShowConfirmModal(false);
                     setSelectedTransaction(null);
@@ -913,30 +896,30 @@ function CustomerDetail() {
                 </button>
               </div>
 
-              <div style={{ padding: '1rem 0' }}>
-                <p style={{ margin: '0 0 1rem 0', fontSize: '1rem', lineHeight: '1.5' }}>
+              <div className="p-6">
+                <p className="mb-4 text-base leading-relaxed text-gray-700">
                   Are you sure you want to delete this{' '}
-                  <strong>{selectedTransaction.type === 'debit' ? 'debit' : 'credit'}</strong>{' '}
+                  <strong className="text-gray-900">{selectedTransaction.type === 'debit' ? 'debit' : 'credit'}</strong>{' '}
                   transaction of{' '}
-                  <strong>₹{selectedTransaction.amount?.toLocaleString()}</strong>?
+                  <strong className="text-gray-900">₹{selectedTransaction.amount?.toLocaleString()}</strong>?
                 </p>
-                <p style={{ margin: '0 0 1.5rem 0', color: '#718096', fontSize: '0.9rem' }}>
+                <p className="mb-6 text-sm text-gray-500">
                   This action cannot be undone.
                 </p>
 
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                <div className="flex gap-3 justify-end">
                   <button 
                     onClick={() => {
                       setShowConfirmModal(false);
                       setSelectedTransaction(null);
                     }}
-                    className="btn btn-secondary"
+                    className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
                   >
                     Cancel
                   </button>
                   <button 
                     onClick={confirmDelete}
-                    className="btn btn-danger"
+                    className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
                   >
                     Delete
                   </button>

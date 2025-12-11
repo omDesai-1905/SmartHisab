@@ -49,8 +49,8 @@ const CustomerTransactions = () => {
   if (loading) {
     return (
       <CustomerLayout currentPage="transactions">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-          <div style={{ textAlign: 'center' }}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
             <p className="text-xl font-semibold text-gray-700">Loading...</p>
           </div>
@@ -61,61 +61,54 @@ const CustomerTransactions = () => {
 
   return (
     <CustomerLayout currentPage="transactions">
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
-        <div style={{ background: 'white', borderRadius: '12px', padding: '2rem' }}>
-          <div style={{ marginBottom: '1.5rem' }}>
+      <div className="max-w-7xl mx-auto p-8">
+        <div className="bg-white rounded-xl p-8">
+          <div className="mb-6">
             <input
               type="text"
               placeholder="Search by description or type..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.875rem 1rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none'
-              }}
+              className="w-full px-4 py-3.5 border border-gray-200 rounded-lg text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
             />
           </div>
 
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', marginBottom: '1.5rem' }}>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Transaction History
           </h2>
 
           {filteredTransactions.length === 0 ? (
-            <p style={{ textAlign: 'center', color: '#6b7280', padding: '3rem 0' }}>
+            <p className="text-center text-gray-500 py-12">
               No transactions found
             </p>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
                 <thead>
-                  <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
-                    <th style={{ padding: '1rem', textAlign: 'left', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Date</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Description</th>
-                    <th style={{ padding: '1rem', textAlign: 'right', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Debit</th>
-                    <th style={{ padding: '1rem', textAlign: 'right', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Credit</th>
+                  <tr className="bg-gray-50 border-b-2 border-gray-200">
+                    <th className="p-4 text-left text-gray-500 font-semibold text-sm">Date</th>
+                    <th className="p-4 text-left text-gray-500 font-semibold text-sm">Description</th>
+                    <th className="p-4 text-right text-gray-500 font-semibold text-sm">Debit</th>
+                    <th className="p-4 text-right text-gray-500 font-semibold text-sm">Credit</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredTransactions.map((transaction) => (
-                    <tr key={transaction._id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                      <td style={{ padding: '1rem', color: '#4b5563', fontSize: '0.95rem' }}>
+                    <tr key={transaction._id} className="border-b border-gray-100">
+                      <td className="p-4 text-gray-600 text-[0.95rem]">
                         {new Date(transaction.date).toLocaleDateString('en-GB', {
                           day: '2-digit',
                           month: 'short',
                           year: 'numeric'
                         })}
                       </td>
-                      <td style={{ padding: '1rem', color: '#1f2937', fontSize: '0.95rem', fontWeight: '500' }}>
+                      <td className="p-4 text-gray-800 text-[0.95rem] font-medium">
                         {transaction.description || 'NONE'}
                       </td>
-                      <td style={{ padding: '1rem', textAlign: 'right', color: '#ef4444', fontWeight: '600', fontSize: '1rem' }}>
+                      <td className="p-4 text-right text-red-500 font-semibold text-base">
                         {transaction.type === 'debit' ? `₹${transaction.amount.toFixed(2)}` : '-'}
                       </td>
-                      <td style={{ padding: '1rem', textAlign: 'right', color: '#10b981', fontWeight: '600', fontSize: '1rem' }}>
+                      <td className="p-4 text-right text-emerald-500 font-semibold text-base">
                         {transaction.type === 'credit' ? `₹${transaction.amount.toFixed(2)}` : '-'}
                       </td>
                     </tr>

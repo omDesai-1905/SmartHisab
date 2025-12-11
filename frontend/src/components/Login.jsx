@@ -79,86 +79,59 @@ function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ 
-            width: '80px', 
-            height: '80px', 
-            background: '#667eea',
-            borderRadius: '50%',
-            margin: '0 auto 1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '2rem',
-            boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)'
-          }}>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-4 relative overflow-hidden">
+      <div className="bg-white/95 backdrop-blur-xl px-10 py-12 rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1),0_10px_20px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.8)] w-full max-w-[420px] border border-white/20 relative z-[1]">
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-[#667eea] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl shadow-[0_8px_20px_rgba(102,126,234,0.3)]">
             👋
           </div>
-          <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Sign in to your account to continue</p>
+          <h1 className="text-center mb-10 text-[#667eea] text-4xl font-bold">Welcome Back</h1>
+          <p className="text-center mb-8 text-gray-600 text-base -mt-6">Sign in to your account to continue</p>
         </div>
         
         {message && (
-          <div className="error-message" style={{
-            padding: '1rem',
-            borderRadius: '12px',
-            marginBottom: '1.5rem',
-            backgroundColor: '#fed7d7',
-            color: '#c53030',
-            border: '1px solid #feb2b2',
-            textAlign: 'center'
-          }}>
+          <div className="p-4 rounded-xl mb-6 bg-red-100 text-red-700 border border-red-200 text-center">
             {message}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">📧 Email Address</label>
+          <div className="mb-7 relative">
+            <label htmlFor="email" className="block mb-2.5 text-gray-700 font-semibold text-sm uppercase tracking-wide">📧 Email Address</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`form-input ${errors['email'] ? 'error' : ''}`}
+              className={`w-full px-5 py-4 border-2 ${errors['email'] ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1),0_4px_12px_rgba(102,126,234,0.15)] focus:-translate-y-px focus:bg-white/95 placeholder:text-gray-400`}
               placeholder="Enter your email address"
             />
-            {errors['email'] && <div className="error-message">{errors['email']}</div>}
+            {errors['email'] && <div className="text-red-500 text-sm mt-2 flex items-center gap-1 before:content-['⚠️'] before:text-xs">{errors['email']}</div>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">🔒 Password</label>
+          <div className="mb-7 relative">
+            <label htmlFor="password" className="block mb-2.5 text-gray-700 font-semibold text-sm uppercase tracking-wide">🔒 Password</label>
             <input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`form-input ${errors['password'] ? 'error' : ''}`}
+              className={`w-full px-5 py-4 border-2 ${errors['password'] ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1),0_4px_12px_rgba(102,126,234,0.15)] focus:-translate-y-px focus:bg-white/95 placeholder:text-gray-400`}
               placeholder="Enter your password"
             />
-            {errors['password'] && <div className="error-message">{errors['password']}</div>}
+            {errors['password'] && <div className="text-red-500 text-sm mt-2 flex items-center gap-1 before:content-['⚠️'] before:text-xs">{errors['password']}</div>}
           </div>
 
           <button 
             type="submit" 
-            className="btn btn-primary"
+            className="w-full px-6 py-4 border-none rounded-xl text-base font-semibold cursor-pointer transition-all bg-[#667eea] text-white shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:bg-[#5a67d8] hover:-translate-y-px disabled:opacity-70 disabled:cursor-not-allowed mt-4"
             disabled={loading}
-            style={{ marginTop: '1rem' }}
           >
             {loading ? (
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                <div style={{ 
-                  width: '16px', 
-                  height: '16px', 
-                  border: '2px solid transparent',
-                  borderTop: '2px solid white',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }}></div>
+              <span className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-transparent border-t-white rounded-full animate-spin"></div>
                 Signing In...
               </span>
             ) : (
@@ -167,8 +140,8 @@ function Login() {
           </button>
         </form>
 
-        <div className="auth-link">
-          Don't have an account? <Link to="/signup">Create one here</Link>
+        <div className="text-center mt-8 pt-8 border-t border-gray-200 text-gray-600 text-[0.95rem]">
+          Don't have an account? <Link to="/signup" className="text-[#667eea] no-underline font-semibold transition-colors hover:text-[#5a67d8] hover:underline">Create one here</Link>
         </div>
         
 

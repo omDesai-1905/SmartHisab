@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
+import Layout from './Layout';
 import axios from 'axios';
 
 function Profile() {
@@ -18,7 +18,6 @@ function Profile() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   useEffect(() => {
@@ -184,199 +183,65 @@ function Profile() {
     setShowDeleteConfirmation(false);
   };
 
-  const handleToggleSidebar = () => {
-    setSidebarOpen(true);
-  };
-
   if (!user) {
     return (
-      <div className="container">
-        <div className="loading">Loading profile...</div>
-      </div>
+      <Layout currentPage="/profile">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-gray-600 text-lg">Loading profile...</div>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <>
-      <Navbar onToggleSidebar={handleToggleSidebar} />
-      <div className="container">
-        {/* Sidebar */}
-        <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-          <div className="sidebar-header">
-            <button 
-              className="sidebar-close"
-              onClick={() => setSidebarOpen(false)}
-            >
-              ×
-            </button>
-          </div>
-          
-          <div className="sidebar-content">
-            {/* Navigation Items */}
-            <div className="sidebar-nav">
-              <button 
-                className="sidebar-nav-item"
-                onClick={() => {
-                  navigate('/dashboard');
-                  setSidebarOpen(false);
-                }}
-              >
-                🏠 Dashboard
-              </button>
-              
-              <button 
-                className="sidebar-nav-item"
-                onClick={() => {
-                  navigate('/analytics');
-                  setSidebarOpen(false);
-                }}
-              >
-                📊 Analytics
-              </button>
-              
-              <button 
-                className="sidebar-nav-item"
-                onClick={() => {
-                  navigate('/cashbook');
-                  setSidebarOpen(false);
-                }}
-              >
-                📖 Cashbook
-              </button>
-              
-              <button 
-                className="sidebar-nav-item active"
-                onClick={() => setSidebarOpen(false)}
-              >
-                ⚙️ Profile
-              </button>
-              
-              <button 
-                className="sidebar-nav-item"
-                onClick={() => {
-                  navigate('/contact');
-                  setSidebarOpen(false);
-                }}
-              >
-                📞 Contact Us
-              </button>
-              
-              <button 
-                className="sidebar-nav-item logout"
-                onClick={handleLogout}
-              >
-                🚪 Logout
-              </button>
-            </div>
-
-            {/* User Info */}
-            <div className="sidebar-user">
-              <div style={{ textAlign: 'center', padding: '1rem' }}>
-                <div style={{ 
-                  width: '60px', 
-                  height: '60px', 
-                  background: '#667eea',
-                  borderRadius: '50%',
-                  margin: '0 auto 0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.5rem',
-                  color: 'white'
-                }}>
-                  {user?.name?.charAt(0).toUpperCase() || '👤'}
-                </div>
-                <p style={{ margin: '0', fontSize: '0.9rem', color: '#4a5568' }}>{user?.name}</p>
-                <p style={{ margin: '0', fontSize: '0.8rem', color: '#718096' }}>{user?.email}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Custom Notification Toast */}
-        {notification && (
-          <div 
-            className={`notification ${notification && notification['type']}`}
-            style={{
-              position: 'fixed',
-              top: '20px',
-              right: '20px',
-              padding: '1rem 1.5rem',
-              borderRadius: '8px',
-              color: 'white',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              zIndex: 1000,
-              minWidth: '300px',
-              backgroundColor: notification && notification['type'] === 'success' ? '#48bb78' : notification && notification['type'] === 'error' ? '#f56565' : '#4299e1',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              animation: 'slideIn 0.3s ease-out'
-            }}
-          >
-            <span>{notification && notification['message']}</span>
+    <Layout currentPage="/profile">
+      {/* Custom Notification Toast */}
+      {notification && (
+        <div 
+          className="fixed top-6 right-6 z-[9999] min-w-[300px] animate-[slideIn_0.3s_ease]"
+        >
+          <div className={`p-4 rounded-lg shadow-lg text-white font-medium flex items-center justify-between ${
+            notification.type === 'success' ? 'bg-green-500' : notification.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+          }`}>
+            <span>{notification.message}</span>
             <button
               onClick={() => setNotification(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'white',
-                fontSize: '1.2rem',
-                cursor: 'pointer',
-                marginLeft: '1rem',
-                opacity: 0.8
-              }}
+              className="ml-4 text-white text-xl opacity-80 hover:opacity-100 bg-transparent border-none cursor-pointer"
             >
               ×
             </button>
           </div>
-        )}
+        </div>
+      )}
 
-        <div className="profile-container">
-          <div className="profile-header">
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div style={{ 
-                width: '100px', 
-                height: '100px', 
-                background: '#9CCAD9',
-                borderRadius: '50%',
-                margin: '0 auto 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '3rem',
-                color: '#1F3E46',
-              }}>
-                {user.name?.charAt(0).toUpperCase() || '👤'}
-              </div>
-              <h1 style={{ margin: '0 0 0.5rem 0', color: '#2d3748' }}>My Profile</h1>
-              <p style={{ color: '#718096', margin: 0 }}>Manage your account information</p>
-            </div>
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center text-5xl text-primary-dark">
+            {user.name?.charAt(0).toUpperCase() || '👤'}
           </div>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">My Profile</h1>
+          <p className="text-gray-600">Manage your account information</p>
+        </div>
 
-          {/* Main Content Layout - Profile */}
-          <div className="profile-main-layout">
-            {/* Profile Card */}
-            <div className="profile-card">
-            {!isEditing ? (
-            <div className="profile-view">
-              <div className="profile-info profile-info-two-column">
-                <div className="info-column">
-                  <div className="info-item">
-                    <label>👤 Full Name</label>
-                    <p>{user.name}</p>
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl shadow-lg p-8">
+          {!isEditing ? (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-600 mb-1">👤 Full Name</label>
+                    <p className="text-lg text-gray-900">{user.name}</p>
                   </div>
                   
-                  <div className="info-item">
-                    <label>� Mobile Number</label>
-                    <p>{user.mobileNumber || 'Not provided'}</p>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-600 mb-1">📱 Mobile Number</label>
+                    <p className="text-lg text-gray-900">{user.mobileNumber || 'Not provided'}</p>
                   </div>
                   
-                  <div className="info-item">
-                    <label>� Member Since</label>
-                    <p>{new Date(user.createdAt).toLocaleDateString('en-IN', {
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-600 mb-1">📅 Member Since</label>
+                    <p className="text-lg text-gray-900">{new Date(user.createdAt).toLocaleDateString('en-IN', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
@@ -384,117 +249,119 @@ function Profile() {
                   </div>
                 </div>
                 
-                <div className="info-column">
-                  <div className="info-item">
-                    <label>📧 Email Address</label>
-                    <p>{user.email}</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-600 mb-1">📧 Email Address</label>
+                    <p className="text-lg text-gray-900">{user.email}</p>
                   </div>
                   
-                  <div className="info-item">
-                    <label>🏢 Business Name</label>
-                    <p>{user.businessName || 'Not provided'}</p>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-600 mb-1">🏢 Business Name</label>
+                    <p className="text-lg text-gray-900">{user.businessName || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="profile-actions">
+              <div className="flex flex-wrap gap-3 pt-6 border-t border-gray-200 justify-center">
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="btn btn-primary"
-                  style={{ marginRight: '1rem', backgroundColor: '#9CCAD9', borderColor: '#9CCAD9', color: '#2F3E46' }}
+                  className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-dark font-medium rounded-lg transition-colors"
                 >
                   ✏️ Edit Profile
                 </button>
                 <button 
                   onClick={handleLogout}
-                  className="btn btn-danger"
-                  style={{ marginRight: '1rem' }}
+                  className="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
                 >
                   🚪 Logout
                 </button>
                 <button 
                   onClick={handleDeleteClick}
-                  className="btn btn-danger"
-                  style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+                  className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-red-600 font-medium rounded-lg transition-colors border border-red-300"
                 >
                   🗑️ Delete Account
                 </button>
               </div>
             </div>
           ) : (
-            <div className="profile-edit">
+            <div className="space-y-6">
               <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="name" className="form-label">👤 Full Name</label>
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">👤 Full Name</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className={`form-input ${errors['name'] ? 'error' : ''}`}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                      errors['name'] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     placeholder="Enter your full name"
                     required
                   />
-                  {errors['name'] && <div className="error-message">{errors['name']}</div>}
+                  {errors['name'] && <div className="text-red-600 text-sm mt-1">{errors['name']}</div>}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="email" className="form-label">📧 Email Address</label>
+                <div className="mb-4">
+                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">📧 Email Address</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     value={formData.email}
-                    className="form-input readonly"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
                     placeholder="Email address"
                     readOnly
                   />
-                  <small className="form-hint">Email cannot be changed</small>
+                  <small className="text-gray-500 text-sm">Email cannot be changed</small>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="mobileNumber" className="form-label">📱 Mobile Number</label>
+                <div className="mb-4">
+                  <label htmlFor="mobileNumber" className="block text-sm font-semibold text-gray-700 mb-2">📱 Mobile Number</label>
                   <input
                     type="tel"
                     id="mobileNumber"
                     name="mobileNumber"
                     value={formData.mobileNumber}
                     onChange={handleChange}
-                    className={`form-input ${errors['mobileNumber'] ? 'error' : ''}`}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                      errors['mobileNumber'] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     placeholder="Enter your 10-digit mobile number"
                     maxLength="10"
                   />
-                  {errors['mobileNumber'] && <div className="error-message">{errors['mobileNumber']}</div>}
+                  {errors['mobileNumber'] && <div className="text-red-600 text-sm mt-1">{errors['mobileNumber']}</div>}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="businessName" className="form-label">🏢 Business Name</label>
+                <div className="mb-6">
+                  <label htmlFor="businessName" className="block text-sm font-semibold text-gray-700 mb-2">🏢 Business Name</label>
                   <input
                     type="text"
                     id="businessName"
                     name="businessName"
                     value={formData.businessName}
                     onChange={handleChange}
-                    className={`form-input ${errors['businessName'] ? 'error' : ''}`}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                      errors['businessName'] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     placeholder="Enter your business name (optional)"
                   />
-                  {errors['businessName'] && <div className="error-message">{errors['businessName']}</div>}
+                  {errors['businessName'] && <div className="text-red-600 text-sm mt-1">{errors['businessName']}</div>}
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
+                <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
                   <button 
                     type="button"
                     onClick={handleCancel}
-                    className="btn btn-secondary"
+                    className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit"
-                    className="btn btn-primary"
+                    className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-dark font-medium rounded-lg transition-colors"
                     disabled={loading}
-                    style={{ backgroundColor: '#9CCAD9', borderColor: '#9CCAD9', color: '#2F3E46' }}
                   >
                     {loading ? 'Updating...' : '💾 Save Changes'}
                   </button>
@@ -502,8 +369,6 @@ function Profile() {
               </form>
             </div>
           )}
-          </div>
-          </div>
         </div>
       </div>
 
@@ -574,7 +439,7 @@ function Profile() {
           </div>
         </div>
       )}
-    </>
+    </Layout>
   );
 }
 
