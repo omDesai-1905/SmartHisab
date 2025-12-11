@@ -340,15 +340,14 @@ function Profile() {
               <div style={{ 
                 width: '100px', 
                 height: '100px', 
-                background: '#667eea',
+                background: '#9CCAD9',
                 borderRadius: '50%',
                 margin: '0 auto 1rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '3rem',
-                color: 'white',
-                boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)'
+                color: '#1F3E46',
               }}>
                 {user.name?.charAt(0).toUpperCase() || '👤'}
               </div>
@@ -402,9 +401,9 @@ function Profile() {
                 <button 
                   onClick={() => setIsEditing(true)}
                   className="btn btn-primary"
-                  style={{ marginRight: '1rem' }}
+                  style={{ marginRight: '1rem', backgroundColor: '#9CCAD9', borderColor: '#9CCAD9', color: '#2F3E46' }}
                 >
-                  update Edit Profile
+                  ✏️ Edit Profile
                 </button>
                 <button 
                   onClick={handleLogout}
@@ -495,6 +494,7 @@ function Profile() {
                     type="submit"
                     className="btn btn-primary"
                     disabled={loading}
+                    style={{ backgroundColor: '#9CCAD9', borderColor: '#9CCAD9', color: '#2F3E46' }}
                   >
                     {loading ? 'Updating...' : '💾 Save Changes'}
                   </button>

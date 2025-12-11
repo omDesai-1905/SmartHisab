@@ -171,7 +171,6 @@ function Analytics() {
           }
 
           .analytics-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 16px;
             padding: 1.5rem;
             color: white;
@@ -182,52 +181,25 @@ function Analytics() {
             overflow: hidden;
           }
 
-          .analytics-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-          }
+          
 
-          .analytics-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-          }
+          
 
           .analytics-card-content {
             position: relative;
             z-index: 1;
           }
 
-          .analytics-card.income {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-          }
-
-          .analytics-card.expense {
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-          }
-
           .analytics-card.customers {
-            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            background: #5A9CB5;
           }
 
           .analytics-card.balance.positive {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            background: #22C55E;
           }
 
           .analytics-card.balance.negative {
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-          }
-
-          .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            opacity: 0.9;
+            background: #EF4444;
           }
 
           .card-value {
@@ -403,10 +375,6 @@ function Analytics() {
               font-size: 1.5rem;
             }
 
-            .card-icon {
-              font-size: 2rem;
-            }
-
             .top-customers-section {
               grid-template-columns: 1fr;
               gap: 1rem;
@@ -467,7 +435,7 @@ function Analytics() {
             </div>
           </div>
 
-          <div className="analytics-card">
+          <div className="analytics-card" style={{ background: '#73AF6F' }}>
             <div className="analytics-card-content">
               <div className="card-value">{formatAmount(analyticsData.totalCreditAmount)}</div>
               <div className="card-label">Total Credit</div>
@@ -475,7 +443,7 @@ function Analytics() {
             </div>
           </div>
 
-          <div className="analytics-card">
+          <div className="analytics-card" style={{ background: '#FF5555' }}>
             <div className="analytics-card-content">
               <div className="card-value">{formatAmount(analyticsData.totalDebitAmount)}</div>
               <div className="card-label">Total Debit</div>

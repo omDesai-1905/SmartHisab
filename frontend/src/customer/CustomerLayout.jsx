@@ -99,7 +99,7 @@ const CustomerLayout = ({ children, currentPage }) => {
                 borderRadius: '8px',
                 border: 'none',
                 background: currentPage === 'transactions' ? '#9CCAD9' : 'transparent',
-                color: currentPage === 'transactions' ? '2F3E46' : '#6b7280',
+                color: currentPage === 'transactions' ? '#2F3E46' : '#6b7280',
                 fontWeight: '600',
                 fontSize: '0.95rem',
                 cursor: 'pointer',

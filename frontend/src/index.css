@@ -883,8 +883,8 @@ body {
 }
 
 .sidebar-nav-item.active {
-  background-color: #667eea;
-  color: white;
+  background-color: #9CCAD9;
+  color: #2F3E46;
 }
 
 .sidebar-nav-item.logout {
@@ -1090,10 +1090,6 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
-
-/* .income-card {
-  border-left: 4px solid #48bb78;
-} */
 
 .expense-card {
   border-left: 4px solid #e53e3e;
