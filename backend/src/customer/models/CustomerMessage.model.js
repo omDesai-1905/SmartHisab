@@ -7,19 +7,31 @@ const customerMessageSchema = new mongoose.Schema(
       ref: "Customer",
       required: true,
     },
-    customerName: { type: String, required: true },
+    customerName: { 
+      type: String, 
+      required: true 
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    userEmail: { type: String, required: true },
+    userEmail: { 
+      type: String, 
+      required: true 
+    },
     transactionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Transaction",
     },
-    subject: { type: String, required: true },
-    message: { type: String, required: true },
+    subject: { 
+      type: String, 
+      required: true 
+    },
+    message: { 
+      type: String, 
+      required: true 
+    },
     type: {
       type: String,
       enum: ["general", "complaint", "dispute"],
