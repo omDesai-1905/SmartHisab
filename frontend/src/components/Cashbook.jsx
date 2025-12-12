@@ -15,6 +15,8 @@ function Cashbook() {
   const [editingEntry, setEditingEntry] = useState(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [entryToDelete, setEntryToDelete] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState(null);
   const [newEntry, setNewEntry] = useState({
     amount: '',
     description: '',
@@ -269,9 +271,9 @@ function Cashbook() {
             </div>
             <br />
 
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="grid grid-cols-2 gap-4">
               <button 
-                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors shadow-sm flex items-center gap-2"
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors shadow-sm flex items-center gap-2 justify-center"
                 onClick={() => {
                   setEntryType('income');
                   setShowModal(true);
@@ -280,7 +282,7 @@ function Cashbook() {
                 ➕ Add Income
               </button>
               <button 
-                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors shadow-sm flex items-center gap-2"
+                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors shadow-sm flex items-center gap-2 justify-center"
                 onClick={() => {
                   setEntryType('expense');
                   setShowModal(true);
@@ -348,16 +350,22 @@ function Cashbook() {
                 <table className="w-full" style={{borderCollapse: 'collapse', tableLayout: 'fixed'}}>
                   <thead>
                     <tr>
-                      <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '15%'}}>Date</th>
-                      <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '30%'}}>Description</th>
-                      <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '15%'}}>Income</th>
-                      <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '15%'}}>Expense</th>
-                      <th className="bg-gray-50 px-4 py-3 text-center font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '25%'}}>Actions</th>
+                      <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '20%'}}>Date</th>
+                      <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '40%'}}>Description</th>
+                      <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '20%'}}>Income</th>
+                      <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '20%'}}>Expense</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredEntries.map(entry => (
-                      <tr key={entry._id || entry.id} className="border-b border-gray-100">
+                      <tr 
+                        key={entry._id || entry.id} 
+                        onClick={() => {
+                          setSelectedEntry(entry);
+                          setShowDetailModal(true);
+                        }}
+                        className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                      >
                         <td className="px-4 py-3 text-sm text-gray-900">{formatDate(entry.date)}</td>
                         <td className="px-4 py-3 text-sm text-gray-900">{entry.description}</td>
                         <td className="px-4 py-3 text-sm font-semibold text-green-600 text-right">
@@ -365,24 +373,6 @@ function Cashbook() {
                         </td>
                         <td className="px-4 py-3 text-sm font-semibold text-red-600 text-right">
                           {entry.type === 'expense' ? formatAmount(entry.amount) : '-'}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2 justify-center">
-                            <button 
-                              className="px-3 py-1.5 bg-primary hover:bg-primary/90 text-primary-dark text-xs font-medium rounded-md transition-colors"
-                              onClick={() => handleEdit(entry)}
-                              title="Edit"
-                            >
-                              update
-                            </button>
-                            <button 
-                              className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md transition-colors"
-                              onClick={() => handleDelete(entry)}
-                              title="Delete"
-                            >
-                              Delete
-                            </button>
-                          </div>
                         </td>
                       </tr>
                     ))}
@@ -525,6 +515,67 @@ function Cashbook() {
               >
                 Delete
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Entry Detail Modal */}
+      {showDetailModal && selectedEntry && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" onClick={() => setShowDetailModal(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-800">Entry Details</h2>
+              <button className="text-4xl text-gray-400 hover:text-gray-600 leading-none transition-colors" onClick={() => setShowDetailModal(false)}>
+                ×
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="text-sm font-semibold text-gray-600 mb-1">Type</div>
+                <div className={`text-lg font-bold ${selectedEntry.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                  {selectedEntry.type === 'income' ? 'Income' : 'Expense'}
+                </div>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="text-sm font-semibold text-gray-600 mb-1">Amount</div>
+                <div className={`text-2xl font-bold ${selectedEntry.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                  {formatAmount(selectedEntry.amount)}
+                </div>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="text-sm font-semibold text-gray-600 mb-1">Description</div>
+                <div className="text-lg text-gray-800">{selectedEntry.description}</div>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="text-sm font-semibold text-gray-600 mb-1">Date</div>
+                <div className="text-lg text-gray-800">{formatDate(selectedEntry.date)}</div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    setShowDetailModal(false);
+                    handleEdit(selectedEntry);
+                  }}
+                  className="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-dark font-medium rounded-lg transition-colors"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDetailModal(false);
+                    handleDelete(selectedEntry);
+                  }}
+                  className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>

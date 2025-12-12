@@ -15,6 +15,7 @@ function CustomerDetail() {
   const [showModal, setShowModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [modalType, setModalType] = useState('add');
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [transactionType, setTransactionType] = useState('debit');
@@ -360,7 +361,7 @@ function CustomerDetail() {
         </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 justify-center mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-6">
           <button 
             onClick={() => openTransactionModal('debit')}
             className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors shadow-sm"
@@ -408,21 +409,24 @@ function CustomerDetail() {
                 </div>
               )}
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
+                <table className="w-full border-collapse min-w-[500px]">
                   <thead>
                     <tr className="bg-gray-50 border-b-2 border-gray-200">
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Description</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Debit</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Credit</th>
-                      <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {(searchTerm ? filteredTransactions : transactions).map((transaction) => (
                     <tr 
                       key={transaction._id}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                      onClick={() => {
+                        setSelectedTransaction(transaction);
+                        setShowDetailModal(true);
+                      }}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-4 text-sm text-gray-900">{formatDate(transaction.date || transaction.createdAt)}</td>
                       <td className="px-6 py-4 text-sm text-gray-900">{transaction.description || 'NONE'}</td>
@@ -431,27 +435,6 @@ function CustomerDetail() {
                       </td>
                       <td className="px-6 py-4 text-sm font-semibold text-green-600">
                         {transaction.type === 'credit' ? formatAmount(transaction.amount) : '-'}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => openEditTransactionModal(transaction)}
-                            className="px-3 py-1.5 bg-primary hover:bg-primary/90 text-primary-dark text-xs font-medium rounded-md transition-colors"
-                            title="Edit transaction"
-                          >
-                            Update
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedTransaction(transaction);
-                              setShowConfirmModal(true);
-                            }}
-                            className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md transition-colors"
-                            title="Delete transaction"
-                          >
-                            Delete
-                          </button>
-                        </div>
                       </td>
                     </tr>
                   ))}
@@ -920,6 +903,67 @@ function CustomerDetail() {
                   <button 
                     onClick={confirmDelete}
                     className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Transaction Detail Modal */}
+        {showDetailModal && selectedTransaction && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" onClick={() => setShowDetailModal(false)}>
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-800">Transaction Details</h2>
+                <button className="text-4xl text-gray-400 hover:text-gray-600 leading-none transition-colors" onClick={() => setShowDetailModal(false)}>
+                  ×
+                </button>
+              </div>
+              
+              <div className="p-6 space-y-4">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-600 mb-1">Type</div>
+                  <div className={`text-lg font-bold ${selectedTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                    {selectedTransaction.type === 'credit' ? 'Credit (You Got)' : 'Debit (You Gave)'}
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-600 mb-1">Amount</div>
+                  <div className={`text-2xl font-bold ${selectedTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                    {formatAmount(selectedTransaction.amount)}
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-600 mb-1">Description</div>
+                  <div className="text-lg text-gray-800">{selectedTransaction.description || 'NONE'}</div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-600 mb-1">Date</div>
+                  <div className="text-lg text-gray-800">{formatDate(selectedTransaction.date || selectedTransaction.createdAt)}</div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      openEditTransactionModal(selectedTransaction);
+                    }}
+                    className="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-dark font-medium rounded-lg transition-colors"
+                  >
+                    Update
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      setShowConfirmModal(true);
+                    }}
+                    className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
                   >
                     Delete
                   </button>
