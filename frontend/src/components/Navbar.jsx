@@ -24,7 +24,7 @@ function Navbar({ onToggleSidebar }) {
                 ☰
               </button>
             )}
-            <div className="font-['Georgia','Times_New_Roman',serif] font-bold text-2xl text-blue-600 drop-shadow-sm tracking-wide">
+            <div className="font-['Georgia','Times_New_Roman',serif] font-bold text-2xl text-primary-dark drop-shadow-sm tracking-wide">
               SmartHisab
             </div>
           </div>

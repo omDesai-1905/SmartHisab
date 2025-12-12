@@ -94,7 +94,7 @@ const CustomerMessages = () => {
             </h2>
             <button
               onClick={() => setShowMessageModal(true)}
-              className="bg-blue-500 text-white px-6 py-3 rounded-lg border-none font-semibold cursor-pointer text-[0.95rem] flex items-center gap-2 hover:bg-blue-600 transition-colors"
+              className="bg-blue-800 text-white px-6 py-3 rounded-lg border-none font-semibold cursor-pointer text-[0.95rem] flex items-center gap-2 hover:bg-indigo-500 transition-colors"
             >
               <span className="text-xl">+</span>
               New Message
@@ -187,7 +187,7 @@ const CustomerMessages = () => {
             className="bg-white rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-blue-500 text-white p-6 rounded-t-2xl">
+            <div className="bg-sky-100 text-sky-900 p-6 rounded-t-2xl">
               <h3 className="text-2xl font-bold m-0">Send New Message</h3>
               <p className="opacity-90 mt-2 mb-0">Contact your business owner</p>
             </div>
@@ -249,7 +249,7 @@ const CustomerMessages = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-3.5 py-3.5 border-none rounded-lg bg-blue-500 text-white font-semibold cursor-pointer text-base hover:bg-blue-600 transition-colors"
+                  className=" bg-sky-500 flex-1 px-3.5 py-3.5 border-none rounded-lg bg-blue-500 text-white font-semibold cursor-pointer text-base hover:bg-blue-600 transition-colors"
                 >
                   Send Message
                 </button>

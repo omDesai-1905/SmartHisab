@@ -68,195 +68,74 @@ function AdminLogin() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form">
-        <div className="auth-header">
-          <h2>Admin Login</h2>
-          <p>Access the admin dashboard</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-4">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="text-center mb-8">
+          <h2 className="text-gray-800 mb-3 text-3xl font-semibold">Admin Login</h2>
+          <p className="text-gray-600 text-sm">Access the admin dashboard</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="form">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {errors.general && (
-            <div className="error-message general-error">
+            <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm text-center">
               {errors.general}
             </div>
           )}
 
-          <div className="form-group">
-            <label htmlFor="email">Admin Email</label>
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-2 font-medium text-gray-800 text-sm">Admin Email</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={errors.email ? 'error' : ''}
+              className={`px-3 py-3 border-2 rounded-lg text-base transition-colors focus:outline-none focus:border-primary ${
+                errors.email ? 'border-red-500' : 'border-gray-300'
+              }`}
               placeholder="Enter admin email"
               disabled={isLoading}
             />
-            {errors.email && <span className="error-text">{errors.email}</span>}
+            {errors.email && <span className="text-red-600 text-xs mt-1">{errors.email}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
+          <div className="flex flex-col">
+            <label htmlFor="password" className="mb-2 font-medium text-gray-800 text-sm">Password</label>
             <input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={errors.password ? 'error' : ''}
+              className={`px-3 py-3 border-2 rounded-lg text-base transition-colors focus:outline-none focus:border-primary ${
+                errors.password ? 'border-red-500' : 'border-gray-300'
+              }`}
               placeholder="Enter password"
               disabled={isLoading}
             />
-            {errors.password && <span className="error-text">{errors.password}</span>}
+            {errors.password && <span className="text-red-600 text-xs mt-1">{errors.password}</span>}
           </div>
 
           <button 
             type="submit" 
-            className="btn-primary" 
+            className="bg-primary hover:bg-primary/90 text-primary-dark border-none py-3 px-5 rounded-lg text-base font-semibold cursor-pointer transition-transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <div className="auth-footer">
+        <div className="text-center mt-8">
           <p>
             <button 
               onClick={() => navigate('/login')}
-              className="link-button"
+              className="bg-transparent border-none text-primary-dark cursor-pointer underline text-sm hover:text-primary"
             >
               Back to User Login
             </button>
           </p>
         </div>
       </div>
-
-      <style jsx>{`
-        .auth-container {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #4db8ff;
-          padding: 20px;
-        }
-
-        .auth-form {
-          background: white;
-          padding: 40px;
-          border-radius: 10px;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-          width: 100%;
-          max-width: 400px;
-        }
-
-        .auth-header {
-          text-align: center;
-          margin-bottom: 30px;
-        }
-
-        .auth-header h2 {
-          color: #333;
-          margin-bottom: 10px;
-          font-size: 28px;
-          font-weight: 600;
-        }
-
-        .auth-header p {
-          color: #666;
-          font-size: 14px;
-        }
-
-        .form {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .form-group label {
-          margin-bottom: 8px;
-          font-weight: 500;
-          color: #333;
-          font-size: 14px;
-        }
-
-        .form-group input {
-          padding: 12px;
-          border: 2px solid #e1e1e1;
-          border-radius: 8px;
-          font-size: 16px;
-          transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus {
-          outline: none;
-          border-color: #667eea;
-        }
-
-        .form-group input.error {
-          border-color: #e53e3e;
-        }
-
-        .error-text {
-          color: #e53e3e;
-          font-size: 12px;
-          margin-top: 5px;
-        }
-
-        .error-message {
-          background-color: #fed7d7;
-          color: #c53030;
-          padding: 12px;
-          border-radius: 8px;
-          font-size: 14px;
-          text-align: center;
-        }
-
-        .btn-primary {
-          color: white;
-          border: none;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: transform 0.2s ease;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-          transform: translateY(-2px);
-        }
-
-        .btn-primary:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-        }
-
-        .auth-footer {
-          text-align: center;
-          margin-top: 30px;
-        }
-
-        .link-button {
-          background: none;
-          border: none;
-          color: #667eea;
-          cursor: pointer;
-          text-decoration: underline;
-          font-size: 14px;
-        }
-
-        .link-button:hover {
-          color: #764ba2;
-        }
-      `}</style>
     </div>
   );
 }

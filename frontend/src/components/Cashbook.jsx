@@ -220,11 +220,14 @@ function Cashbook() {
 
   return (
     <Layout currentPage="/cashbook">
-      <div className="cashbook-page">
-        <div className="cashbook-container">
-          <div className="cashbook-header">
-            <div className="flex flex-wrap gap-6 mb-8">
-              <div className="flex-1 min-w-[280px] bg-white border-2 border-green-500 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-green-500/30 h-[100px]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Cashbook</h1>
+          <p className="text-gray-600">Track your income and expenses</p>
+        </div>
+
+        <div className="flex flex-wrap gap-6 mb-8">
+              <div className="flex-1 min-w-[280px] bg-green-100 border-2 border-green-500 rounded-2xl p-6 shadow-lg hover:shadow-xl ">
                 <div className="flex items-center gap-4">
                   
                   <div>
@@ -238,7 +241,7 @@ function Cashbook() {
                 </div>
               </div>
 
-              <div className="flex-1 min-w-[280px] bg-white border-2 border-red-500 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-red-500/30">
+              <div className="flex-1 min-w-[280px] bg-red-100 border-2 border-red-500 rounded-2xl p-6 shadow-lg hover:shadow-xl ">
                 <div className="flex items-center gap-4">
                   <div>
                     <div className="text-3xl font-bold text-red-500 mb-1">
@@ -251,7 +254,7 @@ function Cashbook() {
                 </div>
               </div>
 
-              <div className={`flex-1 min-w-[280px] bg-white border-2 ${balance >= 0 ? 'border-blue-500 hover:shadow-blue-500/30' : 'border-amber-500 hover:shadow-amber-500/30'} rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}>
+              <div className={`flex-1 min-w-[280px] border-2 ${balance >= 0 ? 'border-blue-500 bg-sky-100  hover:shadow-blue-500/30 ' : 'border-amber-500 bg-amber-100 hover:shadow-amber-500/30'} rounded-2xl p-6 shadow-lg `}>
                 <div className="flex items-center gap-4">
                   <div>
                     <div className={`text-3xl font-bold ${balance >= 0 ? 'text-blue-500' : 'text-amber-500'} mb-1`}>
@@ -266,9 +269,9 @@ function Cashbook() {
             </div>
             <br />
 
-            <div className="action-buttons">
+            <div className="flex flex-wrap gap-4 justify-center">
               <button 
-                className="btn btn-success"
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors shadow-sm flex items-center gap-2"
                 onClick={() => {
                   setEntryType('income');
                   setShowModal(true);
@@ -277,7 +280,7 @@ function Cashbook() {
                 ➕ Add Income
               </button>
               <button 
-                className="btn btn-danger"
+                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors shadow-sm flex items-center gap-2"
                 onClick={() => {
                   setEntryType('expense');
                   setShowModal(true);
@@ -288,94 +291,98 @@ function Cashbook() {
             </div>
           </div>
 
-          <div className="filters">
-            <div className="search-filter">
-              <label>Search Description:</label>
+          <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 my-6">
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Search Description:</label>
               <input
                 type="text"
                 placeholder="Search by description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-base bg-white transition-all focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none"
               />
             </div>
-            <div className="date-range-filter">
-              <div className="date-input-group">
-                <label>From Date:</label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">From Date:</label>
                 <input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
-                  className="filter-select"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-base bg-white transition-all focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none"
                 />
               </div>
-              <div className="date-input-group">
-                <label>To Date:</label>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">To Date:</label>
                 <input
                   type="date"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
-                  className="filter-select"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-base bg-white transition-all focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none"
                 />
               </div>
-              <button 
-                className="btn btn-secondary clear-dates"
-                onClick={() => {
-                  setDateFrom('');
-                  setDateTo('');
-                }}
-              >
-                Clear Dates
-              </button>
+              <div className="flex items-end">
+                <button 
+                  className="w-full px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors"
+                  onClick={() => {
+                    setDateFrom('');
+                    setDateTo('');
+                  }}
+                >
+                  Clear Dates
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="entries-section">
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden my-6">
             {loading ? (
-              <div className="loading">Loading entries...</div>
+              <div className="p-8 text-center text-gray-600">Loading entries...</div>
             ) : filteredEntries.length === 0 ? (
-              <div className="no-entries">
-                <h3>No entries found</h3>
-                <p>Start by adding your first income or expense entry</p>
+              <div className="p-8 text-center">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No entries found</h3>
+                <p className="text-gray-600">Start by adding your first income or expense entry</p>
               </div>
             ) : (
-              <div className="entries-table">
-                <table>
+              <div className="overflow-x-auto entries-table">
+                <table className="w-full" style={{borderCollapse: 'collapse', tableLayout: 'fixed'}}>
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Description</th>
-                      <th>Income</th>
-                      <th>Expense</th>
-                      <th>Actions</th>
+                      <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '15%'}}>Date</th>
+                      <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '30%'}}>Description</th>
+                      <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '15%'}}>Income</th>
+                      <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '15%'}}>Expense</th>
+                      <th className="bg-gray-50 px-4 py-3 text-center font-semibold text-gray-700 border-b-2 border-gray-200" style={{width: '25%'}}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredEntries.map(entry => (
-                      <tr key={entry._id || entry.id} className={entry.type}>
-                        <td>{formatDate(entry.date)}</td>
-                        <td>{entry.description}</td>
-                        <td className="amount income">
+                      <tr key={entry._id || entry.id} className="border-b border-gray-100">
+                        <td className="px-4 py-3 text-sm text-gray-900">{formatDate(entry.date)}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{entry.description}</td>
+                        <td className="px-4 py-3 text-sm font-semibold text-green-600 text-right">
                           {entry.type === 'income' ? formatAmount(entry.amount) : '-'}
                         </td>
-                        <td className="amount expense">
+                        <td className="px-4 py-3 text-sm font-semibold text-red-600 text-right">
                           {entry.type === 'expense' ? formatAmount(entry.amount) : '-'}
                         </td>
-                        <td className="actions">
-                          <button 
-                            className="btn btn-edit"
-                            onClick={() => handleEdit(entry)}
-                            title="Edit"
-                          >
-                            update
-                          </button>
-                          <button 
-                            className="btn btn-delete"
-                            onClick={() => handleDelete(entry)}
-                            title="Delete"
-                          >
-                            Delete
-                          </button>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2 justify-center">
+                            <button 
+                              className="px-3 py-1.5 bg-primary hover:bg-primary/90 text-primary-dark text-xs font-medium rounded-md transition-colors"
+                              onClick={() => handleEdit(entry)}
+                              title="Edit"
+                            >
+                              update
+                            </button>
+                            <button 
+                              className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md transition-colors"
+                              onClick={() => handleDelete(entry)}
+                              title="Delete"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -384,15 +391,13 @@ function Cashbook() {
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>{editingEntry ? 'Edit' : 'Add'} {entryType === 'income' ? 'Income' : 'Expense'} Entry</h2>
-              <button className="modal-close" onClick={() => {
+        {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" onClick={() => setShowModal(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-800">{editingEntry ? 'Edit' : 'Add'} {entryType === 'income' ? 'Income' : 'Expense'} Entry</h2>
+              <button className="text-4xl text-gray-400 hover:text-gray-600 leading-none transition-colors" onClick={() => {
                 setShowModal(false);
                 setEditingEntry(null);
                 setNewEntry({
@@ -404,9 +409,9 @@ function Cashbook() {
               }}>×</button>
             </div>
             
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Date</label>
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Date</label>
                 <input
                   type="date"
                   value={newEntry.date}
@@ -414,13 +419,15 @@ function Cashbook() {
                     setNewEntry(prev => ({ ...prev, date: e.target.value }));
                     if (errors.date) setErrors(prev => ({ ...prev, date: '' }));
                   }}
-                  className={`form-input ${errors.date ? 'error' : ''}`}
+                  className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                    errors.date ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
-                {errors.date && <div className="error-message">{errors.date}</div>}
+                {errors.date && <div className="text-red-600 text-sm mt-1">{errors.date}</div>}
               </div>
 
-              <div className="form-group">
-                <label>Amount (₹)</label>
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Amount (₹)</label>
                 <input
                   type="text"
                   inputMode="decimal"
@@ -432,13 +439,15 @@ function Cashbook() {
                     setNewEntry(prev => ({ ...prev, amount: sanitized }));
                     if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                   }}
-                  className={`form-input ${errors.amount ? 'error' : ''}`}
+                  className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                    errors.amount ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
-                {errors.amount && <div className="error-message">{errors.amount}</div>}
+                {errors.amount && <div className="text-red-600 text-sm mt-1">{errors.amount}</div>}
               </div>
 
-              <div className="form-group">
-                <label>Description (Optional)</label>
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Description (Optional)</label>
                 <input
                   type="text"
                   placeholder="Enter description (optional)..."
@@ -447,19 +456,23 @@ function Cashbook() {
                     setNewEntry(prev => ({ ...prev, description: e.target.value }));
                     if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
                   }}
-                  className={`form-input ${errors.description ? 'error' : ''}`}
+                  className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                    errors.description ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
-                {errors.description && <div className="error-message">{errors.description}</div>}
+                {errors.description && <div className="text-red-600 text-sm mt-1">{errors.description}</div>}
               </div>
 
-              <div className="modal-actions">
-                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary">
+              <div className="flex gap-4 justify-end">
+                <button type="button" onClick={() => setShowModal(false)} className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors">
                   Cancel
                 </button>
                 <button 
                   type="submit" 
                   disabled={submitting}
-                  className={`btn ${entryType === 'income' ? 'btn-success' : 'btn-danger'}`}
+                  className={`px-6 py-2 font-medium rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${
+                    entryType === 'income' ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'
+                  }`}
                 >
                   {submitting ? (editingEntry ? 'Updating...' : 'Adding...') : 
                    `${editingEntry ? 'Update' : 'Add'} ${entryType === 'income' ? 'Income' : 'Expense'}`}
@@ -472,12 +485,12 @@ function Cashbook() {
 
       {/* Delete Confirmation Modal */}
       {showConfirmDelete && entryToDelete && (
-        <div className="modal-overlay" onClick={() => setShowConfirmDelete(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Delete Entry</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" onClick={() => setShowConfirmDelete(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-800">Delete Entry</h2>
               <button 
-                className="modal-close"
+                className="text-4xl text-gray-400 hover:text-gray-600 leading-none transition-colors"
                 onClick={() => {
                   setShowConfirmDelete(false);
                   setEntryToDelete(null);
@@ -487,28 +500,28 @@ function Cashbook() {
               </button>
             </div>
             
-            <div className="modal-body">
-              <p>Are you sure you want to delete this entry?</p>
-              <div className="entry-info">
-                <p><strong>Type:</strong> {entryToDelete.type === 'income' ? 'Income' : 'Expense'}</p>
-                <p><strong>Amount:</strong> ₹{entryToDelete.amount?.toLocaleString()}</p>
-                <p><strong>Description:</strong> {entryToDelete.description}</p>
+            <div className="p-6">
+              <p className="text-gray-700 mb-4">Are you sure you want to delete this entry?</p>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="mb-2"><strong className="text-gray-700">Type:</strong> <span className="text-gray-900">{entryToDelete.type === 'income' ? 'Income' : 'Expense'}</span></p>
+                <p className="mb-2"><strong className="text-gray-700">Amount:</strong> <span className="text-gray-900">₹{entryToDelete.amount?.toLocaleString()}</span></p>
+                <p><strong className="text-gray-700">Description:</strong> <span className="text-gray-900">{entryToDelete.description}</span></p>
               </div>
             </div>
 
-            <div className="modal-footer">
+            <div className="flex gap-4 justify-end p-6 border-t border-gray-200">
               <button 
                 onClick={() => {
                   setShowConfirmDelete(false);
                   setEntryToDelete(null);
                 }}
-                className="btn btn-secondary"
+                className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={confirmDelete}
-                className="btn btn-danger"
+                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
               >
                 Delete
               </button>

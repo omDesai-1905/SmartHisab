@@ -435,8 +435,8 @@ function CustomerDetail() {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={() => handleEditTransaction(transaction)}
-                            className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-md transition-colors"
+                            onClick={() => openEditTransactionModal(transaction)}
+                            className="px-3 py-1.5 bg-primary hover:bg-primary/90 text-primary-dark text-xs font-medium rounded-md transition-colors"
                             title="Edit transaction"
                           >
                             Update

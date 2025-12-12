@@ -27,7 +27,7 @@ function Sidebar({ isOpen, onClose, currentPage = '' }) {
 
   return (
     <>
-      <div className={`fixed top-0 left-0 h-full w-[280px] bg-white shadow-2xl transform transition-transform duration-300 z-[100] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed top-0 left-0 h-full w-[85vw] sm:w-[280px] max-w-[320px] bg-white shadow-2xl transform transition-transform duration-300 z-[100] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h3 className="text-xl font-bold text-gray-800">Navigation</h3>
           <button className="text-3xl text-gray-600 hover:text-gray-800 leading-none" onClick={onClose}>

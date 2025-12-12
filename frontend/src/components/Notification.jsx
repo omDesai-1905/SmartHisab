@@ -9,7 +9,7 @@ function Notification({ notification, onClose }) {
         ? 'bg-emerald-50 border-l-4 border-emerald-500' 
         : notification.type === 'error' 
         ? 'bg-red-50 border-l-4 border-red-500' 
-        : 'bg-blue-50 border-l-4 border-blue-500'
+        : 'bg-primary/10 border-l-4 border-primary'
     }`}>
       <div className="text-2xl">
         {notification.type === 'success' ? '✅' : notification.type === 'error' ? '❌' : 'ℹ️'}
@@ -19,7 +19,7 @@ function Notification({ notification, onClose }) {
           ? 'text-emerald-800' 
           : notification.type === 'error' 
           ? 'text-red-800' 
-          : 'text-blue-800'
+          : 'text-primary-dark'
       }`}>{notification.message}</span>
       <button 
         className="text-3xl text-gray-400 hover:text-gray-600 leading-none transition-colors ml-auto" 

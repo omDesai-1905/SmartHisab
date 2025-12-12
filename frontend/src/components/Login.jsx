@@ -79,13 +79,13 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-4 relative overflow-hidden">
       <div className="bg-white/95 backdrop-blur-xl px-10 py-12 rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1),0_10px_20px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.8)] w-full max-w-[420px] border border-white/20 relative z-[1]">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-[#667eea] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl shadow-[0_8px_20px_rgba(102,126,234,0.3)]">
+          <div className="w-20 h-20 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center text-4xl shadow-[0_8px_20px_rgba(156,202,217,0.4)]">
             👋
           </div>
-          <h1 className="text-center mb-10 text-[#667eea] text-4xl font-bold">Welcome Back</h1>
+          <h1 className="text-center mb-10 text-primary-dark text-4xl font-bold">Welcome Back</h1>
           <p className="text-center mb-8 text-gray-600 text-base -mt-6">Sign in to your account to continue</p>
         </div>
         
@@ -104,7 +104,7 @@ function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-5 py-4 border-2 ${errors['email'] ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1),0_4px_12px_rgba(102,126,234,0.15)] focus:-translate-y-px focus:bg-white/95 placeholder:text-gray-400`}
+              className={`w-full px-5 py-4 border-2 ${errors['email'] ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-primary focus:shadow-[0_0_0_4px_rgba(156,202,217,0.2)] focus:-translate-y-px focus:bg-white/95 placeholder:text-gray-400`}
               placeholder="Enter your email address"
             />
             {errors['email'] && <div className="text-red-500 text-sm mt-2 flex items-center gap-1 before:content-['⚠️'] before:text-xs">{errors['email']}</div>}
@@ -118,7 +118,7 @@ function Login() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full px-5 py-4 border-2 ${errors['password'] ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1),0_4px_12px_rgba(102,126,234,0.15)] focus:-translate-y-px focus:bg-white/95 placeholder:text-gray-400`}
+              className={`w-full px-5 py-4 border-2 ${errors['password'] ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-primary focus:shadow-[0_0_0_4px_rgba(156,202,217,0.2)] focus:-translate-y-px focus:bg-white/95 placeholder:text-gray-400`}
               placeholder="Enter your password"
             />
             {errors['password'] && <div className="text-red-500 text-sm mt-2 flex items-center gap-1 before:content-['⚠️'] before:text-xs">{errors['password']}</div>}
@@ -126,7 +126,7 @@ function Login() {
 
           <button 
             type="submit" 
-            className="w-full px-6 py-4 border-none rounded-xl text-base font-semibold cursor-pointer transition-all bg-[#667eea] text-white shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:bg-[#5a67d8] hover:-translate-y-px disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+            className="w-full px-6 py-4 border-none rounded-xl text-base font-semibold cursor-pointer transition-all bg-primary hover:bg-primary/90 text-primary-dark shadow-[0_4px_15px_rgba(156,202,217,0.4)] hover:-translate-y-px disabled:opacity-70 disabled:cursor-not-allowed mt-4"
             disabled={loading}
           >
             {loading ? (

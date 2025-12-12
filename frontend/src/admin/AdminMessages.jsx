@@ -400,7 +400,7 @@ function AdminMessages() {
           width: 45px;
           height: 45px;
           border-radius: 50%;
-          background:#66c2ff;
+          background: #8CCAD2;
           color: white;
           display: flex;
           align-items: center;

@@ -196,13 +196,13 @@ function Dashboard() {
           <div className="flex gap-4 items-center">
             <button 
               onClick={() => navigate('/analytics')}
-              className="px-6 py-3 bg-[#667eea] text-white rounded-lg font-medium border-none flex items-center gap-2 transition-transform hover:-translate-y-0.5 shadow-md"
+              className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-dark rounded-lg font-medium border-none flex items-center gap-2 transition-transform hover:-translate-y-0.5 shadow-md"
             >
                View Analytics
             </button>
             <button 
               onClick={openAddModal}
-              className="px-6 py-3 bg-[#667eea] text-white rounded-lg font-medium border-none flex items-center gap-2 transition-transform hover:-translate-y-0.5 shadow-md"
+              className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-dark rounded-lg font-medium border-none flex items-center gap-2 transition-transform hover:-translate-y-0.5 shadow-md"
             >
               + Add New Customer
             </button>
@@ -218,7 +218,7 @@ function Dashboard() {
             placeholder="Search by name or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-base bg-white transition-all outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-base bg-white transition-all outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(156,202,217,0.2)]"
           />
         </div>
 
@@ -238,8 +238,8 @@ function Dashboard() {
                 }
               </div>
             )}
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+              <table className="w-full min-w-[700px]">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Customer Name</th>
@@ -325,7 +325,7 @@ function Dashboard() {
                       setNewCustomer(prev => ({ ...prev, name: e.target.value }));
                       if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
                     }}
-                    className={`w-full px-5 py-4 border-2 ${errors.name ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] placeholder:text-gray-400`}
+                    className={`w-full px-5 py-4 border-2 ${errors.name ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-primary focus:shadow-[0_0_0_4px_rgba(156,202,217,0.15)] placeholder:text-gray-400`}
                     placeholder="Enter customer name"
                   />
                   {errors.name && <div className="text-red-500 text-sm mt-2 flex items-center gap-1 before:content-['⚠️'] before:text-xs">{errors.name}</div>}
@@ -341,7 +341,7 @@ function Dashboard() {
                       setNewCustomer(prev => ({ ...prev, phone: e.target.value }));
                       if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
                     }}
-                    className={`w-full px-5 py-4 border-2 ${errors.phone ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] placeholder:text-gray-400`}
+                    className={`w-full px-5 py-4 border-2 ${errors.phone ? 'border-red-500 shadow-[0_0_0_4px_rgba(229,62,62,0.1)]' : 'border-gray-200'} rounded-xl text-base transition-all bg-white/80 backdrop-blur-sm focus:outline-none focus:border-primary focus:shadow-[0_0_0_4px_rgba(156,202,217,0.15)] placeholder:text-gray-400`}
                     placeholder="Enter phone number"
                   />
                   {errors.phone && <div className="text-red-500 text-sm mt-2 flex items-center gap-1 before:content-['⚠️'] before:text-xs">{errors.phone}</div>}
@@ -362,7 +362,7 @@ function Dashboard() {
                   </button>
                   <button 
                     type="submit"
-                    className="px-6 py-3 bg-[#667eea] text-white rounded-lg font-medium hover:bg-[#5a67d8] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-dark rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                     disabled={submitting}
                   >
                     {submitting ? (modalType === 'add' ? 'Adding...' : 'Updating...') : (modalType === 'add' ? 'Add Customer' : 'Update Customer')}

@@ -57,7 +57,7 @@ function AdminDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div 
-            className="bg-white rounded-xl p-6 shadow-md border-2 border-[#667eea] cursor-pointer hover:shadow-lg transition-shadow"
+            className="bg-sky-100 rounded-xl p-6 shadow-md border-2 border-[#667eea] cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => navigate('/admin/users')}
           >
             <h3 className="text-gray-800 text-lg font-semibold mb-3">Total Users</h3>
@@ -66,7 +66,7 @@ function AdminDashboard() {
           </div>
 
           <div 
-            className="bg-white rounded-xl p-6 shadow-md border-2 border-green-500 cursor-pointer hover:shadow-lg transition-shadow"
+            className="bg-green-100 rounded-xl p-6 shadow-md border-2 border-green-500 cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => navigate('/admin/messages')}
           >
             <h3 className="text-gray-800 text-lg font-semibold mb-3">User Messages</h3>

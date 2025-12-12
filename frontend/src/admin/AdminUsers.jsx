@@ -214,8 +214,8 @@ function AdminUsers() {
           width: 60px;
           height: 60px;
           border-radius: 50%;
-          background: #66c2ff;
-          color: white;
+          background: #9CCAD9;
+          color: #2F3E46;
           display: flex;
           align-items: center;
           justify-content: center;

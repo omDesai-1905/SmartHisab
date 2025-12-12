@@ -201,7 +201,7 @@ function Profile() {
           className="fixed top-6 right-6 z-[9999] min-w-[300px] animate-[slideIn_0.3s_ease]"
         >
           <div className={`p-4 rounded-lg shadow-lg text-white font-medium flex items-center justify-between ${
-            notification.type === 'success' ? 'bg-green-500' : notification.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            notification.type === 'success' ? 'bg-green-500' : notification.type === 'error' ? 'bg-red-500' : 'bg-primary'
           }`}>
             <span>{notification.message}</span>
             <button
@@ -214,7 +214,7 @@ function Profile() {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-8">
           <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center text-5xl text-primary-dark">
             {user.name?.charAt(0).toUpperCase() || '👤'}

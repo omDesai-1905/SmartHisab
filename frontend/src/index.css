@@ -244,24 +244,82 @@
 .entries-table table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .entries-table th {
   background: #f7fafc;
   padding: 1rem;
-  text-align: left;
   font-weight: 600;
   color: #2d3748;
   border-bottom: 2px solid #e2e8f0;
 }
 
+.entries-table th:nth-child(1),
+.entries-table th:nth-child(2) {
+  text-align: left;
+}
+
+.entries-table th:nth-child(3),
+.entries-table th:nth-child(4) {
+  text-align: right;
+}
+
+.entries-table th:nth-child(5) {
+  text-align: center;
+}
+
+.entries-table th:nth-child(1) {
+  width: 15%;
+}
+
+.entries-table th:nth-child(2) {
+  width: 30%;
+}
+
+.entries-table th:nth-child(3) {
+  width: 15%;
+}
+
+.entries-table th:nth-child(4) {
+  width: 15%;
+}
+
+.entries-table th:nth-child(5) {
+  width: 25%;
+}
+
 .entries-table td {
   padding: 1rem;
+}
+
+.entries-table td:nth-child(1) {
+  width: 15%;
+}
+
+.entries-table td:nth-child(2) {
+  width: 30%;
+}
+
+.entries-table td:nth-child(3) {
+  width: 15%;
+}
+
+.entries-table td:nth-child(4) {
+  width: 15%;
+}
+
+.entries-table td:nth-child(5) {
+  width: 25%;
+}
+
+.entries-table td {
   border-bottom: 1px solid #e2e8f0;
 }
 
-.entries-table tr:hover {
-  background: #f7fafc;
+.entries-table td:nth-child(3),
+.entries-table td:nth-child(4) {
+  text-align: right;
 }
 
 .entries-table .income {
