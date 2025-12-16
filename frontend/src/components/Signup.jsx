@@ -102,10 +102,10 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-4 relative overflow-hidden">
       <div className="bg-white/95 backdrop-blur-xl px-10 py-12 rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1),0_10px_20px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.8)] w-full max-w-[420px] border border-white/20 relative z-[1]">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-[#667eea] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl shadow-[0_8px_20px_rgba(102,126,234,0.3)]">
+          <div className="w-20 h-20 bg-[#7ab4cd] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl shadow-[0_8px_20px_rgba(102,126,234,0.3)]">
             🎉
           </div>
           <h1 className="text-center mb-10 text-[#667eea] text-4xl font-bold">Create Account</h1>
@@ -192,7 +192,7 @@ function Signup() {
 
           <button 
             type="submit" 
-            className="w-full px-6 py-4 border-none rounded-xl text-base font-semibold cursor-pointer transition-all bg-[#667eea] text-white shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:bg-[#5a67d8] hover:-translate-y-px disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+            className="w-full px-6 py-4 border-none rounded-xl text-base font-semibold cursor-pointer transition-all bg-[#7ab4cd] text-white shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:bg-[#89b1c2] hover:-translate-y-px disabled:opacity-70 disabled:cursor-not-allowed mt-4"
             disabled={loading}
           >
             {loading ? (
