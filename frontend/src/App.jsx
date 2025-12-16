@@ -6,6 +6,8 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import CustomerDetail from './components/CustomerDetail';
+import Suppliers from './components/Suppliers';
+import SupplierDetail from './components/SupplierDetail';
 import Profile from './components/Profile';
 import Analytics from './components/Analytics';
 import Cashbook from './components/Cashbook';
@@ -112,6 +114,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CustomerDetail />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/suppliers" 
+                element={
+                  <ProtectedRoute>
+                    <Suppliers />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/suppliers/:id" 
+                element={
+                  <ProtectedRoute>
+                    <SupplierDetail />
                   </ProtectedRoute>
                 } 
               />

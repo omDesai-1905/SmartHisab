@@ -18,6 +18,7 @@ function Sidebar({ isOpen, onClose, currentPage = '' }) {
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '🏠' },
+    { path: '/suppliers', label: 'Suppliers', icon: '🏢' },
     { path: '/analytics', label: 'Analytics', icon: '📊' },
     { path: '/cashbook', label: 'Cashbook', icon: '📖' },
     { path: '/customer-messages', label: 'Customer Messages', icon: '💬' },

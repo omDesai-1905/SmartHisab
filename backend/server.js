@@ -5,6 +5,7 @@ import authenticateToken from "./src/user/middlewares/authMiddleware.js";
 import connectDB from "./src/connection/mongoConnection.js";
 import authRoutes from "./src/user/routes/authRoutes.js";
 import customerRoutes from "./src/user/routes/customerRoutes.js";
+import supplierRoutes from "./src/user/routes/supplierRoutes.js";
 import cashbookRoutes from "./src/user/routes/cashbookRoutes.js";
 import adminRoutes from "./src/admin/routes/adminRoutes.js";
 import messageRoutes from "./src/user/routes/messageRoutes.js";
@@ -31,6 +32,7 @@ app.use(express.json());
 // Routes
 app.use("/api", authRoutes);
 app.use("/api/customers", authenticateToken, customerRoutes);
+app.use("/api/suppliers", authenticateToken, supplierRoutes);
 app.use("/api/cashbook", authenticateToken, cashbookRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/messages", messageRoutes);
