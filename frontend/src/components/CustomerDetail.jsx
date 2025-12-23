@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import Layout from './Layout';
 import Notification from './Notification';
 import axios from 'axios';
@@ -8,7 +7,6 @@ import axios from 'axios';
 function CustomerDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [customer, setCustomer] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,16 +54,6 @@ function CustomerDetail() {
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const handleProfile = () => {
-    navigate('/profile');
-    actualSetSidebarOpen(false);
   };
 
   const filteredTransactions = transactions.filter(transaction =>
@@ -915,15 +903,15 @@ function CustomerDetail() {
         {/* Transaction Detail Modal */}
         {showDetailModal && selectedTransaction && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" onClick={() => setShowDetailModal(false)}>
-            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between items-center p-6 border-b border-gray-200">
+            <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
                 <h2 className="text-2xl font-bold text-gray-800">Transaction Details</h2>
                 <button className="text-4xl text-gray-400 hover:text-gray-600 leading-none transition-colors" onClick={() => setShowDetailModal(false)}>
                   ×
                 </button>
               </div>
               
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 overflow-y-auto">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-sm font-semibold text-gray-600 mb-1">Type</div>
                   <div className={`text-lg font-bold ${selectedTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>

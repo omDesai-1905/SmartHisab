@@ -18,13 +18,13 @@ function Navbar({ onToggleSidebar }) {
           <div className="flex items-center gap-4">
             {onToggleSidebar && (
               <button 
-                className="text-2xl p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="text-2xl p-2 hover:bg-gray-100 rounded-lg transition-colors border bg-gray-200"
                 onClick={onToggleSidebar}
               >
                 ☰
               </button>
             )}
-            <div className="font-['Georgia','Times_New_Roman',serif] font-bold text-2xl text-primary-dark drop-shadow-sm tracking-wide">
+            <div className="font-['Georgia','Times_New_Roman',serif] font-bold text-2xl text-sky-700 drop-shadow-sm tracking-wide">
               SmartHisab
             </div>
           </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import Layout from './Layout';
 import Notification from './Notification';
 import axios from 'axios';
@@ -20,7 +19,6 @@ function Suppliers() {
   const [searchTerm, setSearchTerm] = useState('');
   
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   useEffect(() => {
     if (notification) {
@@ -166,13 +164,11 @@ function Suppliers() {
     <Layout currentPage="/suppliers">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Suppliers</h1>
-          <p className="text-gray-600">Manage your suppliers</p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-4 mb-6">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Suppliers</h1>
+            <p className="text-gray-600">Manage your suppliers</p>
+          </div>
           <button 
             onClick={() => {
               setModalType('add');
@@ -249,12 +245,12 @@ function Suppliers() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          <span className={`font-medium ${
                             supplier.balance > 0 
-                              ? 'bg-red-100 text-red-700' 
+                              ? 'text-red-700' 
                               : supplier.balance < 0 
-                                ? 'bg-green-100 text-green-700' 
-                                : 'bg-gray-100 text-gray-700'
+                                ? 'text-green-700' 
+                                : 'text-gray-700'
                           }`}>
                             {supplier.balance > 0 ? 'You Owe' : supplier.balance < 0 ? 'They Owe' : 'Settled'}
                           </span>

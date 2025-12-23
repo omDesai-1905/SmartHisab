@@ -8,13 +8,27 @@ const generateCustomerId = (name) => {
   return `${cleanName}${randomNum}`;
 };
 
-const generatePassword = () => {
+const generatePassword = async () => {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
   let password = "";
-  for (let i = 0; i < 8; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  let isUnique = false;
+
+  // Keep generating until we get a unique password
+  while (!isUnique) {
+    password = "";
+    for (let i = 0; i < 8; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    // Check if this password already exists
+    const existingCustomer = await Customer.findOne({ password });
+    if (!existingCustomer) {
+      isUnique = true;
+    }
   }
+
   return password;
 };
 
@@ -91,7 +105,7 @@ export const createCustomer = async (req, res) => {
     const { name, phone } = req.body;
 
     const customerId = generateCustomerId(name);
-    const password = generatePassword();
+    const password = await generatePassword();
 
     const customer = new Customer({
       name,

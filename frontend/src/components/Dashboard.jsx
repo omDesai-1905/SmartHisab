@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import Layout from './Layout';
 import Notification from './Notification';
 import axios from 'axios';
@@ -20,7 +19,6 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   useEffect(() => {
     if (notification) {

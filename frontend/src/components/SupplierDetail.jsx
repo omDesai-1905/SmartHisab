@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import Layout from './Layout';
 import Notification from './Notification';
 import axios from 'axios';
@@ -8,7 +7,6 @@ import axios from 'axios';
 function SupplierDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [supplier, setSupplier] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -280,30 +278,35 @@ function SupplierDetail() {
   return (
     <Layout currentPage="/suppliers">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <button
-            onClick={() => navigate('/suppliers')}
-            className="text-primary-dark hover:text-primary font-medium mb-4 flex items-center gap-2"
-          >
-            ← Back to Suppliers
-          </button>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">{supplier.name}</h1>
-          <p className="text-gray-600">{supplier.phone}</p>
-        </div>
+        {/* Header and Summary Cards in One Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+          {/* Back Button and Supplier Info */}
+          <div className="flex flex-col justify-between">
+            <button
+              onClick={() => navigate('/suppliers')}
+              className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors inline-flex items-center gap-2 w-fit"
+            >
+              ← Back to Suppliers
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800 mb-1">{supplier.name}</h1>
+              <p className="text-gray-600">{supplier.phone}</p>
+            </div>
+          </div>
 
-        {/* Total Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          {/* Total Debit Card */}
           <div className="bg-red-100 border-2 border-red-500 rounded-2xl p-6 shadow-lg">
             <div className="text-base font-medium text-gray-600 mb-2">Total Debit (You Gave)</div>
             <div className="text-3xl font-bold text-red-600">{formatAmount(totalDebit)}</div>
           </div>
 
+          {/* Total Credit Card */}
           <div className="bg-green-100 border-2 border-green-500 rounded-2xl p-6 shadow-lg">
             <div className="text-base font-medium text-gray-600 mb-2">Total Credit (You Got)</div>
             <div className="text-3xl font-bold text-green-600">{formatAmount(totalCredit)}</div>
           </div>
 
+          {/* Net Balance Card */}
           <div className={`border-2 rounded-2xl p-6 shadow-lg ${
             balance > 0 ? 'bg-red-100 border-red-500' :
             balance < 0 ? 'bg-green-100 border-green-500' :
@@ -518,15 +521,15 @@ function SupplierDetail() {
         {/* Transaction Detail Modal */}
         {showDetailModal && selectedTransaction && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" onClick={() => setShowDetailModal(false)}>
-            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between items-center p-6 border-b border-gray-200">
+            <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
                 <h2 className="text-2xl font-bold text-gray-800">Transaction Details</h2>
                 <button className="text-4xl text-gray-400 hover:text-gray-600 leading-none transition-colors" onClick={() => setShowDetailModal(false)}>
                   ×
                 </button>
               </div>
               
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 overflow-y-auto">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-sm font-semibold text-gray-600 mb-1">Type</div>
                   <div className={`text-lg font-bold ${selectedTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>

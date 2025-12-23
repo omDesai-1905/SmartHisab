@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import Layout from './Layout';
 import Notification from './Notification';
 import axios from 'axios';
@@ -29,7 +28,6 @@ function Analytics() {
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   useEffect(() => {
     fetchCustomers();

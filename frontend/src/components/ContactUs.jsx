@@ -204,9 +204,6 @@ function ContactUs() {
                 className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-y min-h-[150px] ${
                   errors.description ? 'border-red-500' : 'border-gray-300'
                 }`}
-                    placeholder="Describe your question, feedback, suggestion, or issue in detail..."
-                    rows="6"
-                    required
                 placeholder="Describe your question, feedback, suggestion, or issue in detail..."
                 rows="6"
                 required
