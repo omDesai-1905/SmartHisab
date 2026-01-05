@@ -17,7 +17,7 @@ export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if it's admin credentials
+    // Check if it's admin credentials 
     if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
       return res.status(400).json({ message: "Invalid admin credentials" });
     }
