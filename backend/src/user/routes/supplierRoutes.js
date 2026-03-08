@@ -8,6 +8,7 @@ import {
   addSupplierTransaction,
   updateSupplierTransaction,
   deleteSupplierTransaction,
+  deleteMultipleSupplierTransactions,
 } from "../controllers/suppliersController.js";
 import {
   validateSupplierCreation,
@@ -29,12 +30,17 @@ router.get("/:id/transactions", getSupplierTransactions);
 router.post(
   "/:id/transactions",
   validateSupplierTransactionCreation,
-  addSupplierTransaction
+  addSupplierTransaction,
+);
+// Delete multiple transactions (MUST be before :transactionId routes)
+router.post(
+  "/:id/transactions/delete-multiple",
+  deleteMultipleSupplierTransactions,
 );
 router.post(
   "/:id/transactions/:transactionId",
   validateSupplierTransactionUpdate,
-  updateSupplierTransaction
+  updateSupplierTransaction,
 );
 router.delete("/:id/transactions/:transactionId", deleteSupplierTransaction);
 

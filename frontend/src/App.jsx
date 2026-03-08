@@ -12,7 +12,8 @@ import Profile from './components/Profile';
 import Analytics from './components/Analytics';
 import Cashbook from './components/Cashbook';
 import ContactUs from './components/ContactUs';
-import CustomerMessagesList from './components/CustomerMessagesList';
+import ChatList from './components/ChatList';
+import ChatWindow from './components/ChatWindow';
 import CustomerLogin from './customer/CustomerLogin';
 import CustomerPortal from './customer/CustomerPortal';
 import CustomerMessages from './customer/CustomerMessages';
@@ -142,19 +143,27 @@ function App() {
                 } 
               />
               <Route 
-                path="/customer-messages" 
+                path="/messages" 
                 element={
                   <ProtectedRoute>
-                    <CustomerMessagesList />
+                    <ChatList />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/messages/chat/:customerId" 
+                element={
+                  <ProtectedRoute>
+                    <ChatWindow />
                   </ProtectedRoute>
                 } 
               />
 
               {/* Customer Portal Routes */}
-              <Route path="/customer/login" element={<CustomerLogin />} />
-              <Route path="/customer/portal" element={<CustomerPortal />} />
-              <Route path="/customer/transactions" element={<CustomerTransactions />} />
-              <Route path="/customer/messages" element={<CustomerMessages />} />
+              <Route path="/customerpanel/login" element={<CustomerLogin />} />
+              <Route path="/customerpanel/portal" element={<CustomerPortal />} />
+              <Route path="/customerpanel/transactions" element={<CustomerTransactions />} />
+              <Route path="/customerpanel/messages" element={<CustomerMessages />} />
 
               {/* Admin Routes */}
               <Route 

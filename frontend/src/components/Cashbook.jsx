@@ -18,6 +18,10 @@ function Cashbook() {
     description: '',
     date: new Date().toISOString().split('T')[0]
   });
+  // Multiple delete state
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedEntries, setSelectedEntries] = useState([]);
+  const [deletingMultiple, setDeletingMultiple] = useState(false);
   // Helper to sanitize numeric amount input (allow digits and one decimal point)
   const sanitizeNumericInput = (val) => {
     if (typeof val !== 'string') val = String(val || '');
@@ -147,6 +151,64 @@ function Cashbook() {
     } finally {
       setShowConfirmDelete(false);
       setEntryToDelete(null);
+    }
+  };
+
+  // Toggle selection mode
+  const toggleSelectionMode = () => {
+    setSelectionMode(!selectionMode);
+    setSelectedEntries([]);
+  };
+
+  // Toggle entry selection
+  const toggleEntrySelection = (entryId) => {
+    setSelectedEntries((prev) => {
+      if (prev.includes(entryId)) {
+        return prev.filter((id) => id !== entryId);
+      } else {
+        return [...prev, entryId];
+      }
+    });
+  };
+
+  // Select all entries
+  const selectAllEntries = () => {
+    if (selectedEntries.length === filteredEntries.length) {
+      setSelectedEntries([]);
+    } else {
+      setSelectedEntries(filteredEntries.map((entry) => entry._id || entry.id));
+    }
+  };
+
+  // Delete multiple entries
+  const handleDeleteSelected = async () => {
+    if (selectedEntries.length === 0) {
+      showNotification('Please select entries to delete', 'error');
+      return;
+    }
+
+    const count = selectedEntries.length;
+    if (!window.confirm(`Are you sure you want to delete ${count} entry/entries?`)) {
+      return;
+    }
+
+    setDeletingMultiple(true);
+    try {
+      await axios.post('/api/cashbook/delete-multiple', {
+        entryIds: selectedEntries,
+      });
+
+      // Remove deleted entries from UI
+      setEntries((prev) => prev.filter((entry) => !selectedEntries.includes(entry._id || entry.id)));
+      setSelectedEntries([]);
+      setSelectionMode(false);
+      
+      showNotification(`${count} entry/entries deleted successfully`, 'success');
+    } catch (error) {
+      console.error('Error deleting entries:', error);
+      showNotification('Failed to delete entries. Please try again.', 'error');
+    } finally {
+      setDeletingMultiple(false);
     }
   };
 
@@ -318,8 +380,66 @@ function Cashbook() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          {loading ? (
+        {/* Selection Mode Controls */}
+        {filteredEntries.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={toggleSelectionMode}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectionMode
+                    ? 'bg-gray-500 text-white hover:bg-gray-600'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                {selectionMode ? 'Cancel' : 'Select'}
+              </button>
+              
+              {selectionMode && (
+                <>
+                  <button
+                    onClick={selectAllEntries}
+                    className="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    {selectedEntries.length === filteredEntries.length
+                      ? 'Deselect All'
+                      : 'Select All'}
+                  </button>
+                  <span className="text-sm text-gray-600">
+                    {selectedEntries.length} selected
+                  </span>
+                </>
+              )}
+            </div>
+
+            {selectionMode && (
+              <button
+                onClick={handleDeleteSelected}
+                disabled={selectedEntries.length === 0 || deletingMultiple}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium flex items-center gap-2"
+              >
+                {deletingMultiple ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete Selected
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">{loading ? (
             <div className="p-8 text-center text-gray-600">Loading entries...</div>
           ) : filteredEntries.length === 0 ? (
             <div className="p-8 text-center">
@@ -331,6 +451,16 @@ function Cashbook() {
               <table className="w-full">
                 <thead>
                   <tr>
+                    {selectionMode && (
+                      <th className="bg-gray-50 px-4 py-3 text-left border-b-2 border-gray-200 w-12">
+                        <input
+                          type="checkbox"
+                          checked={selectedEntries.length === filteredEntries.length && filteredEntries.length > 0}
+                          onChange={selectAllEntries}
+                          className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        />
+                      </th>
+                    )}
                     <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200 w-1/5">Date</th>
                     <th className="bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200 w-2/5">Description</th>
                     <th className="bg-gray-50 px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200 w-1/5">Income</th>
@@ -341,12 +471,31 @@ function Cashbook() {
                   {filteredEntries.map(entry => (
                     <tr
                       key={entry._id || entry.id}
-                      onClick={() => {
-                        setSelectedEntry(entry);
-                        setShowDetailModal(true);
+                      onClick={(e) => {
+                        if (selectionMode) {
+                          e.stopPropagation();
+                          toggleEntrySelection(entry._id || entry.id);
+                        } else {
+                          setSelectedEntry(entry);
+                          setShowDetailModal(true);
+                        }
                       }}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                      className={`border-b border-gray-100 transition-colors cursor-pointer ${
+                        selectionMode && selectedEntries.includes(entry._id || entry.id)
+                          ? 'bg-blue-50 hover:bg-blue-100'
+                          : 'hover:bg-gray-50'
+                      }`}
                     >
+                      {selectionMode && (
+                        <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={selectedEntries.includes(entry._id || entry.id)}
+                            onChange={() => toggleEntrySelection(entry._id || entry.id)}
+                            className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          />
+                        </td>
+                      )}
                       <td className="px-4 py-3 text-sm text-gray-900">{formatDate(entry.date)}</td>
                       <td className="px-4 py-3 text-sm text-gray-900">{entry.description}</td>
                       <td className="px-4 py-3 text-sm font-semibold text-green-600 text-right">

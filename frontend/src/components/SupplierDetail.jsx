@@ -36,6 +36,9 @@ function SupplierDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
+  const [deletingMultiple, setDeletingMultiple] = useState(false);
 
   useEffect(() => {
     fetchSupplierData();
@@ -52,6 +55,57 @@ function SupplierDetail() {
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
+  };
+
+  const toggleSelectionMode = () => {
+    setSelectionMode(!selectionMode);
+    setSelectedTransactions([]);
+  };
+
+  const toggleTransactionSelection = (transactionId) => {
+    setSelectedTransactions((prev) => {
+      if (prev.includes(transactionId)) {
+        return prev.filter((id) => id !== transactionId);
+      } else {
+        return [...prev, transactionId];
+      }
+    });
+  };
+
+  const selectAllTransactions = () => {
+    if (selectedTransactions.length === filteredTransactions.length) {
+      setSelectedTransactions([]);
+    } else {
+      setSelectedTransactions(filteredTransactions.map((t) => t._id || t.id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedTransactions.length === 0) {
+      showNotification('Please select transactions to delete', 'error');
+      return;
+    }
+
+    const count = selectedTransactions.length;
+    if (!window.confirm(`Are you sure you want to delete ${count} transaction${count > 1 ? 's' : ''}?`)) {
+      return;
+    }
+
+    setDeletingMultiple(true);
+    try {
+      await axios.post(`/api/suppliers/${id}/transactions/delete-multiple`, {
+        transactionIds: selectedTransactions,
+      });
+      setTransactions((prev) => prev.filter((t) => !selectedTransactions.includes(t._id || t.id)));
+      setSelectedTransactions([]);
+      setSelectionMode(false);
+      showNotification(`Successfully deleted ${count} transaction${count > 1 ? 's' : ''}`, 'success');
+    } catch (error) {
+      console.error('Error deleting transactions:', error);
+      showNotification(error.response?.data?.message || 'Failed to delete transactions', 'error');
+    } finally {
+      setDeletingMultiple(false);
+    }
   };
 
   const filteredTransactions = transactions.filter(transaction =>
@@ -278,50 +332,46 @@ function SupplierDetail() {
   return (
     <Layout currentPage="/suppliers">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {/* Header and Summary Cards in One Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-          {/* Back Button and Supplier Info */}
-          <div className="flex flex-col justify-between">
-            <button
-              onClick={() => navigate('/suppliers')}
-              className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors inline-flex items-center gap-2 w-fit"
-            >
-              ← Back to Suppliers
-            </button>
+        {/* Header */}
+        <div className="mb-4">
+          <button
+            onClick={() => navigate('/suppliers')}
+            className="mb-3 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors inline-flex items-center gap-2"
+          >
+            ← Back to Suppliers
+          </button>
+          <h1 className="text-2xl font-bold text-gray-800">{supplier.name}</h1>
+          <p className="text-gray-600">{supplier.phone}</p>
+        </div>
+
+        {/* Summary - Compact Mobile-Friendly Layout */}
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div className="grid grid-cols-3 gap-4 text-center">
+            {/* Total Debit */}
             <div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-1">{supplier.name}</h1>
-              <p className="text-gray-600">{supplier.phone}</p>
+              <div className="text-xs sm:text-sm text-gray-600 mb-1">You Gave</div>
+              <div className="text-base sm:text-xl font-bold text-red-600">{formatAmount(totalDebit)}</div>
             </div>
-          </div>
 
-          {/* Total Debit Card */}
-          <div className="bg-red-100 border-2 border-red-500 rounded-2xl p-6 shadow-lg">
-            <div className="text-base font-medium text-gray-600 mb-2">Total Debit (You Gave)</div>
-            <div className="text-3xl font-bold text-red-600">{formatAmount(totalDebit)}</div>
-          </div>
-
-          {/* Total Credit Card */}
-          <div className="bg-green-100 border-2 border-green-500 rounded-2xl p-6 shadow-lg">
-            <div className="text-base font-medium text-gray-600 mb-2">Total Credit (You Got)</div>
-            <div className="text-3xl font-bold text-green-600">{formatAmount(totalCredit)}</div>
-          </div>
-
-          {/* Net Balance Card */}
-          <div className={`border-2 rounded-2xl p-6 shadow-lg ${
-            balance > 0 ? 'bg-red-100 border-red-500' :
-            balance < 0 ? 'bg-green-100 border-green-500' :
-            'bg-gray-100 border-gray-500'
-          }`}>
-            <div className="text-base font-medium text-gray-600 mb-2">Net Balance</div>
-            <div className={`text-3xl font-bold ${
-              balance > 0 ? 'text-red-600' :
-              balance < 0 ? 'text-green-600' :
-              'text-gray-600'
-            }`}>
-              {formatAmount(Math.abs(balance))}
+            {/* Total Credit */}
+            <div>
+              <div className="text-xs sm:text-sm text-gray-600 mb-1">You Got</div>
+              <div className="text-base sm:text-xl font-bold text-green-600">{formatAmount(totalCredit)}</div>
             </div>
-            <div className="text-sm font-medium text-gray-600 mt-1">
-              {balance > 0 ? '(You Owe)' : balance < 0 ? '(They Owe)' : '(Settled)'}
+
+            {/* Net Balance */}
+            <div>
+              <div className="text-xs sm:text-sm text-gray-600 mb-1">Balance</div>
+              <div className={`text-base sm:text-xl font-bold ${
+                balance > 0 ? 'text-red-600' :
+                balance < 0 ? 'text-green-600' :
+                'text-gray-600'
+              }`}>
+                {formatAmount(Math.abs(balance))}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">
+                {balance > 0 ? 'You Owe' : balance < 0 ? 'They Owe' : 'Settled'}
+              </div>
             </div>
           </div>
         </div>
@@ -356,6 +406,65 @@ function SupplierDetail() {
           />
         </div>
 
+        {/* Selection Mode Controls */}
+        {transactions.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={toggleSelectionMode}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectionMode
+                    ? 'bg-gray-500 text-white hover:bg-gray-600'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                {selectionMode ? 'Cancel' : 'Select'}
+              </button>
+              
+              {selectionMode && (
+                <>
+                  <button
+                    onClick={selectAllTransactions}
+                    className="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    {selectedTransactions.length === filteredTransactions.length
+                      ? 'Deselect All'
+                      : 'Select All'}
+                  </button>
+                  <span className="text-sm text-gray-600">
+                    {selectedTransactions.length} selected
+                  </span>
+                </>
+              )}
+            </div>
+
+            {selectionMode && (
+              <button
+                onClick={handleDeleteSelected}
+                disabled={selectedTransactions.length === 0 || deletingMultiple}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium flex items-center gap-2"
+              >
+                {deletingMultiple ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete Selected
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Transactions Table */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           {transactions.length === 0 ? (
@@ -377,6 +486,16 @@ function SupplierDetail() {
                 <table className="w-full border-collapse min-w-[500px]">
                   <thead>
                     <tr className="bg-gray-50 border-b-2 border-gray-200">
+                      {selectionMode && (
+                        <th className="px-6 py-4 text-left">
+                          <input
+                            type="checkbox"
+                            checked={selectedTransactions.length === filteredTransactions.length && filteredTransactions.length > 0}
+                            onChange={selectAllTransactions}
+                            className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          />
+                        </th>
+                      )}
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Description</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Debit</th>
@@ -387,12 +506,31 @@ function SupplierDetail() {
                     {(searchTerm ? filteredTransactions : transactions).map((transaction) => (
                       <tr 
                         key={transaction._id}
-                        onClick={() => {
-                          setSelectedTransaction(transaction);
-                          setShowDetailModal(true);
+                        onClick={(e) => {
+                          if (selectionMode) {
+                            e.stopPropagation();
+                            toggleTransactionSelection(transaction._id || transaction.id);
+                          } else {
+                            setSelectedTransaction(transaction);
+                            setShowDetailModal(true);
+                          }
                         }}
-                        className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                        className={`border-b border-gray-100 transition-colors cursor-pointer ${
+                          selectionMode && selectedTransactions.includes(transaction._id || transaction.id)
+                            ? 'bg-blue-50 hover:bg-blue-100'
+                            : 'hover:bg-gray-50'
+                        }`}
                       >
+                        {selectionMode && (
+                          <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              checked={selectedTransactions.includes(transaction._id || transaction.id)}
+                              onChange={() => toggleTransactionSelection(transaction._id || transaction.id)}
+                              className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                            />
+                          </td>
+                        )}
                         <td className="px-6 py-4 text-sm text-gray-900">{formatDate(transaction.date || transaction.createdAt)}</td>
                         <td className="px-6 py-4 text-sm text-gray-900">{transaction.description || 'NONE'}</td>
                         <td className="px-6 py-4 text-sm font-semibold text-red-600">

@@ -11,6 +11,7 @@ import {
   addTransaction,
   updateTransaction,
   deleteTransaction,
+  deleteMultipleTransactions,
 } from "../controllers/transactionController.js";
 import {
   validateCustomerCreation,
@@ -28,12 +29,14 @@ router.get("/analytics", getAnalytics);
 router.post("/", validateCustomerCreation, createCustomer);
 router.get("/:id/transactions", getCustomerTransactions);
 router.post("/:id/transactions", validateTransactionCreation, addTransaction);
+// Delete multiple transactions (MUST be before :transactionId routes)
+router.post("/:id/transactions/delete-multiple", deleteMultipleTransactions);
 router.post("/:id", validateCustomerUpdate, updateCustomer);
 router.delete("/:id", deleteCustomer);
 router.post(
   "/:id/transactions/:transactionId",
   validateTransactionUpdate,
-  updateTransaction
+  updateTransaction,
 );
 router.delete("/:id/transactions/:transactionId", deleteTransaction);
 

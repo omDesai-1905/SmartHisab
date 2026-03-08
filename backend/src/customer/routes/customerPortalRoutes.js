@@ -6,6 +6,8 @@ import {
   getCustomerProfile,
   getCustomerMessages,
   sendCustomerMessage,
+  getCustomerChat,
+  sendCustomerChatMessage,
 } from "../controllers/customerPortalController.js";
 import { customerAuthMiddleware } from "../middlewares/customerAuthMiddleware.js";
 
@@ -22,5 +24,9 @@ router.post("/dispute", customerAuthMiddleware, sendDisputeMessage);
 router.get("/messages", customerAuthMiddleware, getCustomerMessages);
 
 router.post("/send-message", customerAuthMiddleware, sendCustomerMessage);
+
+router.get("/chat", customerAuthMiddleware, getCustomerChat);
+
+router.post("/chat", customerAuthMiddleware, sendCustomerChatMessage);
 
 export default router;

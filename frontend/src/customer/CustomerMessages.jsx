@@ -1,34 +1,95 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CustomerLayout from "./CustomerLayout";
+import {
+  initializeSocket,
+  disconnectSocket,
+  sendMessage,
+  onReceiveMessage,
+  onMessageSent,
+  sendTypingIndicator,
+  onUserTyping,
+  offReceiveMessage,
+  offMessageSent,
+  offUserTyping,
+  markMessageAsRead
+} from "../utils/socketService";
 
 const CustomerMessages = () => {
   const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showMessageModal, setShowMessageModal] = useState(false);
-  const [messageForm, setMessageForm] = useState({
-    subject: "",
-    message: "",
-    type: "general"
-  });
+  const [sending, setSending] = useState(false);
+  const [isUserTyping, setIsUserTyping] = useState(false);
+  const [userName, setUserName] = useState("Business Owner");
+  const [customerId, setCustomerId] = useState(null);
+  
+  const messagesEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("customerToken");
+    const customerData = localStorage.getItem("customerData");
 
-    if (!token) {
-      navigate("/customer/login");
+    if (!token || !customerData) {
+      navigate("/customerpanel/login");
       return;
     }
 
-    fetchMessages(token);
+    const customer = JSON.parse(customerData);
+    setCustomerId(customer._id);
+    fetchMessages(token, customer._id);
+
+    // Initialize socket for customer
+    const socket = initializeSocket(token, 'customer');
+
+    // Handle incoming messages
+    const handleReceiveMessage = (message) => {
+      if (message.customerId === customer._id) {
+        setMessages((prev) => [...prev, message]);
+        scrollToBottom();
+        
+        // Mark as read
+        markMessageAsRead(message._id, customer._id, 'user');
+      }
+    };
+
+    // Handle message sent confirmation
+    const handleMessageSent = (message) => {
+      if (message.customerId === customer._id) {
+        // Message already added optimistically
+      }
+    };
+
+    // Handle typing indicator
+    const handleTyping = ({ userId, userType, isTyping }) => {
+      if (userType === 'user') {
+        setIsUserTyping(isTyping);
+      }
+    };
+
+    onReceiveMessage(handleReceiveMessage);
+    onMessageSent(handleMessageSent);
+    onUserTyping(handleTyping);
+
+    return () => {
+      offReceiveMessage(handleReceiveMessage);
+      offMessageSent(handleMessageSent);
+      offUserTyping(handleTyping);
+      disconnectSocket();
+    };
   }, [navigate]);
 
-  const fetchMessages = async (token) => {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const fetchMessages = async (token, custId) => {
     try {
       const response = await axios.get(
-        "http://localhost:5001/api/customer-portal/messages",
+        `/api/customer-portal/chat`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -36,24 +97,57 @@ const CustomerMessages = () => {
         }
       );
       setMessages(response.data.messages || []);
+      
+      if (response.data.userName) {
+        setUserName(response.data.userName);
+      }
+      
+      // Mark all messages as read
+      response.data.messages?.forEach((msg) => {
+        if (msg.sender === 'user' && !msg.readBy?.includes('customer')) {
+          markMessageAsRead(msg._id, custId, 'user');
+        }
+      });
     } catch (error) {
       console.error("Error fetching messages:", error);
       if (error.response?.status === 401) {
-        navigate("/customer/login");
+        navigate("/customerpanel/login");
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("customerToken");
+    if (!newMessage.trim() || sending || !customerId) return;
+
+    const messageText = newMessage.trim();
+    setNewMessage("");
+    setSending(true);
+
+    const tempMessage = {
+      _id: Date.now(),
+      message: messageText,
+      sender: 'customer',
+      customerId: customerId,
+      createdAt: new Date(),
+      readBy: []
+    };
+
+    // Optimistic UI update
+    setMessages((prev) => [...prev, tempMessage]);
+    scrollToBottom();
 
     try {
-      await axios.post(
-        "http://localhost:5001/api/customer-portal/send-message",
-        messageForm,
+      const token = localStorage.getItem("customerToken");
+      const response = await axios.post(
+        `/api/customer-portal/chat`,
+        { message: messageText },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,13 +155,65 @@ const CustomerMessages = () => {
         }
       );
 
-      alert("Message sent successfully!");
-      setShowMessageModal(false);
-      setMessageForm({ subject: "", message: "", type: "general" });
-      fetchMessages(token);
+      // Update the temp message with the real one
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg._id === tempMessage._id ? response.data.message : msg
+        )
+      );
+
+      // Send via Socket.IO
+      sendMessage(customerId, messageText, 'customer');
     } catch (error) {
       console.error("Error sending message:", error);
+      // Remove the temp message on error
+      setMessages((prev) => prev.filter((msg) => msg._id !== tempMessage._id));
       alert("Failed to send message. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleTyping = () => {
+    if (!customerId) return;
+    
+    // Send typing indicator
+    sendTypingIndicator(customerId, true, 'customer');
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Set new timeout to stop typing indicator
+    typingTimeoutRef.current = setTimeout(() => {
+      sendTypingIndicator(customerId, false, 'customer');
+    }, 1000);
+  };
+
+  const formatTime = (date) => {
+    const d = new Date(date);
+    const hours = d.getHours().toString().padStart(2, '0');
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (d.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (d.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    } else {
+      return d.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
     }
   };
 
@@ -77,7 +223,7 @@ const CustomerMessages = () => {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-xl font-semibold text-gray-700">Loading...</p>
+            <p className="text-xl font-semibold text-gray-700">Loading messages...</p>
           </div>
         </div>
       </CustomerLayout>
@@ -86,178 +232,106 @@ const CustomerMessages = () => {
 
   return (
     <CustomerLayout currentPage="messages">
-      <div className="max-w-7xl mx-auto p-8">
-        <div className="bg-white rounded-xl p-8">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 m-0">
-              Messages
-            </h2>
-            <button
-              onClick={() => setShowMessageModal(true)}
-              className="bg-blue-800 text-white px-6 py-3 rounded-lg border-none font-semibold cursor-pointer text-[0.95rem] flex items-center gap-2 hover:bg-indigo-500 transition-colors"
-            >
-              <span className="text-xl">+</span>
-              New Message
-            </button>
+      <div className="flex flex-col h-[calc(100vh-70px)] bg-white">
+        {/* Chat Header */}
+        <div className="bg-primary border-b border-gray-200 px-6 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg">
+            {userName.charAt(0).toUpperCase()}
           </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 m-0">{userName}</h2>
+            {isUserTyping && (
+              <p className="text-sm text-gray-500 m-0">typing...</p>
+            )}
+          </div>
+        </div>
 
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
           {messages.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">💬</div>
-                <p className="text-xl text-gray-500 mb-2">
-                  No messages yet
-                </p>
-                <p className="text-gray-400 mb-8">
-                  Click "New Message" to contact your business owner
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-4">
-                {messages.map((msg) => (
-                  <div
-                    key={msg._id}
-                    className="p-6 border border-gray-200 rounded-xl bg-[#fafafa]"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-lg font-bold text-gray-800 m-0">
-                        {msg.subject}
-                      </h3>
-                      <div className="flex gap-2">
-                        <span
-                          className={`text-xs px-3 py-1.5 rounded-md font-bold ${
-                            msg.type === 'complaint' 
-                              ? 'bg-red-100 text-red-900' 
-                              : msg.type === 'dispute' 
-                              ? 'bg-orange-100 text-orange-900' 
-                              : 'bg-blue-100 text-blue-900'
-                          }`}
-                        >
-                          {msg.type.toUpperCase()}
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">💬</div>
+              <p className="text-xl text-gray-500 mb-2">No messages yet</p>
+              <p className="text-gray-400">Start a conversation with {userName}</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {messages.map((message, index) => {
+                const showDate =
+                  index === 0 ||
+                  formatDate(messages[index - 1].createdAt) !==
+                    formatDate(message.createdAt);
+
+                return (
+                  <div key={message._id}>
+                    {showDate && (
+                      <div className="flex justify-center my-4">
+                        <span className="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">
+                          {formatDate(message.createdAt)}
                         </span>
-                        <span
-                          className={`text-xs px-3 py-1.5 rounded-md font-bold ${
-                            msg.status === 'resolved' 
-                              ? 'bg-emerald-100 text-emerald-900' 
-                              : msg.status === 'in-progress' 
-                              ? 'bg-amber-100 text-amber-900' 
-                              : 'bg-gray-200 text-gray-700'
-                          }`}
-                        >
-                          {msg.status.toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-[0.95rem] text-gray-600 m-0 mb-4 leading-relaxed">
-                      {msg.message}
-                    </p>
-                    <p className="text-[0.85rem] text-gray-400 m-0">
-                      📅 {new Date(msg.createdAt).toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                      })} at {new Date(msg.createdAt).toLocaleTimeString('en-GB', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
-                    {msg.reply && (
-                      <div className="mt-4 p-4 bg-blue-100 rounded-lg border-l-4 border-blue-500">
-                        <p className="text-[0.85rem] font-bold text-blue-900 m-0 mb-2">
-                          💬 Reply from Business Owner:
-                        </p>
-                        <p className="text-[0.95rem] text-blue-950 m-0 leading-relaxed">
-                          {msg.reply}
-                        </p>
                       </div>
                     )}
+
+                    <div
+                      className={`flex ${
+                        message.sender === 'customer'
+                          ? 'justify-end'
+                          : 'justify-start'
+                      }`}
+                    >
+                      <div
+                        className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                          message.sender === 'customer'
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-white text-gray-800 border border-gray-200'
+                        }`}
+                      >
+                        <p className="m-0 break-words whitespace-pre-wrap">
+                          {message.message}
+                        </p>
+                        <p
+                          className={`text-xs mt-1 mb-0 ${
+                            message.sender === 'customer'
+                              ? 'text-blue-100'
+                              : 'text-gray-400'
+                          }`}
+                        >
+                          {formatTime(message.createdAt)}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+              <div ref={messagesEndRef} />
+            </div>
+          )}
+        </div>
+
+        {/* Message Input */}
+        <div className="border-t border-gray-200 p-4 bg-white">
+          <form onSubmit={handleSendMessage} className="flex gap-2">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => {
+                setNewMessage(e.target.value);
+                handleTyping();
+              }}
+              placeholder="Type a message..."
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              disabled={sending}
+            />
+            <button
+              type="submit"
+              disabled={!newMessage.trim() || sending}
+              className="px-6 py-3 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+            >
+              {sending ? '...' : 'Send'}
+            </button>
+          </form>
         </div>
       </div>
-
-      {/* Message Modal */}
-      {showMessageModal && (
-        <div
-          className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-[1000] p-4"
-          onClick={() => setShowMessageModal(false)}
-        >
-          <div
-            className="bg-white rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="bg-sky-100 text-sky-900 p-6 rounded-t-2xl">
-              <h3 className="text-2xl font-bold m-0">Send New Message</h3>
-              <p className="opacity-90 mt-2 mb-0">Contact your business owner</p>
-            </div>
-
-            <form onSubmit={handleSendMessage} className="p-6">
-              <div className="mb-6">
-                <label className="block font-semibold text-gray-700 mb-2">
-                  Message Type
-                </label>
-                <select
-                  value={messageForm.type}
-                  onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  required
-                >
-                  <option value="general">General Inquiry</option>
-                  <option value="complaint">Complaint</option>
-                  <option value="dispute">Transaction Dispute</option>
-                </select>
-              </div>
-
-              <div className="mb-6">
-                <label className="block font-semibold text-gray-700 mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  value={messageForm.subject}
-                  onChange={(e) => setMessageForm({ ...messageForm, subject: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  placeholder="Brief description"
-                  required
-                />
-              </div>
-
-              <div className="mb-6">
-                <label className="block font-semibold text-gray-700 mb-2">
-                  Message
-                </label>
-                <textarea
-                  value={messageForm.message}
-                  onChange={(e) => setMessageForm({ ...messageForm, message: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base outline-none resize-y min-h-[120px] focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  placeholder="Write your message here..."
-                  required
-                />
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMessageModal(false);
-                    setMessageForm({ subject: "", message: "", type: "general" });
-                  }}
-                  className="flex-1 px-3.5 py-3.5 border-2 border-gray-300 rounded-lg bg-white text-gray-700 font-semibold cursor-pointer text-base hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className=" bg-sky-500 flex-1 px-3.5 py-3.5 border-none rounded-lg bg-blue-500 text-white font-semibold cursor-pointer text-base hover:bg-blue-600 transition-colors"
-                >
-                  Send Message
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </CustomerLayout>
   );
 };

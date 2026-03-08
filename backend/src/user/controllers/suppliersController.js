@@ -25,7 +25,7 @@ export const getAllSuppliers = async (req, res) => {
           ...supplier.toObject(),
           balance,
         };
-      })
+      }),
     );
 
     res.json(suppliersWithBalance);
@@ -72,7 +72,7 @@ export const updateSupplier = async (req, res) => {
     const supplier = await Supplier.findOneAndUpdate(
       { _id: id, userId: req.user.userId },
       { name, phone },
-      { new: true }
+      { new: true },
     );
 
     if (!supplier) {
@@ -191,7 +191,7 @@ export const updateSupplierTransaction = async (req, res) => {
     const transaction = await SupplierTransaction.findOneAndUpdate(
       { _id: transactionId, supplierId: id, userId: req.user.userId },
       updateData,
-      { new: true }
+      { new: true },
     );
 
     if (!transaction) {
@@ -230,6 +230,64 @@ export const deleteSupplierTransaction = async (req, res) => {
     }
 
     res.json({ message: "Transaction deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Delete multiple supplier transactions
+export const deleteMultipleSupplierTransactions = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { transactionIds } = req.body;
+
+    if (
+      !transactionIds ||
+      !Array.isArray(transactionIds) ||
+      transactionIds.length === 0
+    ) {
+      return res.status(400).json({ message: "No transaction IDs provided" });
+    }
+
+    // Verify supplier belongs to user
+    const supplier = await Supplier.findOne({
+      _id: id,
+      userId: req.user.userId,
+    });
+
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    // Find transactions to verify they belong to this supplier
+    const transactions = await SupplierTransaction.find({
+      _id: { $in: transactionIds },
+    });
+
+    // Check if all transactions belong to this supplier and user
+    const unauthorized = transactions.some(
+      (txn) =>
+        txn.supplierId.toString() !== id ||
+        txn.userId.toString() !== req.user.userId,
+    );
+
+    if (unauthorized) {
+      return res.status(403).json({
+        message: "Unauthorized to delete one or more transactions",
+      });
+    }
+
+    // Delete all transactions
+    const result = await SupplierTransaction.deleteMany({
+      _id: { $in: transactionIds },
+      supplierId: id,
+      userId: req.user.userId,
+    });
+
+    res.json({
+      message: `${result.deletedCount} transaction(s) deleted successfully`,
+      deletedCount: result.deletedCount,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

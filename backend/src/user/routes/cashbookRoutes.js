@@ -10,6 +10,7 @@ import {
   updateCashbookEntry,
   deleteCashbookEntry,
   getCashbookSummary,
+  deleteMultipleCashbookEntries,
 } from "../controllers/cashbookController.js";
 
 const router = express.Router();
@@ -20,13 +21,16 @@ router.get("/", authMiddleware, getCashbookEntries);
 // Add new cashbook entry
 router.post("/", authMiddleware, validateCashbookEntry, createCashbookEntry);
 
+// Delete multiple cashbook entries (MUST be before :id routes)
+router.post("/delete-multiple", authMiddleware, deleteMultipleCashbookEntries);
+
 // Update cashbook entry
 router.post(
   "/:id",
   authMiddleware,
   validateCashbookEntryId,
   validateCashbookEntry,
-  updateCashbookEntry
+  updateCashbookEntry,
 );
 
 // Delete cashbook entry
@@ -34,7 +38,7 @@ router.delete(
   "/:id",
   authMiddleware,
   validateCashbookEntryId,
-  deleteCashbookEntry
+  deleteCashbookEntry,
 );
 
 // Get cashbook summary/analytics

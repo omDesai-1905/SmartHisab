@@ -1,6 +1,7 @@
 import Customer from "../../user/models/Customer.model.js";
 import Transaction from "../../user/models/Transaction.model.js";
 import CustomerMessage from "../models/CustomerMessage.model.js";
+import User from "../../user/models/User.model.js";
 import jwt from "jsonwebtoken";
 
 export const customerLogin = async (req, res) => {
@@ -20,7 +21,7 @@ export const customerLogin = async (req, res) => {
     const token = jwt.sign(
       { customerId: customer._id, customerId_username: customer.customerId },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({
@@ -160,6 +161,72 @@ export const sendCustomerMessage = async (req, res) => {
     res.status(201).json({
       message: "Message sent successfully to the business owner",
       data: newMessage,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const getCustomerChat = async (req, res) => {
+  try {
+    const customerId = req.customer.customerId;
+
+    const customer = await Customer.findById(customerId);
+
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    // Get the user (business owner) info
+    const user = await User.findById(customer.userId);
+
+    // Get chat messages (type: 'chat')
+    const messages = await CustomerMessage.find({
+      customerId: customer._id,
+      type: "chat",
+    }).sort({ createdAt: 1 });
+
+    res.json({
+      messages,
+      userName: user ? user.name : "Business Owner",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const sendCustomerChatMessage = async (req, res) => {
+  try {
+    const { message } = req.body;
+    const customerId = req.customer.customerId;
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ message: "Message cannot be empty" });
+    }
+
+    const customer = await Customer.findById(customerId);
+
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const newMessage = new CustomerMessage({
+      customerId: customer._id,
+      customerName: customer.name,
+      userId: customer.userId,
+      userEmail: customer.userEmail,
+      message: message.trim(),
+      type: "chat",
+      sender: "customer",
+      senderType: "customer",
+      senderId: customer._id,
+      readBy: [],
+    });
+
+    await newMessage.save();
+
+    res.status(201).json({
+      message: newMessage,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });

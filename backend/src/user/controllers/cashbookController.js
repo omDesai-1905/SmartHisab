@@ -116,3 +116,44 @@ export const getCashbookSummary = async (req, res) => {
     res.status(500).json({ error: "Server error while fetching summary" });
   }
 };
+
+// Delete multiple cashbook entries
+export const deleteMultipleCashbookEntries = async (req, res) => {
+  try {
+    const { entryIds } = req.body;
+
+    if (!entryIds || !Array.isArray(entryIds) || entryIds.length === 0) {
+      return res.status(400).json({ error: "No entry IDs provided" });
+    }
+
+    // Find entries to verify they belong to this user
+    const entries = await Cashbook.find({
+      _id: { $in: entryIds },
+    });
+
+    // Check if all entries belong to this user
+    const unauthorized = entries.some(
+      (entry) => entry.userId.toString() !== req.user.userId,
+    );
+
+    if (unauthorized) {
+      return res.status(403).json({
+        error: "Unauthorized to delete one or more entries",
+      });
+    }
+
+    // Delete all entries
+    const result = await Cashbook.deleteMany({
+      _id: { $in: entryIds },
+      userId: req.user.userId,
+    });
+
+    res.json({
+      message: `${result.deletedCount} entry/entries deleted successfully`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    console.error("Error deleting cashbook entries:", error);
+    res.status(500).json({ error: "Server error while deleting entries" });
+  }
+};

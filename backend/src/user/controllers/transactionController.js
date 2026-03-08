@@ -77,7 +77,7 @@ export const updateTransaction = async (req, res) => {
     const transaction = await Transaction.findOneAndUpdate(
       { _id: transactionId, customerId: id, userId: req.user.userId },
       updateData,
-      { new: true }
+      { new: true },
     );
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
@@ -108,6 +108,63 @@ export const deleteTransaction = async (req, res) => {
       return res.status(404).json({ message: "Transaction not found" });
     }
     res.json({ message: "Transaction deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Delete multiple transactions
+export const deleteMultipleTransactions = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { transactionIds } = req.body;
+
+    if (
+      !transactionIds ||
+      !Array.isArray(transactionIds) ||
+      transactionIds.length === 0
+    ) {
+      return res.status(400).json({ message: "No transaction IDs provided" });
+    }
+
+    // Verify customer belongs to user
+    const customer = await Customer.findOne({
+      _id: id,
+      userId: req.user.userId,
+    });
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    // Find transactions to verify they belong to this customer
+    const transactions = await Transaction.find({
+      _id: { $in: transactionIds },
+    });
+
+    // Check if all transactions belong to this customer and user
+    const unauthorized = transactions.some(
+      (txn) =>
+        txn.customerId.toString() !== id ||
+        txn.userId.toString() !== req.user.userId,
+    );
+
+    if (unauthorized) {
+      return res.status(403).json({
+        message: "Unauthorized to delete one or more transactions",
+      });
+    }
+
+    // Delete all transactions
+    const result = await Transaction.deleteMany({
+      _id: { $in: transactionIds },
+      customerId: id,
+      userId: req.user.userId,
+    });
+
+    res.json({
+      message: `${result.deletedCount} transaction(s) deleted successfully`,
+      deletedCount: result.deletedCount,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
